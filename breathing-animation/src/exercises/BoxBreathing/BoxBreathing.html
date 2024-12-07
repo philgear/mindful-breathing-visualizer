@@ -1,0 +1,64 @@
+import React, { useState, useEffect } from 'react';
+import styles from './BoxBreathing.module.css';
+
+const BoxBreathing = () => {
+  const [breathHoldTime, setBreathHoldTime] = useState(4);
+  const [currentPhase, setCurrentPhase] = useState(1);
+  const [timeLeft, setTimeLeft] = useState(breathHoldTime);
+  const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    let interval;
+    if (isRunning) {
+      interval = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 0) {
+            handlePhaseChange();
+            return breathHoldTime;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning, breathHoldTime]);
+
+  const handlePhaseChange = () => {
+    setCurrentPhase((prevPhase) => (prevPhase % 4) + 1);
+  };
+
+  const handleStartStop = () => {
+    setIsRunning(!isRunning);
+  };
+
+  const handleTimeChange = (event) => {
+    setBreathHoldTime(parseInt(event.target.value, 10));
+    setTimeLeft(parseInt(event.target.value, 10));
+  };
+
+
+  return (
+    <div className={styles.container}>
+      <h1>Box Breathing</h1>
+      <div className={styles.controls}>
+        <label htmlFor="breathHoldTime">
+          Seconds per phase:
+          <input
+            type="number"
+            id="breathHoldTime"
+            value={breathHoldTime}
+            onChange={handleTimeChange}
+            min={1}
+            max={60}
+          />
+        </label>
+        <button onClick={handleStartStop}>{isRunning ? 'Stop' : 'Start'}</button>
+      </div>
+      <div className={styles.box}>
+        <div
+          className={`${styles.phase} ${
+            currentPhase === 1 ? styles.inhale : ''
+          }`}
+          style={{ width: `${(timeLeft / breathHoldTime) * 100}%` }}
+        >
+          {currentPhase === 1

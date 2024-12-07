@@ -1,0 +1,65 @@
+  let inhale = 5;
+  let hold = 5;
+  let exhale = 5;
+  let hold2 = 5;
+
+  let currentPhase = "inhale";
+  let timer;
+
+  function updateDisplay() {
+    document.getElementById("timer").innerText = `${currentPhase}: ${Math.max(0, (getRemainingTime() / 1000)).toFixed(1)}s`;
+  }
+
+  function startTimer() {
+    timer = setInterval(() => {
+      let remainingTime = getRemainingTime();
+      if (remainingTime <= 0) {
+        clearInterval(timer);
+        nextPhase();
+        startTimer();
+      }
+      updateDisplay();
+    }, 100);
+  }
+
+  function getRemainingTime() {
+    switch (currentPhase) {
+      case "inhale":
+        return inhale * 1000 - (Date.now() - startTime);
+      case "hold":
+        return hold * 1000 - (Date.now() - startTime);
+      case "exhale":
+        return exhale * 1000 - (Date.now() - startTime);
+      case "hold2":
+        return hold2 * 1000 - (Date.now() - startTime);
+      default:
+        return 0;
+    }
+  }
+
+  let startTime;
+  function nextPhase() {
+    switch (currentPhase) {
+      case "inhale":
+        currentPhase = "hold";
+        startTime = Date.now();
+        break;
+      case "hold":
+        currentPhase = "exhale";
+        startTime = Date.now();
+        break;
+      case "exhale":
+        currentPhase = "hold2";
+        startTime = Date.now();
+        break;
+      case "hold2":
+        currentPhase = "inhale";
+        startTime = Date.now();
+        break;
+    }
+  }
+
+  document.getElementById("startButton").addEventListener("click", () => {
+    startTime = Date.now();
+    startTimer();
+  });

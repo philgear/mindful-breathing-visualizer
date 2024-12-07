@@ -1,0 +1,40 @@
+import React, { useState, useEffect } from 'react';
+import styles from './DiaphragmaticBreathing.module.css';
+
+const DiaphragmaticBreathing = () => {
+  const [breathHold, setBreathHold] = useState(false);
+  const [inhale, setInhale] = useState(false);
+  const [exhale, setExhale] = useState(false);
+  const [breathCount, setBreathCount] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (breathHold) {
+        setBreathHold(false);
+        setInhale(true);
+      } else if (inhale) {
+        setInhale(false);
+        setExhale(true);
+      } else if (exhale) {
+        setExhale(false);
+        setBreathHold(true);
+        setBreathCount(prevCount => prevCount + 1);
+      }
+    }, 5000); // Adjust breathing cycle duration here (in milliseconds)
+
+    return () => clearInterval(interval);
+  }, [breathHold, inhale, exhale]);
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.animation}>
+        {inhale && <div className={`${styles.circle} ${styles.inhale}`}></div>}
+        {exhale && <div className={`${styles.circle} ${styles.exhale}`}></div>}
+        {breathHold && <div className={`${styles.circle} ${styles.hold}`}></div>}
+      </div>
+      <p>Breath Count: {breathCount}</p>
+    </div>
+  );
+};
+
+export default DiaphragmaticBreathing;
