@@ -42,6 +42,15 @@ Our project is informed by scientific research on the benefits of mindful breath
 *   Make it a regular habit - practice multiple times and over a longer period for optimal benefits.
 
 **We're incorporating these findings into our project to help you maximize the benefits of mindful breathing.**
+**Looking for Contributors**
+
+## About
+
+This project explores various breathing animations for styling elements, aiming to create a visually appealing and user-friendly tool for mindful breathing. 
+
+## References
+
+[1] Bentley, T.G.K.; D’Andrea-Penna, G.; Rakic, M.; Arce, N.; LaFaille, M.; Berman, R.; Cooley, K.; Sprimont, P. **Breathing Practices for Stress and Anxiety Reduction: Conceptual Framework of Implementation Guidelines Based on a Systematic Review of the Published Literature.** Brain Sci. 2023, 13, 1612. https://doi.org/10.3390/brainsci13121612
 
 ## Get Started
 
@@ -51,11 +60,3 @@ cd breathing-animation
 npm install 
 # or 
 yarn install
-
-## About
-
-This project explores various breathing animations for styling elements, aiming to create a visually appealing and user-friendly tool for mindful breathing. 
-
-## References
-
-[1] Bentley, T.G.K.; D’Andrea-Penna, G.; Rakic, M.; Arce, N.; LaFaille, M.; Berman, R.; Cooley, K.; Sprimont, P. **Breathing Practices for Stress and Anxiety Reduction: Conceptual Framework of Implementation Guidelines Based on a Systematic Review of the Published Literature.** Brain Sci. 2023, 13, 1612. https://doi.org/10.3390/brainsci13121612
