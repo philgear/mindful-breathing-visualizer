@@ -1,0 +1,134 @@
+/* Put this file into the web/src/styles directory later */
+body {
+    /* Setting font family for the entire document*/
+    font-family: sans-serif;
+   /* Using flexbox to center everything in the page.*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Set the height of the view port */
+    height: 100vh;
+    margin: 0;
+    /* Setting background color */
+    background-color: #f4f4f4;
+}
+
+.container {
+     /* Setting the text all to be in the center*/
+    text-align: center;
+    padding: 20px;
+     /* Setting a white background */
+    background-color: white;
+    border-radius: 8px;
+     /* adding a light box shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#animation-container {
+     /* Setting the width and height of the animation-container*/
+    width: 200px;
+    height: 200px;
+    margin: 20px auto;
+     /* Adding a border */
+    border: 1px solid #ddd;
+    /* Displaying it using flex box, to center the animation element.*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Position relative to make the timer absolute */
+     position: relative;
+}
+
+#timerDisplay{
+     /* position the timer element*/
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.controls {
+     /* Display controls using flexbox*/
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.controls label {
+    margin-right: 5px;
+}
+
+.controls input, .controls select {
+    margin-bottom: 10px;
+    padding: 5px;
+    margin-right: 10px;
+     /* Add a border to the inputs*/
+    border: 1px solid #ddd;
+}
+
+.controls button {
+     /* Add padding to buttons */
+    padding: 10px 15px;
+     /* Remove button borders*/
+    border: none;
+     /* Add rounded corners to the buttons*/
+    border-radius: 4px;
+    /*  Setting the background color to green*/
+    background-color: #5cb85c;
+    color: white;
+    /* Sets the cursor to a pointer*/
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.controls button:disabled {
+     /* Makes the background color gray, and cursor not allowed*/
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.circle-animation {
+    /* Sets the initial width and height of the circle*/
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: lightblue; /* Start color */
+      /* Adds transitions to every single property*/
+        transition: all 1s ease;  /* Smooth transitions */
+        /* Sets the initial scale*/
+    transform: scale(1); /* Initial Scale */
+}
+
+.square-animation {
+        /* Sets the initial width and height of the square*/
+        width: 50px;
+        height: 50px;
+        background-color: lightgreen;
+        /* Adds transitions to every single property*/
+      transition: all 1s ease;
+       /* Sets the initial scale*/
+      transform: scale(1);
+    }
+
+    /* Sets the styling for the inhale circle animation */
+.circle-animation.inhale {
+     /* Sets the background color*/
+    background-color: rgb(19, 138, 187);
+ }
+
+  /* Sets the styling for the exhale circle animation */
+    .circle-animation.exhale {
+         /* Sets the background color*/
+        background-color: lightblue;
+     }
+ /* Sets the styling for the inhale square animation */
+.square-animation.inhale {
+     /* Sets the background color*/
+        background-color: rgb(26, 139, 26);
+    }
+
+ /* Sets the styling for the exhale square animation */
+ .square-animation.exhale {
+          /* Sets the background color*/
+        background-color: lightgreen;
+    }
