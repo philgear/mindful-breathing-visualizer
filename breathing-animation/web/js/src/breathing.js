@@ -17,21 +17,40 @@ class BreathingExercise {
     this.phaseDurations = null;
      // Keeps track of the current breathing phase
     this.currentPhase = null;
+    // Stores the prompt message div element.
+    this.promptElement = null;
+  }
+    // Method to set up the initial animation element.
+  setupAnimation() {
+         // Creates a new div for the animation.
+        this.animationElement = document.createElement('div');
+         // Assigns the correct classes so that the CSS can style it.
+        this.animationElement.classList.add(this.animationStyle + '-animation');
+        // clears the container
+        this.animationContainer.innerHTML = '';
+      // Add the prompt to the container
+        this.promptElement = document.createElement('div');
+        this.promptElement.classList.add('prompt-text');
+        this.animationContainer.appendChild(this.promptElement);
+       // Adds the new animation element to the animation container.
+       this.animationContainer.appendChild(this.animationElement);
 
-  }
-  // Method to start the breathing exercise, should be implemented in the subclasses
-  start() {
+    }
+
+    // Method to start the breathing exercise, should be implemented in the subclasses
+    start() {
       throw new Error("start() method must be implemented in the subclass");
-  }
+    }
   // Method to stop the breathing exercise, will clear the timer, and reset animations
-  stop() {
-      // Clear the timer if it is running.
-      clearTimeout(this.timerId);
-      // Reset the classes so the animations get removed.
-      this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
-      // Remove the transformation styles.
-     this.animationElement.style.transform = '';
-  }
+    stop() {
+        // Clear the timer if it is running.
+        clearTimeout(this.timerId);
+        // Reset the classes so the animations get removed.
+        this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
+         // Remove the transformation styles.
+         this.animationElement.style.transform = '';
+         this.promptElement.textContent = ''
+    }
 
     // Method to calculate the duration of each phase (inhale, hold, exhale) in milliseconds
     getPhaseDurations(inhaleTime, holdTime, exhaleTime){
@@ -42,6 +61,9 @@ class BreathingExercise {
             exhaleDuration: exhaleTime * 1000
         };
     }
+    animate = () => {
+        // This will be an empty function in the base, and will be implemented in the children classes.
+    }
 
 }
 
@@ -49,27 +71,15 @@ class BreathingExercise {
 // Subclass for Box Breathing Exercise
 // ===================================
 class BoxBreathing extends BreathingExercise {
-  constructor(animationContainer, options) {
-     // Calls the constructor of the base class.
-    super(animationContainer, options);
-    // Stores the current animation style chosen.
-    this.animationStyle = this.options.animationStyle;
-    // Calls the setup animation method.
-    this.setupAnimation();
-  }
-   // Method to set up the initial animation element.
-    setupAnimation() {
-       // Creates a new div for the animation.
-       this.animationElement = document.createElement('div');
-       // Assigns the correct classes so that the CSS can style it.
-       this.animationElement.classList.add(this.animationStyle + '-animation');
-       // clears the container
-       this.animationContainer.innerHTML = '';
-       // Adds the new animation element to the animation container.
-       this.animationContainer.appendChild(this.animationElement);
-   }
-
-   // Method to start the box breathing animation
+    constructor(animationContainer, options) {
+        // Calls the constructor of the base class.
+        super(animationContainer, options);
+         // Stores the current animation style chosen.
+        this.animationStyle = this.options.animationStyle;
+        // Calls the setup animation method.
+        this.setupAnimation();
+    }
+    // Method to start the box breathing animation
   start(inhaleTime, holdTime, exhaleTime) {
       // Gets all the durations for the animation.
     this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
@@ -82,24 +92,25 @@ class BoxBreathing extends BreathingExercise {
   // Method that animates the breathing exercise.
     animate = () => {
         // Checks which phase the animation is currently on.
-      if (this.currentPhase === 'inhale') {
+       if (this.currentPhase === 'inhale') {
              // Adds the inhale class, and removes all other classes.
               this.animationElement.classList.add('inhale');
              this.animationElement.classList.remove('exhale', 'hold', 'holdAfterExhale');
+             this.promptElement.textContent = 'Inhale';
              // Adds the transition so the animation is smooth.
              this.animationElement.style.transition = `transform ${this.phaseDurations.inhaleDuration/1000}s ease, background-color ${this.phaseDurations.inhaleDuration/1000}s ease`;
              // Scales the animation to make it look like it is breathing.
              this.animationElement.style.transform = 'scale(2)';
             // Sets a timer to move onto the next step.
-           this.timerId = setTimeout(() => {
-             this.currentPhase = 'hold';
-            this.animate();
+          this.timerId = setTimeout(() => {
+            this.currentPhase = 'hold';
+           this.animate();
             }, this.phaseDurations.inhaleDuration);
         } else if (this.currentPhase === 'hold') {
             // Adds the hold class and removes all others.
              this.animationElement.classList.add('hold');
              this.animationElement.classList.remove('exhale', 'inhale', 'holdAfterExhale');
-
+             this.promptElement.textContent = 'Hold';
                this.timerId = setTimeout(() => {
                  this.currentPhase = 'exhale';
                  this.animate();
@@ -109,6 +120,7 @@ class BoxBreathing extends BreathingExercise {
                // Adds the exhale class and removes all others.
            this.animationElement.classList.add('exhale');
            this.animationElement.classList.remove('inhale', 'hold', 'holdAfterExhale');
+          this.promptElement.textContent = 'Exhale';
            // Adds the transition to the animation.
            this.animationElement.style.transition = `transform ${this.phaseDurations.exhaleDuration/1000}s ease, background-color ${this.phaseDurations.exhaleDuration/1000}s ease`;
            // Scales the animation to look like it's breathing.
@@ -123,14 +135,15 @@ class BoxBreathing extends BreathingExercise {
           // Adds the holdAfterExhale class and removes all others.
              this.animationElement.classList.add('holdAfterExhale');
              this.animationElement.classList.remove('exhale', 'inhale', 'hold');
-
+             this.promptElement.textContent = 'Hold';
              this.timerId =  setTimeout(() => {
                 this.currentPhase = 'inhale';
                 this.animate();
                }, this.phaseDurations.holdDuration);
         }
-    };
+   };
 }
+
 
 // ===================================
 // Subclass for Diaphragmatic Breathing Exercise
@@ -139,14 +152,50 @@ class DiaphragmaticBreathing extends BreathingExercise {
     constructor(animationContainer, options) {
         // Calls the base class constructor.
         super(animationContainer, options);
+         // Stores the current animation style chosen.
+        this.animationStyle = this.options.animationStyle;
+        // Calls the setup animation method.
+        this.setupAnimation();
     }
-    // Method to start the diaphragmatic breathing exercise.
-   start() {
-     console.log("diaphragmatic breathing starts");
-   }
+
+     // Method to start the diaphragmatic breathing animation
+   start(inhaleTime, holdTime, exhaleTime) {
+         // Gets all the durations for the animation.
+    this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
+    // Sets the current animation to the inhale animation.
+    this.currentPhase = 'inhale';
+      // Runs the animate method
+     this.animate();
+  }
+  // Method that animates the diaphragmatic breathing exercise
+   animate = () => {
+       if (this.currentPhase === 'inhale') {
+            this.animationElement.classList.add('inhale');
+             this.animationElement.classList.remove('exhale');
+            this.promptElement.textContent = 'Inhale';
+           this.animationElement.style.transition = `transform ${this.phaseDurations.inhaleDuration/1000}s ease, background-color ${this.phaseDurations.inhaleDuration/1000}s ease`;
+           this.animationElement.style.transform = 'scale(1.5)';
+           this.timerId = setTimeout(() => {
+                 this.currentPhase = 'exhale';
+                this.animate();
+            }, this.phaseDurations.inhaleDuration);
+         }else if (this.currentPhase === 'exhale')
+         {
+               this.animationElement.classList.add('exhale');
+               this.animationElement.classList.remove('inhale');
+                 this.promptElement.textContent = 'Exhale';
+               this.animationElement.style.transition = `transform ${this.phaseDurations.exhaleDuration/1000}s ease, background-color ${this.phaseDurations.exhaleDuration/1000}s ease`;
+               this.animationElement.style.transform = 'scale(1)';
+                 this.timerId =  setTimeout(() => {
+                     this.currentPhase = 'inhale';
+                     this.animate();
+                }, this.phaseDurations.exhaleDuration);
+         }
+    };
+
     // Method to stop the diaphragmatic breathing exercise.
    stop() {
-        super.stop();
+       super.stop();
     }
 }
 
@@ -154,15 +203,72 @@ class DiaphragmaticBreathing extends BreathingExercise {
 // Subclass for Alternate Nostril Breathing Exercise
 // ===================================
 class AlternateNostrilBreathing extends BreathingExercise {
-   constructor(animationContainer, options) {
-       // Calls the base class constructor.
+    constructor(animationContainer, options) {
+         // Calls the base class constructor.
         super(animationContainer, options);
+        // Stores the current animation style chosen.
+        this.animationStyle = this.options.animationStyle;
+        // Calls the setup animation method.
+        this.setupAnimation();
     }
    // Method to start the alternate nostril breathing exercise.
-   start() {
-       console.log("alternate nostril breathing starts");
+  start(inhaleTime, holdTime, exhaleTime) {
+        // Gets all the durations for the animation.
+    this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
+     // Sets the current animation to the inhale animation.
+    this.currentPhase = 'inhale';
+     // Runs the animate method
+    this.animate();
+  }
+    // Method that animates the alternate nostril breathing exercise.
+    animate = () => {
+       if(this.currentPhase === 'inhale')
+       {
+           this.animationElement.classList.add('inhale');
+            this.animationElement.classList.remove('exhale');
+             this.promptElement.textContent = 'Inhale Left';
+            this.animationElement.style.transition = `transform ${this.phaseDurations.inhaleDuration/1000}s ease, background-color ${this.phaseDurations.inhaleDuration/1000}s ease`;
+            this.animationElement.style.transform = 'translateX(50px)';
+              this.timerId = setTimeout(() => {
+                this.currentPhase = 'hold';
+                this.animate();
+           }, this.phaseDurations.inhaleDuration);
+
+        } else if(this.currentPhase === 'hold')
+        {
+          this.animationElement.classList.add('hold')
+            this.animationElement.classList.remove('inhale', 'exhale')
+            this.promptElement.textContent = 'Hold';
+            this.timerId = setTimeout(() => {
+               this.currentPhase = 'exhale';
+                this.animate();
+            }, this.phaseDurations.holdDuration);
+        }
+       else if (this.currentPhase === 'exhale')
+        {
+            this.animationElement.classList.add('exhale');
+            this.animationElement.classList.remove('inhale', 'hold');
+            this.promptElement.textContent = 'Exhale Right';
+             this.animationElement.style.transition = `transform ${this.phaseDurations.exhaleDuration/1000}s ease, background-color ${this.phaseDurations.exhaleDuration/1000}s ease`;
+            this.animationElement.style.transform = 'translateX(0px)';
+              this.timerId = setTimeout(() => {
+                   this.currentPhase = 'holdAfterExhale';
+                  this.animate();
+             }, this.phaseDurations.exhaleDuration);
+        }
+        else if (this.currentPhase === 'holdAfterExhale')
+        {
+             this.animationElement.classList.add('holdAfterExhale');
+              this.animationElement.classList.remove('inhale', 'exhale','hold')
+                this.promptElement.textContent = 'Hold';
+            this.timerId = setTimeout(() => {
+                this.currentPhase = 'inhale';
+                this.animate();
+            }, this.phaseDurations.holdDuration);
+         }
+
     }
-    // Method to stop the alternate nostril breathing exercise.
+  // Method to stop the alternate nostril breathing exercise.
    stop(){
         super.stop();
     }
