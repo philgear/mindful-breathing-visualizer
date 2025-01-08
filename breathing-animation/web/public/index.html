@@ -8,62 +8,79 @@
     <title>Mindful Breathing Visualizer</title>
     <!-- Links to the CSS styling sheet -->
     <link rel="stylesheet" href="../src/styles/styles.css">
+    <!-- Google fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Main container for the page content -->
     <div class="container">
-        <!-- Main heading for the page -->
-        <h1>Mindful Breathing</h1>
+        <!-- Header section with the main heading and tagline -->
+        <header>
+            <h1>Mindful Breathing</h1>
+            <p id="tagline">Find your calm, one breath at a time.</p>
+        </header>
 
-        <!-- Dropdown for choosing a breathing exercise -->
-        <label for="exerciseSelect">Choose Breathing Exercise:</label>
-        <select id="exerciseSelect">
-            <option value="boxBreathing">Box Breathing</option>
-            <option value="diaphragmaticBreathing">Diaphragmatic Breathing</option>
-            <option value="alternateNostrilBreathing">Alternate Nostril Breathing</option>
-            <!-- Add more exercises here as needed -->
-        </select>
-
-        <!-- Container for the animation -->
-        <div id="animation-container"></div>
-
-        <!-- Container for controls -->
-        <div class="controls">
-
-            <!-- Input for inhale duration -->
-            <label for="inhaleTime">Inhale Duration (seconds):</label>
-            <input type="number" id="inhaleTime" value="4" min="1" >
-
-            <!-- Input for hold duration -->
-            <label for="holdTime">Hold Duration (seconds):</label>
-            <input type="number" id="holdTime" value="4" min="1" >
-
-            <!-- Input for exhale duration -->
-            <label for="exhaleTime">Exhale Duration (seconds):</label>
-            <input type="number" id="exhaleTime" value="4" min="1" >
-
-            <!-- Input for session duration -->
-            <label for="sessionDuration">Session Duration (minutes):</label>
-            <input type="number" id="sessionDuration" value="5" min="1" >
-
-            <!-- Dropdown for animation style -->
+        <!-- Section for selecting options (breathing exercise and animation style) -->
+        <section class="options">
+            <label for="exerciseSelect">Choose Breathing Exercise:</label>
+            <select id="exerciseSelect">
+                <option value="boxBreathing">Box Breathing</option>
+                <option value="diaphragmaticBreathing">Diaphragmatic Breathing</option>
+                <option value="alternateNostrilBreathing">Alternate Nostril Breathing</option>
+            </select>
+        
             <label for="animationStyle">Animation Style:</label>
             <select id="animationStyle">
                 <option value="circle">Circle</option>
                 <option value="square">Square</option>
-                <!-- Add more animation styles here as needed -->
             </select>
+        </section>
 
-             <!-- Button to start the animation -->
+        <!-- Main section where the animation will be rendered -->
+        <main id="animation-container">
+             <!-- Div to display the current phase of the animation -->
+            <div id="animationPhase" class="animation-phase"></div>
+        </main>
+
+        <!-- Section for controls (inhale, hold, exhale times, session duration, start/stop buttons) -->
+        <section class="controls">
+            <div class="input-group">
+                <label for="inhaleTime">Inhale (seconds):</label>
+                <select id="inhaleTime">
+                    <!-- Options will be dynamically inserted by JavaScript -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="holdTime">Hold (seconds):</label>
+                <select id="holdTime">
+                    <!-- Options will be dynamically inserted by JavaScript -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="exhaleTime">Exhale (seconds):</label>
+                <select id="exhaleTime">
+                    <!-- Options will be dynamically inserted by JavaScript -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="sessionDuration">Session (minutes):</label>
+                <select id="sessionDuration">
+                    <!-- Options will be dynamically inserted by JavaScript -->
+                </select>
+            </div>
+        
             <button id="startButton">Start</button>
-             <!-- Button to stop the animation, initially disabled -->
             <button id="stopButton" disabled>Stop</button>
-        </div>
-
-
+        </section>
+        <!-- Section for instructions -->
+        <section id="instructions-container">
+            <!-- Instructions for the selected exercise will be displayed here -->
+        </section>
     </div>
-     <!-- Links to the JavaScript code for the breathing animations-->
-    <script src="../js/src/breathing.js"></script>
 
+    <!-- Link to the JavaScript file -->
+    <script src="../js/src/breathing.js"></script>
 </body>
 </html>

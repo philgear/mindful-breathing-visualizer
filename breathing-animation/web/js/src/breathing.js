@@ -35,6 +35,10 @@ class BreathingExercise {
        // Adds the new animation element to the animation container.
        this.animationContainer.appendChild(this.animationElement);
 
+         // Add the div to show the animation phase to the container
+        this.animationPhase = document.createElement('div');
+        this.animationPhase.id = 'animationPhase';
+        this.animationContainer.appendChild(this.animationPhase);
     }
 
     // Method to start the breathing exercise, should be implemented in the subclasses
@@ -49,7 +53,9 @@ class BreathingExercise {
         this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
          // Remove the transformation styles.
          this.animationElement.style.transform = '';
-         this.promptElement.textContent = ''
+         this.promptElement.textContent = '';
+         //Resets the animation phase text
+         this.animationPhase.textContent = '';
     }
 
     // Method to calculate the duration of each phase (inhale, hold, exhale) in milliseconds
@@ -97,6 +103,7 @@ class BoxBreathing extends BreathingExercise {
               this.animationElement.classList.add('inhale');
              this.animationElement.classList.remove('exhale', 'hold', 'holdAfterExhale');
              this.promptElement.textContent = 'Inhale';
+             this.animationPhase.textContent = 'Inhale';
              // Adds the transition so the animation is smooth.
              this.animationElement.style.transition = `transform ${this.phaseDurations.inhaleDuration/1000}s ease, background-color ${this.phaseDurations.inhaleDuration/1000}s ease`;
              // Scales the animation to make it look like it is breathing.
@@ -111,6 +118,7 @@ class BoxBreathing extends BreathingExercise {
              this.animationElement.classList.add('hold');
              this.animationElement.classList.remove('exhale', 'inhale', 'holdAfterExhale');
              this.promptElement.textContent = 'Hold';
+              this.animationPhase.textContent = 'Hold';
                this.timerId = setTimeout(() => {
                  this.currentPhase = 'exhale';
                  this.animate();
@@ -121,6 +129,7 @@ class BoxBreathing extends BreathingExercise {
            this.animationElement.classList.add('exhale');
            this.animationElement.classList.remove('inhale', 'hold', 'holdAfterExhale');
           this.promptElement.textContent = 'Exhale';
+            this.animationPhase.textContent = 'Exhale';
            // Adds the transition to the animation.
            this.animationElement.style.transition = `transform ${this.phaseDurations.exhaleDuration/1000}s ease, background-color ${this.phaseDurations.exhaleDuration/1000}s ease`;
            // Scales the animation to look like it's breathing.
@@ -136,6 +145,7 @@ class BoxBreathing extends BreathingExercise {
              this.animationElement.classList.add('holdAfterExhale');
              this.animationElement.classList.remove('exhale', 'inhale', 'hold');
              this.promptElement.textContent = 'Hold';
+              this.animationPhase.textContent = 'Hold';
              this.timerId =  setTimeout(() => {
                 this.currentPhase = 'inhale';
                 this.animate();
@@ -143,7 +153,6 @@ class BoxBreathing extends BreathingExercise {
         }
    };
 }
-
 
 // ===================================
 // Subclass for Diaphragmatic Breathing Exercise
@@ -173,6 +182,7 @@ class DiaphragmaticBreathing extends BreathingExercise {
             this.animationElement.classList.add('inhale');
              this.animationElement.classList.remove('exhale');
             this.promptElement.textContent = 'Inhale';
+            this.animationPhase.textContent = 'Inhale';
            this.animationElement.style.transition = `transform ${this.phaseDurations.inhaleDuration/1000}s ease, background-color ${this.phaseDurations.inhaleDuration/1000}s ease`;
            this.animationElement.style.transform = 'scale(1.5)';
            this.timerId = setTimeout(() => {
@@ -184,6 +194,7 @@ class DiaphragmaticBreathing extends BreathingExercise {
                this.animationElement.classList.add('exhale');
                this.animationElement.classList.remove('inhale');
                  this.promptElement.textContent = 'Exhale';
+                this.animationPhase.textContent = 'Exhale';
                this.animationElement.style.transition = `transform ${this.phaseDurations.exhaleDuration/1000}s ease, background-color ${this.phaseDurations.exhaleDuration/1000}s ease`;
                this.animationElement.style.transform = 'scale(1)';
                  this.timerId =  setTimeout(() => {
@@ -227,8 +238,9 @@ class AlternateNostrilBreathing extends BreathingExercise {
            this.animationElement.classList.add('inhale');
             this.animationElement.classList.remove('exhale');
              this.promptElement.textContent = 'Inhale Left';
+            this.animationPhase.textContent = 'Inhale';
             this.animationElement.style.transition = `transform ${this.phaseDurations.inhaleDuration/1000}s ease, background-color ${this.phaseDurations.inhaleDuration/1000}s ease`;
-            this.animationElement.style.transform = 'translateX(50px)';
+            this.animationElement.style.transform = 'translateX(-50px)';
               this.timerId = setTimeout(() => {
                 this.currentPhase = 'hold';
                 this.animate();
@@ -239,6 +251,7 @@ class AlternateNostrilBreathing extends BreathingExercise {
           this.animationElement.classList.add('hold')
             this.animationElement.classList.remove('inhale', 'exhale')
             this.promptElement.textContent = 'Hold';
+            this.animationPhase.textContent = 'Hold';
             this.timerId = setTimeout(() => {
                this.currentPhase = 'exhale';
                 this.animate();
@@ -249,8 +262,9 @@ class AlternateNostrilBreathing extends BreathingExercise {
             this.animationElement.classList.add('exhale');
             this.animationElement.classList.remove('inhale', 'hold');
             this.promptElement.textContent = 'Exhale Right';
+            this.animationPhase.textContent = 'Exhale';
              this.animationElement.style.transition = `transform ${this.phaseDurations.exhaleDuration/1000}s ease, background-color ${this.phaseDurations.exhaleDuration/1000}s ease`;
-            this.animationElement.style.transform = 'translateX(0px)';
+            this.animationElement.style.transform = 'translateX(50px)';
               this.timerId = setTimeout(() => {
                    this.currentPhase = 'holdAfterExhale';
                   this.animate();
@@ -261,6 +275,7 @@ class AlternateNostrilBreathing extends BreathingExercise {
              this.animationElement.classList.add('holdAfterExhale');
               this.animationElement.classList.remove('inhale', 'exhale','hold')
                 this.promptElement.textContent = 'Hold';
+            this.animationPhase.textContent = 'Hold';
             this.timerId = setTimeout(() => {
                 this.currentPhase = 'inhale';
                 this.animate();
@@ -274,6 +289,23 @@ class AlternateNostrilBreathing extends BreathingExercise {
     }
 }
 
+// Function to populate a select element with options from 1 to 10
+function populateSelectOptions(selectElement, maxValue) {
+    for (let i = 1; i <= maxValue; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.text = i;
+        selectElement.appendChild(option);
+    }
+}
+
+// Function to set default values for select elements
+function setDefaultSelectValues(inhaleId, holdId, exhaleId, sessionId, inhaleVal, holdVal, exhaleVal, sessionVal) {
+    document.getElementById(inhaleId).value = inhaleVal;
+    document.getElementById(holdId).value = holdVal;
+    document.getElementById(exhaleId).value = exhaleVal;
+    document.getElementById(sessionId).value = sessionVal;
+}
 
 // ===================================
 // DOM Manipulation and Logic
@@ -286,23 +318,99 @@ document.addEventListener('DOMContentLoaded', () => {
     const stopButton = document.getElementById('stopButton');
     // Get all of the options from the HTML
     const exerciseSelect = document.getElementById('exerciseSelect');
-    const inhaleTimeInput = document.getElementById('inhaleTime');
-    const holdTimeInput = document.getElementById('holdTime');
-    const exhaleTimeInput = document.getElementById('exhaleTime');
-    const sessionDurationInput = document.getElementById('sessionDuration');
+    const inhaleTimeSelect = document.getElementById('inhaleTime');
+    const holdTimeSelect = document.getElementById('holdTime');
+    const exhaleTimeSelect = document.getElementById('exhaleTime');
+    const sessionDurationSelect = document.getElementById('sessionDuration');
     const animationStyleSelect = document.getElementById('animationStyle');
+    // Get the instructions container from the HTML
+    const instructionsContainer = document.getElementById('instructions-container');
     // Sets a current exercise variable to null, to be used later.
     let currentExercise = null;
     // Creates a session timer that we can manipulate.
     let sessionTimer = null;
 
+    // Populate select elements with options from 1 to 10
+    populateSelectOptions(inhaleTimeSelect, 10);
+    populateSelectOptions(holdTimeSelect, 10);
+    populateSelectOptions(exhaleTimeSelect, 10);
+    populateSelectOptions(sessionDurationSelect, 10);
+
+    // Set default values for the select elements
+    setDefaultSelectValues('inhaleTime', 'holdTime', 'exhaleTime', 'sessionDuration', '4', '4', '4', '5');
+    // Sets default instructions
+    const defaultInstructions = `
+        <h3>Box Breathing Instructions</h3>
+        <p>Box breathing is a simple yet powerful technique that involves inhaling, holding, exhaling, and holding again, each for the same count. It's like tracing the four sides of a box with your breath.</p>
+        <p>Here's how to practice it:</p>
+        <ul>
+            <li><strong>Inhale:</strong> Breathe in slowly and deeply through your nose to a count of 4 seconds.</li>
+            <li><strong>Hold:</strong> Hold your breath for a count of 4 seconds.</li>
+            <li><strong>Exhale:</strong> Breathe out slowly through your mouth to a count of 4 seconds.</li>
+            <li><strong>Hold:</strong> Hold your breath again for a count of 4 seconds.</li>
+        </ul>
+        <p>Repeat this cycle for the duration of the session. Focus on the rhythm and the sensation of your breath.</p>
+    `;
+     instructionsContainer.innerHTML = defaultInstructions;
+
+     // Event listener for changing breathing exercise
+     exerciseSelect.addEventListener('change', () => {
+        const instructions = {
+            boxBreathing: `
+                <h3>Box Breathing Instructions</h3>
+                <p>Box breathing is a simple yet powerful technique that involves inhaling, holding, exhaling, and holding again, each for the same count. It's like tracing the four sides of a box with your breath.</p>
+                <p>Here's how to practice it:</p>
+                <ul>
+                    <li><strong>Inhale:</strong> Breathe in slowly and deeply through your nose to a count of 4 seconds.</li>
+                    <li><strong>Hold:</strong> Hold your breath for a count of 4 seconds.</li>
+                    <li><strong>Exhale:</strong> Breathe out slowly through your mouth to a count of 4 seconds.</li>
+                    <li><strong>Hold:</strong> Hold your breath again for a count of 4 seconds.</li>
+                </ul>
+                <p>Repeat this cycle for the duration of the session. Focus on the rhythm and the sensation of your breath.</p>
+            `,
+            diaphragmaticBreathing: `
+                <h3>Diaphragmatic Breathing Instructions</h3>
+                <p>Diaphragmatic breathing, also known as belly breathing, involves fully engaging the stomach, abdominal muscles, and diaphragm when breathing. This technique helps you use your diaphragm correctly and efficiently.</p>
+                <p>Follow these steps:</p>
+                <ul>
+                    <li><strong>Position:</strong> Lie on your back on a flat surface or in bed, with your knees bent and your head supported. You can place a pillow under your knees for added comfort.</li>
+                    <li><strong>Hand Placement:</strong> Place one hand on your upper chest and the other just below your rib cage. This will allow you to feel your diaphragm move as you breathe.</li>
+                    <li><strong>Inhale:</strong> Breathe in slowly through your nose so that your stomach moves out against your hand. The hand on your chest should remain as still as possible.</li>
+                    <li><strong>Exhale:</strong> Tighten your stomach muscles, letting them fall inward as you exhale through pursed lips. The hand on your upper chest should remain as still as possible.</li>
+                </ul>
+                <p>Practice for 5 to 10 minutes, several times a day if possible. Focus on feeling your belly rise and fall with each breath.</p>
+            `,
+            alternateNostrilBreathing: `
+                <h3>Alternate Nostril Breathing Instructions</h3>
+                <p>Alternate Nostril Breathing is a yogic practice that involves breathing in and out through alternate nostrils. It's believed to balance the two hemispheres of the brain and calm the mind.</p>
+                <p>Follow these steps:</p>
+                <ul>
+                    <li><strong>Position:</strong> Sit comfortably with your spine straight and your body relaxed.</li>
+                    <li><strong>Hand Placement:</strong> Place your left hand on your left knee. Use your right hand to control your breath.</li>
+                    <li><strong>Inhale:</strong> Close your right nostril with your right thumb and inhale slowly through your left nostril.</li>
+                    <li><strong>Hold:</strong> Close both nostrils (use your ring finger to close the left nostril) and hold the breath.</li>
+                    <li><strong>Exhale:</strong> Release your thumb and exhale slowly through your right nostril.</li>
+                    <li><strong>Inhale:</strong> Inhale slowly through your right nostril.</li>
+                    <li><strong>Hold:</strong> Close both nostrils again and hold.</li>
+                    <li><strong>Exhale:</strong> Release your ring finger and exhale slowly through your left nostril.</li>
+                </ul>
+                <p>Continue this cycle, alternating between nostrils after each inhalation. Focus on making each breath smooth and controlled.</p>
+            `
+        };
+
+          // Display the instructions for the selected exercise
+        instructionsContainer.innerHTML = instructions[exerciseSelect.value] || defaultInstructions;
+         //Add the fade-in effect
+        instructionsContainer.classList.add('fade-in');
+    });
+
     // Event listener for the start button, runs the function when it is clicked.
     startButton.addEventListener('click', () => {
       // Get values from the inputs.
-        const inhaleTime = parseInt(inhaleTimeInput.value, 10);
-        const holdTime = parseInt(holdTimeInput.value, 10);
-        const exhaleTime = parseInt(exhaleTimeInput.value, 10);
-        const sessionDuration = parseInt(sessionDurationInput.value, 10);
+        const inhaleTime = parseInt(inhaleTimeSelect.value, 10);
+        const holdTime = parseInt(holdTimeSelect.value, 10);
+        const exhaleTime = parseInt(exhaleTimeSelect.value, 10);
+        const sessionDuration = parseInt(sessionDurationSelect.value, 10);
         const animationStyle = animationStyleSelect.value;
 
         // Options for the exercise.
@@ -330,6 +438,23 @@ document.addEventListener('DOMContentLoaded', () => {
         startButton.disabled = true;
          // Enables the stop button so it can be used to stop the animation.
         stopButton.disabled = false;
+         // Add the fade-out class to the options section, the start button, and instructions
+         document.querySelector('.options').classList.add('fade-out');
+         startButton.classList.add('fade-out');
+         instructionsContainer.classList.add('fade-out');
+         instructionsContainer.classList.add('fade-out');
+ 
+         // Get all select elements and add fade-out class
+         const selectElements = document.querySelectorAll('select');
+         selectElements.forEach(element => {
+             element.classList.add('fade-out');
+         });
+ 
+         // Get all input-group divs and add fade-out class
+         const inputGroups = document.querySelectorAll('.input-group');
+         inputGroups.forEach(element => {
+             element.classList.add('fade-out');
+         });
     });
 
     // Event listener for the stop button, runs the stop breathing function when it is clicked.
@@ -346,6 +471,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Enables the start button, and disables the stop button.
        startButton.disabled = false;
        stopButton.disabled = true;
+        // Remove the fade-out class from the options section, the start button, and instructions
+        document.querySelector('.options').classList.remove('fade-out');
+        startButton.classList.remove('fade-out');
+        instructionsContainer.classList.remove('fade-out');
+
+        // Get all select elements and remove fade-out class
+        const selectElements = document.querySelectorAll('select');
+        selectElements.forEach(element => {
+            element.classList.remove('fade-out');
+        });
+
+        // Get all input-group divs and remove fade-out class
+        const inputGroups = document.querySelectorAll('.input-group');
+        inputGroups.forEach(element => {
+            element.classList.remove('fade-out');
+        });
     }
 
     // Event listener for the animation style change.

@@ -1,134 +1,245 @@
-/* Put this file into the web/src/styles directory later */
+/* General Styling */
 body {
-    /* Setting font family for the entire document*/
-    font-family: sans-serif;
-   /* Using flexbox to center everything in the page.*/
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* Set the height of the view port */
-    height: 100vh;
-    margin: 0;
-    /* Setting background color */
-    background-color: #f4f4f4;
+  font-family: 'DM Serif Display', serif; /* Updated font */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f8f8f8;
+  color: #212529; /* Updated text color for better contrast */
 }
 
 .container {
-     /* Setting the text all to be in the center*/
-    text-align: center;
-    padding: 20px;
-     /* Setting a white background */
-    background-color: white;
-    border-radius: 8px;
-     /* adding a light box shadow */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 30px 40px; /* Increased padding */
+  background-color: white;
+  border-radius: 12px; /* Softer corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px; /* Added max-width for larger screens */
+  width: 100%;
+  opacity: 0; /* Start with opacity 0 for the fade-in effect */
+  animation: fadeIn 5s forwards; /* Fade in animation set to 5 seconds */
 }
 
+/* Keyframes for the fade-in animation */
+@keyframes fadeIn {
+  to {
+      opacity: 1;
+  }
+}
+
+header {
+  margin-bottom: 30px; /* Added space below the header */
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #495057; /* Darker color for heading */
+}
+
+#tagline {
+  font-size: 1.1rem;
+  color: #6c757d; /* Updated color for tagline */
+  margin-top: 0;
+}
+
+.options {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px; /* Added space below the options */
+}
+
+/* Animation Container Styling */
 #animation-container {
-     /* Setting the width and height of the animation-container*/
-    width: 200px;
-    height: 200px;
-    margin: 20px auto;
-     /* Adding a border */
-    border: 1px solid #ddd;
-    /* Displaying it using flex box, to center the animation element.*/
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* Position relative to make the timer absolute */
-     position: relative;
+  width: 250px; /* Slightly larger animation */
+  height: 250px;
+  margin: 30px auto; /* Increased margin */
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
-#timerDisplay{
-     /* position the timer element*/
-    position: absolute;
-    top: 10px;
-    right: 10px;
+/* Timer Styling */
+#timerDisplay {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1.2rem;
+  color: #495057;
 }
 
+/* Animation Phase Styling */
+#animationPhase {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 1.2rem;
+  color: #495057;
+}
+
+/* Controls Styling */
 .controls {
-     /* Display controls using flexbox*/
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px; /* Uniform gap between controls */
+  margin-top: 30px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column; /* Stack label over input */
+  align-items: flex-start; /* Align items to the start */
 }
 
 .controls label {
-    margin-right: 5px;
+  margin-bottom: 5px; /* Space between label and input */
+  color: #495057;
+  font-size: 1rem; /* Slightly smaller font for labels */
 }
 
 .controls input, .controls select {
-    margin-bottom: 10px;
-    padding: 5px;
-    margin-right: 10px;
-     /* Add a border to the inputs*/
-    border: 1px solid #ddd;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
 .controls button {
-     /* Add padding to buttons */
-    padding: 10px 15px;
-     /* Remove button borders*/
-    border: none;
-     /* Add rounded corners to the buttons*/
-    border-radius: 4px;
-    /*  Setting the background color to green*/
-    background-color: #5cb85c;
-    color: white;
-    /* Sets the cursor to a pointer*/
-    cursor: pointer;
-    margin-left: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform transition */
+  font-size: 1.1rem;
+}
+
+.controls button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Button lift effect on hover */
 }
 
 .controls button:disabled {
-     /* Makes the background color gray, and cursor not allowed*/
-    background-color: #ccc;
-    cursor: not-allowed;
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Animation Styling */
+.circle-animation, .square-animation {
+  width: 75px;
+  height: 75px;
+  background-color: #e9ecef;
+  transition: all 0.5s ease;
+  transform-origin: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .circle-animation {
-    /* Sets the initial width and height of the circle*/
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: lightblue; /* Start color */
-      /* Adds transitions to every single property*/
-        transition: all 1s ease;  /* Smooth transitions */
-        /* Sets the initial scale*/
-    transform: scale(1); /* Initial Scale */
+  border-radius: 50%;
 }
 
-.square-animation {
-        /* Sets the initial width and height of the square*/
-        width: 50px;
-        height: 50px;
-        background-color: lightgreen;
-        /* Adds transitions to every single property*/
-      transition: all 1s ease;
-       /* Sets the initial scale*/
-      transform: scale(1);
-    }
+.prompt-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 1.4rem;
+  color: #343a40;
+  pointer-events: none; /* Ensures the text doesn't interfere with other interactions */
+}
+.circle-animation.inhale, .square-animation.inhale {
+  background-color: #a5d6a7; /* Softer green */
+  transform: scale(1.5);
+}
 
-    /* Sets the styling for the inhale circle animation */
-.circle-animation.inhale {
-     /* Sets the background color*/
-    background-color: rgb(19, 138, 187);
- }
+.circle-animation.exhale, .square-animation.exhale {
+  background-color: #f4cccc; /* Softer red */
+  transform: scale(0.8);
+}
 
-  /* Sets the styling for the exhale circle animation */
-    .circle-animation.exhale {
-         /* Sets the background color*/
-        background-color: lightblue;
-     }
- /* Sets the styling for the inhale square animation */
-.square-animation.inhale {
-     /* Sets the background color*/
-        background-color: rgb(26, 139, 26);
-    }
+.circle-animation.hold, .square-animation.hold,
+.circle-animation.holdAfterExhale, .square-animation.holdAfterExhale {
+  background-color: #b4a7d6; /* Soft purple for hold phases */
+}
 
- /* Sets the styling for the exhale square animation */
- .square-animation.exhale {
-          /* Sets the background color*/
-        background-color: lightgreen;
-    }
+/* Styling for Alternate Nostril Breathing */
+.alternate-nostril-animation {
+  transition: transform 0.5s ease, background-color 0.5s ease;
+}
+
+.alternate-nostril-animation.inhale {
+  transform: translateX(-50px);
+  background-color: #a5d6a7;
+}
+
+.alternate-nostril-animation.exhale {
+  transform: translateX(50px);
+  background-color: #f4cccc;
+}
+
+.alternate-nostril-animation.hold {
+  background-color: #b4a7d6;
+}
+
+.alternate-nostril-animation.holdAfterExhale {
+  background-color: #b4a7d6;
+}
+
+/* Styling for instructions container */
+#instructions-container {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  /* Initial styling for fade-in effect */
+   opacity: 0;
+  transition: opacity 5s ease; /* Transition over 5 seconds */
+}
+
+/* Class to trigger fade-in effect */
+#instructions-container.fade-in {
+   opacity: 1;
+}
+
+#instructions-container h3 {
+  color: #343a40;
+  margin-top: 0;
+}
+
+#instructions-container p {
+  font-size: 0.9rem;
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+#instructions-container ul {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0;
+  text-align: left;
+}
+
+#instructions-container li {
+  margin-bottom: 10px; /* Space between list items */
+}
+/* Class for fading out options */
+.options.fade-out, .controls .button.fade-out, .fade-out, #instructions-container.fade-out {
+  opacity: 0;
+  pointer-events: none; /* Prevents interaction with faded elements */
+}
+.options, .controls .button, select, .input-group, #instructions-container{
+ transition: opacity 5s ease; /* Transition over 5 seconds */
+}
