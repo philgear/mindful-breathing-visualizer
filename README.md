@@ -20,7 +20,7 @@ This project offers a visually engaging way to learn and practice mindful breath
 This project is designed to be flexible and integrate with various technologies:
 
 *   **Frontend:**
-    *   **Pure JavaScript:** A simple JavaScript API for creating and controlling animations. [See documentation](link-to-js-docs)
+    *   **Pure JavaScript:** A simple JavaScript API for creating and controlling animations. [See documentation](docs/js/index.html)
     *   **Web Components:** Encapsulated components for use in any framework. [See examples](link-to-web-component-examples)
     *   **React Component:**  [See npm package](link-to-react-npm)
     *   **Vue Component:** [See npm package](link-to-vue-npm)
