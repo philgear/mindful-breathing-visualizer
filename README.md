@@ -22,11 +22,11 @@
 
 This project offers a visually engaging way to learn and practice mindful breathing. Whether you're new to meditation or a seasoned practitioner, our visualizer can help you find a sense of calm and focus.
 
-![Mindful Breathing Visualizer](docs/screenshots/github-social-preview.png)
+![Mindful Breathing Visualizer](breathing-animation/docs/screenshots/1.0.0/github-social-preview.png)
 
 ## View the Visualizer
 
-[View the Mindful Breathing Visualizer](https://philgear.github.io/breathing-animation/web/public/index.html)
+[View the Mindful Breathing Visualizer](https://philgear.github.io/breathing-animation/)
 
 ---
 
