@@ -32,6 +32,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Copy CSS and JS files
+        run: |
+          mkdir -p breathing-animation/docs/styles
+          mkdir -p breathing-animation/docs/js
+          cp breathing-animation/web/src/styles/styles.css breathing-animation/docs/styles/
+          cp breathing-animation/web/js/src/breathing.js breathing-animation/docs/js/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
