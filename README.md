@@ -1,13 +1,34 @@
 # Mindful Breathing Visualizer
 
-[![License](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/) 
-[![GitHub contributors](https://img.shields.io/github/contributors/philgear/breathing-animation.svg)](https://github.com/philgear/breathing-animation/graphs/contributors)
-[![GitHub stars](https://img.shields.io/github/stars/philgear/breathing-animation.svg)](https://github.com/philgear/breathing-animation/stargazers)
+<p align="center">
+  <a href="https://creativecommons.org/licenses/by/4.0/">
+    <img src="https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg" alt="License">
+  </a>
+  <a href="https://github.com/philgear/breathing-animation/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/philgear/breathing-animation.svg" alt="GitHub contributors">
+  </a>
+  <a href="https://github.com/philgear/breathing-animation/stargazers">
+    <img src="https://img.shields.io/github/stars/philgear/breathing-animation.svg" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/philgear/breathing-animation/issues">
+    <img src="https://img.shields.io/github/issues/philgear/breathing-animation.svg" alt="GitHub issues">
+  </a>
+  <a href="https://github.com/philgear/breathing-animation/actions">
+    <img src="https://github.com/philgear/breathing-animation/workflows/Deploy%20static%20content%20to%20Pages/badge.svg" alt="GitHub Actions">
+  </a>
+</p>
 
 **Reduce stress and anxiety with beautiful, customizable breathing exercises.**
 
 This project offers a visually engaging way to learn and practice mindful breathing. Whether you're new to meditation or a seasoned practitioner, our visualizer can help you find a sense of calm and focus.
 
+![Mindful Breathing Visualizer](docs/screenshots/github-social-preview.png)
+
+## View the Visualizer
+
+[View the Mindful Breathing Visualizer](https://philgear.github.io/breathing-animation/web/public/index.html)
+
+---
 
 ## What's in it for you?
 
@@ -20,15 +41,15 @@ This project offers a visually engaging way to learn and practice mindful breath
 This project is designed to be flexible and integrate with various technologies:
 
 *   **Frontend:**
-    *   **Pure JavaScript:** A simple JavaScript API for creating and controlling animations. [See documentation](docs/js/index.html)
-    *   **Web Components:** Encapsulated components for use in any framework. [See examples](link-to-web-component-examples)
-    *   **React Component:**  [See npm package](link-to-react-npm)
-    *   **Vue Component:** [See npm package](link-to-vue-npm)
-    *   **Angular Component:** [See npm package](link-to-angular-npm)
+    *   **Pure JavaScript:** A simple JavaScript API for creating and controlling animations. [![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B%20Mastery-steelblue?logo=javascript&style=flat)](docs/js/index.html)
+    *   **Web Components:** Encapsulated components for use in any framework. [![Web Components](https://img.shields.io/badge/Web%20Components-Encapsulated%20Components-steelblue?logo=webcomponents.org&style=flat)](link-to-web-component-examples)
+    *   **React Component:** [![React](https://img.shields.io/badge/React-Component-steelblue?logo=react&style=flat)](link-to-react-npm)
+    *   **Vue Component:** [![Vue](https://img.shields.io/badge/Vue-Component-steelblue?logo=vue.js&style=flat)](link-to-vue-npm)
+    *   **Angular Component:** [![Angular](https://img.shields.io/badge/Angular-Component-steelblue?logo=angular&style=flat)](link-to-angular-npm)
 *   **Backend/Other:**
-    *   **C++:**  C++ library for integrating breathing visualizations into native applications or embedded systems. [See examples](link-to-cpp-examples)
-    *   **WebAssembly:**  WASM module for high-performance animations in web and non-web environments. [See documentation](link-to-wasm-docs)
-    *   **GoLang:** Go package for building breathing visualization applications in Go. [See documentation](link-to-golang-docs)
+    *   **C++:**  C++ library for integrating breathing visualizations into native applications or embedded systems. [![C++](https://img.shields.io/badge/C++-Library-steelblue?logo=c%2B%2B&style=flat)](link-to-cpp-examples)
+    *   **WebAssembly:**  WASM module for high-performance animations in web and non-web environments. [![WebAssembly](https://img.shields.io/badge/WebAssembly-Module-steelblue?logo=webassembly&style=flat)](link-to-wasm-docs)
+    *   **GoLang:** Go package for building breathing visualization applications in Go. [![Go](https://img.shields.io/badge/Go-Package-steelblue?logo=go&style=flat)](link-to-golang-docs)
 
 ## Backed by Science
 
@@ -55,8 +76,9 @@ This project explores various breathing animations for styling elements, aiming 
 ## Get Started
 
 ```bash
-git clone [https://github.com/philgear/breathing-animation.git](https://github.com/philgear/breathing-animation.git)
+git clone https://github.com/philgear/breathing-animation.git
 cd breathing-animation
 npm install 
 # or 
 yarn install
+```
