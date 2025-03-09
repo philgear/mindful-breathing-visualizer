@@ -1,150 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Metadata for the document -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mindful Breathing Visualizer: Pure JavaScript API Documentation</title>
+    <!-- Title of the page, displayed in the browser tab -->
+    <title>Mindful Breathing Visualizer</title>
+    <!-- Links to the CSS styling sheet -->
+    <link rel="stylesheet" href="../src/styles/styles.css">
+    <!-- Google fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Main container for the page content -->
+    <div class="container">
+        <!-- Header section with the main heading and tagline -->
+        <header>
+            <h1>Mindful Breathing</h1>
+            <p id="tagline">Find your calm, one breath at a time.</p>
+        </header>
 
-<h1>Mindful Breathing Visualizer: Pure JavaScript API Documentation</h1>
+        <!-- Section for selecting options (breathing exercise and animation style) -->
+        <section class="options">
+            <label for="exerciseSelect">Choose Breathing Exercise:</label>
+            <select id="exerciseSelect">
+                <option value="boxBreathing">Box Breathing</option>
+                <option value="diaphragmaticBreathing">Diaphragmatic Breathing</option>
+                <option value="alternateNostrilBreathing">Alternate Nostril Breathing</option>
+            </select>
+        
+            <label for="animationStyle">Animation Style:</label>
+            <select id="animationStyle">
+                <option value="circle">Circle</option>
+                <option value="square">Square</option>
+            </select>
+        </section>
 
-<h2>Introduction</h2>
+        <!-- Main section where the animation will be rendered -->
+        <main id="animation-container">
+             <!-- Div to display the current phase of the animation -->
+            <div id="animationPhase" class="animation-phase"></div>
+        </main>
 
-<p>
-The Mindful Breathing Visualizer Pure JavaScript API empowers frontend developers to integrate captivating and customizable breathing animations into web applications. Leveraging this API, developers can create interactive experiences that promote mindfulness, relaxation, and stress reduction.
-</p>
+        <!-- Section for controls (inhale, hold, exhale times, session duration, start/stop buttons) -->
+        <section class="controls">
+            <div class="input-group">
+                <label for="inhaleTime">Inhale (seconds):</label>
+                <select id="inhaleTime">
+                    <!-- Options will be dynamically inserted by JavaScript -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="holdTime">Hold (seconds):</label>
+                <select id="holdTime">
+                    <!-- Options will be dynamically inserted by JavaScript -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="exhaleTime">Exhale (seconds):</label>
+                <select id="exhaleTime">
+                    <!-- Options will be dynamically inserted by JavaScript -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="sessionDuration">Session (minutes):</label>
+                <select id="sessionDuration">
+                    <!-- Options will be dynamically inserted by JavaScript -->
+                </select>
+            </div>
+        
+            <button id="startButton">Start</button>
+            <button id="stopButton" disabled>Stop</button>
+        </section>
+        <!-- Section for instructions -->
+        <section id="instructions-container">
+            <!-- Instructions for the selected exercise will be displayed here -->
+        </section>
+    </div>
 
-<p>
-This documentation provides a comprehensive guide to understanding and utilizing the Pure JavaScript API. It caters to developers of all skill levels, offering clear explanations, code examples, and practical use cases.
-</p>
-
-<h2>Getting Started</h2>
-
-<h3>Installation</h3>
-
-<p>
-The Pure JavaScript API can be easily integrated into your web project. Follow these simple steps:
-</p>
-
-<ol>
-    <li>
-        <strong>Download the API files:</strong> Obtain the necessary JavaScript files from the project repository.
-    </li>
-    <li>
-        <strong>Include the API in your HTML:</strong> Add a script tag within the <code>&lt;head&gt;</code> section of your HTML file to reference the API JavaScript file:
-    </li>
-    <pre><code>&lt;script src="path/to/breathing-animation.js"&gt;&lt;/script&gt;</code></pre>
-</ol>
-
-<h3>Basic Usage</h3>
-
-<p>The API provides a straightforward approach to creating and managing breathing animations. Here's a basic example:</p>
-
-<pre><code>
-// Create a new animation instance
-const animation = new BreathingAnimation({
-    targetElement: document.getElementById('myElement'), // Element to animate
-    animationType: 'circle', // Type of animation
-    duration: 5000, // Animation duration in milliseconds
-});
-
-// Start the animation
-animation.start();
-
-// Stop the animation
-animation.stop();
-</code></pre>
-
-<h2>API Reference</h2>
-
-<h3>BreathingAnimation Class</h3>
-
-<h4>Constructor:</h4>
-
-<p><code>new BreathingAnimation(options)</code></p>
-
-<p>Creates a new instance of the BreathingAnimation class.</p>
-
-<ul>
-    <li>
-        <strong>options:</strong> An object containing configuration options for the animation.
-    </li>
-</ul>
-
-<h4>Properties:</h4>
-
-<ul>
-    <li>
-        <code>targetElement</code>: The HTML element to be animated.
-    </li>
-    <li>
-        <code>animationType</code>: The type of breathing animation (e.g., 'circle', 'square').
-    </li>
-    <li>
-        <code>duration</code>: The duration of the animation in milliseconds.
-    </li>
-    <li>
-        <code>color</code>: The color of the animation.
-    </li>
-    <li>
-        <code>...other options...</code>
-    </li>
-</ul>
-
-<h4>Methods:</h4>
-
-<ul>
-    <li>
-        <code>start()</code>: Starts the breathing animation.
-    </li>
-    <li>
-        <code>stop()</code>: Stops the breathing animation.
-    </li>
-    <li>
-        <code>pause()</code>: Pauses the breathing animation.
-    </li>
-    <li>
-        <code>resume()</code>: Resumes a paused breathing animation.
-    </li>
-    <li>
-        <code>...other methods...</code>
-    </li>
-</ul>
-
-<h2>Examples</h2>
-
-<ul>
-    <li>
-        <strong>Basic Circle Animation:</strong> Demonstrates a simple circular breathing animation.
-    </li>
-    <li>
-        <strong>Advanced Square Animation with Color Customization:</strong> Showcases a square breathing animation with custom color settings.
-    </li>
-    <li>
-        <strong>Integration with Event Listeners:</strong> Illustrates how to use event listeners to control the animation based on user interactions.
-    </li>
-</ul>
-
-<h2>Troubleshooting</h2>
-
-<ul>
-    <li>
-        <strong>Common Issues:</strong> Addresses frequent problems encountered while using the API, along with potential solutions.
-    </li>
-    <li>
-        <strong>Known Limitations:</strong> Highlights any known constraints or limitations of the API.
-    </li>
-    <li>
-        <strong>Reporting Bugs:</strong> Provides instructions on how users can report bugs or issues they encounter.
-    </li>
-</ul>
-
-<h2>Contributing</h2>
-
-<p>
-Contributions to the Mindful Breathing Visualizer project are welcome and encouraged. To learn how to get involved, please refer to the project's contributing guidelines: [See contributing](../../contributing.md)
-</p>
-
+    <!-- Link to the JavaScript file -->
+    <script src="../js/src/breathing.js"></script>
 </body>
 </html>
