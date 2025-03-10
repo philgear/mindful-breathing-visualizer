@@ -23,59 +23,62 @@
         </header>
 
         <!-- Section for selecting options (breathing exercise and animation style) -->
-        <section class="options">
+        <section class="options" aria-labelledby="options-heading">
+            <h2 id="options-heading" class="sr-only">Options</h2>
             <label for="exerciseSelect">Choose Breathing Exercise:</label>
-            <select id="exerciseSelect">
+            <select id="exerciseSelect" aria-label="Choose Breathing Exercise">
                 <option value="boxBreathing">Box Breathing</option>
                 <option value="diaphragmaticBreathing">Diaphragmatic Breathing</option>
                 <option value="alternateNostrilBreathing">Alternate Nostril Breathing</option>
             </select>
         
             <label for="animationStyle">Animation Style:</label>
-            <select id="animationStyle">
+            <select id="animationStyle" aria-label="Choose Animation Style">
                 <option value="circle">Circle</option>
                 <option value="square">Square</option>
             </select>
         </section>
 
         <!-- Main section where the animation will be rendered -->
-        <main id="animation-container">
+        <main id="animation-container" aria-live="polite">
              <!-- Div to display the current phase of the animation -->
-            <div id="animationPhase" class="animation-phase"></div>
+            <div id="animationPhase" class="animation-phase" aria-label="Animation Phase"></div>
         </main>
 
         <!-- Section for controls (inhale, hold, exhale times, session duration, start/stop buttons) -->
-        <section class="controls">
+        <section class="controls" aria-labelledby="controls-heading">
+            <h2 id="controls-heading" class="sr-only">Controls</h2>
             <div class="input-group">
                 <label for="inhaleTime">Inhale (seconds):</label>
-                <select id="inhaleTime">
+                <select id="inhaleTime" aria-label="Inhale Time">
                     <!-- Options will be dynamically inserted by JavaScript -->
                 </select>
             </div>
             <div class="input-group">
                 <label for="holdTime">Hold (seconds):</label>
-                <select id="holdTime">
+                <select id="holdTime" aria-label="Hold Time">
                     <!-- Options will be dynamically inserted by JavaScript -->
                 </select>
             </div>
             <div class="input-group">
                 <label for="exhaleTime">Exhale (seconds):</label>
-                <select id="exhaleTime">
+                <select id="exhaleTime" aria-label="Exhale Time">
                     <!-- Options will be dynamically inserted by JavaScript -->
                 </select>
             </div>
             <div class="input-group">
                 <label for="sessionDuration">Session (minutes):</label>
-                <select id="sessionDuration">
+                <select id="sessionDuration" aria-label="Session Duration">
                     <!-- Options will be dynamically inserted by JavaScript -->
                 </select>
             </div>
         
-            <button id="startButton">Start</button>
-            <button id="stopButton" disabled>Stop</button>
+            <button id="startButton" aria-label="Start Breathing Exercise">Start</button>
+            <button id="stopButton" disabled aria-label="Stop Breathing Exercise">Stop</button>
         </section>
         <!-- Section for instructions -->
-        <section id="instructions-container">
+        <section id="instructions-container" aria-labelledby="instructions-heading">
+            <h2 id="instructions-heading" class="sr-only">Instructions</h2>
             <!-- Instructions for the selected exercise will be displayed here -->
         </section>
     </div>
