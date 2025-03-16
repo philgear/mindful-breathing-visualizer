@@ -26,7 +26,7 @@ This project offers a visually engaging way to learn and practice mindful breath
 
 ## View the Visualizer
 
-[View the Mindful Breathing Visualizer](https://philgear.github.io/breathing-animation/)
+[View the Mindful Breathing Visualizer](https://breathe.philgear.biz)
 
 ---
 
@@ -38,7 +38,7 @@ This project offers a visually engaging way to learn and practice mindful breath
 
 ## For Developers
 
-This project is designed to be flexible and integrate with various technologies:
+This project is designed to be flexible and integrate with various technologies :
 
 *   **Frontend:**
     *   **Pure JavaScript:** A simple JavaScript API for creating and controlling animations. [![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B%20Mastery-steelblue?logo=javascript&style=flat)](docs/js/index.html)
