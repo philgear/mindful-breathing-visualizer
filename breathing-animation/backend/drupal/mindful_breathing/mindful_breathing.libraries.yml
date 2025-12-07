@@ -1,0 +1,7 @@
+mindful_breathing:
+  version: 1.x
+  js:
+    js/breathing-wrapper.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings

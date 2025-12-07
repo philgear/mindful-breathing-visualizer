@@ -1,135 +1,68 @@
 # Contributing to Mindful Breathing Visualizer
 
-<p align="center">
-  <a href="https://github.com/philgear/breathing-animation">
-    <img src="https://img.shields.io/github/contributors/philgear/breathing-animation.svg" alt="GitHub contributors">
-  </a>
-  <a href="https://github.com/philgear/breathing-animation/issues">
-    <img src="https://img.shields.io/github/issues/philgear/breathing-animation.svg" alt="GitHub issues">
-  </a>
-  <a href="https://github.com/philgear/breathing-animation/actions">
-    <img src="https://github.com/philgear/breathing-animation/workflows/Deploy%20static%20content%20to%20Pages/badge.svg" alt="GitHub Actions">
-  </a>
-</p>
+Welcome to the Mindful Breathing Visualizer project! We're building a cross-platform ecosystem to promote mindfulness through technology. Whether you're a web developer, mobile engineer, system programmer, or creative coder, there's a place for you here.
 
-## Welcome! 🙏
+## 🌍 Project Ecosystem
 
-We're thrilled you're interested in contributing to the Mindful Breathing Visualizer project! Whether you're a seasoned developer or just starting out, your contributions are valuable and can help make this project even better. We appreciate you taking the time to help us create a tool that promotes mindfulness and well-being.
+This repository is a monorepo containing implementations across multiple domains:
 
-## How You Can Contribute
+| Domain | Tech Stack | Location |
+| :--- | :--- | :--- |
+| **Frontend** | React, Vue, Angular, Svelte, Astro, Vanilla JS | `breathing-animation/frontend/` |
+| **Mobile** | Flutter, Kotlin (Android), Swift (iOS) | `breathing-animation/mobile/` |
+| **Desktop** | Electron, Obsidian Plugin | `breathing-animation/desktop/` |
+| **CLI / System** | Rust, Go, C++, Python, Ruby, Java | `breathing-animation/cli/` |
+| **Backend** | PHP, Spring Boot, MCP Server | `breathing-animation/backend/` |
 
-We welcome a variety of contributions:
+## 🚀 Getting Started
 
-*   **Bug Reports:** Found a glitch? Let us know! Detailed bug reports help us squash those pesky bugs and improve the overall stability of the visualizer.
-*   **Feature Requests:** Have a brilliant idea for a new feature? Share it with us! We're always looking to expand the functionality and make the visualizer more versatile.
-*   **Code Contributions:** Ready to roll up your sleeves and dive into the code? We welcome code contributions that enhance existing features or add new ones.
-*   **Documentation Improvements:** Clear documentation is key! If you're a wordsmith, help us make the documentation even more user-friendly and comprehensive.
-*   **Design Suggestions:** Have a keen eye for design? We appreciate suggestions for improving the visual appeal and user experience of the visualizer.
-
-## Getting Started
-
-### Setting Up Your Development Environment
-
-1.  **Fork the repository:** Click the "Fork" button at the top right of the project's GitHub page to create your own copy.
-2.  **Clone your forked repository:**
-
+1.  **Fork & Clone**:
     ```bash
-    git clone https://github.com/your-username/breathing-animation.git
+    git clone https://github.com/your-username/mindful-breathing-visualizer.git
+    cd mindful-breathing-visualizer
     ```
 
-3.  **Navigate to the project directory:**
-
+2.  **Web Development**:
+    This project uses **NPM Workspaces**.
     ```bash
     cd breathing-animation
-    ```
-
-4.  **Install dependencies:**
-
-    ```bash
     npm install
+    npm run dev -w frontend/react  # Example: Run React app
     ```
 
-5.  **Run the development server (if applicable):**
+3.  **Mobile Development**:
+    *   **Android**: Open `breathing-animation/mobile/android` in Android Studio.
+    *   **iOS**: Open `breathing-animation/mobile/ios` in Xcode.
+    *   **Flutter**: Run `flutter run` in `breathing-animation/mobile/flutter`.
 
-    *   Refer to the project's README for instructions on running the development server, if one is provided.
+4.  **CLI / System**:
+    *   **Go**: `go run .` in `breathing-animation/cli/go`.
+    *   **Rust**: `cargo run` in `breathing-animation/cli/rust`.
+    *   **Ruby**: `bundle exec mindful_breathing` in `breathing-animation/cli/ruby`.
 
-### Making Changes
+## 🛡️ Security & Architecture Standards
 
-1.  **Create a new branch:**
+We adhere to strict standards to ensure safety and stability.
 
-    ```bash
-    git checkout -b descriptive-branch-name
-    ```
+1.  **Immutability**: Configuration objects should be deeply frozen.
+    *   *JS*: Use `Object.freeze()`.
+    *   *System*: Use `const`, `final`, or equivalent.
+2.  **Context**: Read `.gemini` in the root for project-wide constants (colors, frequencies, shapes).
+3.  **Isolation**: Each pillar must be self-contained. Do not rely on relative paths outside your module's root.
+4.  **No "Zen"**: We use **"Mindful"** terminology. The color palette is **"Serene Palette"**.
 
-    *   Use a descriptive branch name that reflects the changes you're making (e.g., `fix-animation-bug` or `add-new-breathing-technique`).
+## 🎨 Design System: The Serene Palette
 
-2.  **Make your changes:**
-    *   Follow the project's coding style guidelines (if any are specified).
-    *   Write clear and concise code.
-    *   Add comments where necessary to explain your logic.
+*   **Primary (Emerald)**: `#34d399` (Usage: Inhale)
+*   **Secondary (Blue)**: `#60a5fa` (Usage: Hold)
+*   **Accent (Rose)**: `#fb7185` (Usage: Exhale)
+*   **Typography**: Inter (UI), Outfit (Headings).
 
-3.  **Test your changes thoroughly:**
-    *   Ensure that your changes work as expected and don't introduce new bugs.
-    *   If applicable, write unit tests to cover your new code.
+## 🤝 Submitting Changes
 
-### Submitting a Pull Request
+1.  Create a branch: `git checkout -b feature/amazing-feature`.
+2.  Commit changes: `git commit -m "feat: Add amazing feature"`.
+3.  Push: `git push origin feature/amazing-feature`.
+4.  Open a Pull Request.
 
-1.  **Stage your changes:**
-
-    ```bash
-    git add .
-    ```
-
-2.  **Commit your changes:**
-
-    ```bash
-    git commit -m "Your descriptive commit message"
-    ```
-
-    *   Write a clear and informative commit message that summarizes the changes you've made.
-
-3.  **Push your changes to your forked repository:**
-
-    ```bash
-    git push origin descriptive-branch-name
-    ```
-
-4.  **Create a pull request:**
-    *   Navigate to your forked repository on GitHub.
-    *   Click the "Pull Request" button.
-    *   Provide a clear and concise description of the changes you've made and why they are necessary.
-    *   Reference any relevant issues or feature requests.
-    *   If applicable, request a specific reviewer.
-
-## Reporting Issues
-
-**If you encounter a bug or have an idea for a new feature, please report it through the issue tracker on GitHub:**
-
-1.  **Search for existing issues:** Make sure the issue hasn't already been reported.
-2.  **Create a new issue:** If you can't find an existing issue, create a new one, providing the following information:
-    *   **Clear and concise title:** Briefly summarize the issue.
-    *   **Detailed description:**
-        *   Steps to reproduce the bug.
-        *   Expected behavior.
-        *   Actual behavior.
-        *   Any relevant error messages or screenshots.
-    *   **System information:** Operating system, browser version, and any other relevant details.
-
-## Code of Conduct
-
-We are committed to fostering a welcoming and inclusive community. **Please review our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) file for details on our code of conduct.**
-
-## Communication Channels
-
-*   **For bug reports and feature requests, please use the GitHub issue tracker.**
-*   **For general discussions or questions, feel free to reach out on our [community forum](link-to-forum).** (Replace with your actual forum link if applicable).
-
-## Acknowledging Contributions
-
-We deeply appreciate all contributions! We strive to recognize contributors fairly and visibly.
-
-## License
-
-By contributing to this project, you agree that your contributions will be licensed under the same license as the project itself. You can find the license information in the [LICENSE](LICENSE) file.
-
-Thank you for being a part of the Mindful Breathing Visualizer community!
+Thank you for breathing with us! 🧘‍♂️

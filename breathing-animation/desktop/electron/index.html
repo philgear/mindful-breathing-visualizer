@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mindful Breathing</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="draggable-header"></div>
+    <div class="container">
+        <h3 id="technique-name">Box Breathing</h3>
+        <button id="mute-btn"
+            style="margin-bottom: 20px; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; cursor: pointer;">🔊
+            Mute</button>
+        <div id="visualizer" class="visualizer" role="status" aria-live="polite">
+            <span id="phase-name">Inhale</span>
+        </div>
+        <div class="controls">
+            <label style="margin-right: 10px;">Shape:
+                <select id="shape-select" style="padding: 5px; border-radius: 4px;">
+                    <option value="circle">Circle</option>
+                    <option value="square">Square</option>
+                    <option value="lotus">Lotus</option>
+                </select>
+            </label>
+        </div>
+        <div class="controls">
+            <button data-technique="box" disabled>Box</button>
+            <button data-technique="diaphragmatic">Diaphragmatic</button>
+            <button data-technique="alternate">Alt. Nostril</button>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+</body>
+
+</html>

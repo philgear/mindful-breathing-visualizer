@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SECURITY: Content Security Policy (CSP) to prevent XSS and data injection -->
+    <!-- 'unsafe-inline' style-src is currently required for dynamic animation values (CSS variables/transitions) -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://philgear.github.io; style-src 'self' 'unsafe-inline'; script-src 'self' https://philgear.github.io;">
+    <title>Mindful Breathing Widget</title>
+    <script
+        src="https://philgear.github.io/mindful-breathing-visualizer/frontend/web-components/breathing-component.js"></script>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <breathing-visualizer></breathing-visualizer>
+</body>
+
+</html>

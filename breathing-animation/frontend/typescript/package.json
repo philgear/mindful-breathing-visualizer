@@ -1,0 +1,8 @@
+{
+    "name": "breathing-visualizer-ts",
+    "version": "1.0.0",
+    "main": "dist/breathing.js",
+    "scripts": {
+        "build": "tsc"
+    }
+}

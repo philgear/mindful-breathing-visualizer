@@ -1,0 +1,532 @@
+/* styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;500;700&family=DM+Serif+Display&display=swap');
+
+:root {
+  /* Colors */
+  --primary-color: #6366f1;
+  /* Indigo */
+  --secondary-color: #a855f7;
+  /* Purple */
+  --accent-color: #ec4899;
+  /* Pink */
+
+  --bg-gradient-start: #e0e7ff;
+  --bg-gradient-end: #f3e8ff;
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --input-bg: rgba(255, 255, 255, 0.5);
+  --input-border: rgba(255, 255, 255, 0.3);
+
+  /* Animation Colors */
+  --inhale-color: #34d399;
+  /* Emerald */
+  --hold-color: #60a5fa;
+  /* Blue */
+  --exhale-color: #fb7185;
+  /* Rose */
+
+  /* Dark Mode Variables */
+  --dark-bg-gradient-start: #0f172a;
+  --dark-bg-gradient-end: #1e1b4b;
+  --dark-glass-bg: rgba(30, 41, 59, 0.7);
+  --dark-glass-border: rgba(255, 255, 255, 0.1);
+  --dark-text-primary: #f1f5f9;
+  --dark-text-secondary: #cbd5e1;
+  --dark-text-muted: #64748b;
+  --dark-input-bg: rgba(15, 23, 42, 0.5);
+}
+
+/* Reset & Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: color 0.3s ease;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll on mobile */
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Main Container - Glassmorphism */
+.container {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 24px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Typography */
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#tagline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+/* Layout Sections */
+header {
+  margin-bottom: 1rem;
+}
+
+.options,
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Settings Panel (Groups options and controls) */
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.settings-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+select,
+input {
+  appearance: none;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  padding: 20px;
+  background: var(--bg-color);
+  border-radius: 12px;
+  font-family: var(--font-family);
+  text-align: center;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+}
+
+select:hover,
+select:focus {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Animation Area */
+#animation-container {
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 1rem 0;
+}
+
+/* The Element being animated (Circle/Square) */
+.circle-animation,
+.square-animation,
+.lotus-animation,
+.sun-animation {
+  width: 100px;
+  height: 100px;
+  background: var(--glass-bg);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 1.2rem;
+  color: white;
+  /* Use CSS variable for duration, default to 4s if not set */
+  transition: transform var(--current-duration) ease,
+    background-color var(--current-duration) ease,
+    box-shadow var(--current-duration) ease;
+  position: relative;
+  z-index: 10;
+}
+
+.circle-animation {
+  border-radius: 50%;
+}
+
+.square-animation {
+  border-radius: 16px;
+}
+
+/* Lotus Animation */
+.lotus-animation {
+  width: 100px;
+  height: 100px;
+  background-color: var(--glass-bg);
+  border-radius: 50% 0 50% 0;
+  transform: rotate(45deg);
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.lotus-animation::before,
+.lotus-animation::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: inherit;
+  border-radius: inherit;
+  box-shadow: inherit;
+  z-index: -1;
+  transition: background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.lotus-animation::before {
+  transform: rotate(60deg);
+}
+
+.lotus-animation::after {
+  transform: rotate(120deg);
+}
+
+/* Lotus specific active states to ensure pseudo-elements match color */
+.lotus-animation.inhale,
+.lotus-animation.inhale::before,
+.lotus-animation.inhale::after {
+  background-color: var(--inhale-color);
+  box-shadow: 0 0 30px var(--inhale-color);
+}
+
+.circle-animation.exhale,
+.square-animation.exhale,
+.lotus-animation.exhale,
+.sun-animation.exhale,
+.alternate-nostril-animation.exhale {
+  background-color: var(--exhale-color);
+  box-shadow: 0 0 30px var(--exhale-color);
+}
+
+.circle-animation.hold,
+.square-animation.hold,
+.circle-animation.holdAfterExhale,
+.square-animation.holdAfterExhale,
+.alternate-nostril-animation.hold,
+.alternate-nostril-animation.holdAfterExhale,
+.lotus-animation.hold,
+.lotus-animation.holdAfterExhale,
+.sun-animation.hold,
+.sun-animation.holdAfterExhale {
+  background-color: var(--hold-color);
+  box-shadow: 0 0 30px var(--hold-color);
+}
+
+
+/* Sun Animation */
+.sun-animation {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fcd34d 0%, #f59e0b 100%);
+  box-shadow: 0 0 20px #f59e0b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  transition: transform 0.1s linear, box-shadow 0.5s ease;
+}
+
+.sun-animation.inhale {
+  box-shadow: 0 0 60px #fbbf24, 0 0 100px #f59e0b;
+  transform: scale(1.5);
+  background: radial-gradient(circle, #fde047 0%, #fbbf24 100%);
+}
+
+.sun-animation.exhale {
+  box-shadow: 0 0 10px #d97706;
+  transform: scale(0.8);
+  background: radial-gradient(circle, #f59e0b 0%, #d97706 100%);
+}
+
+.sun-animation.hold,
+.sun-animation.holdAfterExhale {
+  box-shadow: 0 0 30px #f59e0b;
+}
+
+.circle-animation.inhale,
+.square-animation.inhale,
+.alternate-nostril-animation.inhale,
+.lotus-animation.inhale {
+  background-color: var(--inhale-color);
+  box-shadow: 0 0 30px var(--inhale-color);
+}
+
+/* Buttons */
+button {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  width: 100%;
+  margin-top: 1rem;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  background: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Feedback Text */
+.prompt-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.prompt-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+  transition: opacity 0.3s ease;
+}
+
+/* Timer */
+#timerDisplay {
+  font-family: 'Outfit', sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  letter-spacing: 2px;
+}
+
+/* Instructions (Hidden by default, can be a modal or bottom section) */
+#instructions-container {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  border: 1px solid var(--glass-border);
+  text-align: left;
+  transition: opacity 0.5s ease;
+}
+
+#instructions-container h3 {
+  font-family: 'Outfit', sans-serif;
+  color: var(--primary-color);
+  margin-bottom: 0.8rem;
+}
+
+#instructions-container li {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Utilities */
+.hidden {
+  display: none !important;
+}
+
+.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Dark Mode Support (System or Class) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-gradient-start: var(--dark-bg-gradient-start);
+    --bg-gradient-end: var(--dark-bg-gradient-end);
+    --glass-bg: var(--dark-glass-bg);
+    --glass-border: var(--dark-glass-border);
+    --text-primary: var(--dark-text-primary);
+    --text-secondary: var(--dark-text-secondary);
+    --text-muted: var(--dark-text-muted);
+    --input-bg: var(--dark-input-bg);
+    --input-border: var(--dark-glass-border);
+  }
+}
+
+body.dark-mode {
+  --bg-gradient-start: var(--dark-bg-gradient-start);
+  --bg-gradient-end: var(--dark-bg-gradient-end);
+  --glass-bg: var(--dark-glass-bg);
+  --glass-border: var(--dark-glass-border);
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+  --text-muted: var(--dark-text-muted);
+  --input-bg: var(--dark-input-bg);
+  --input-border: var(--dark-glass-border);
+}
+
+/* Specific overrides for dark mode elements */
+@media (prefers-color-scheme: dark) {
+  select option {
+    background-color: #1e293b;
+    color: #f1f5f9;
+  }
+}
+
+body.dark-mode select option {
+  background-color: #1e293b;
+  color: #f1f5f9;
+}
+
+body.dark-mode .circle-animation,
+body.dark-mode .square-animation {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .prompt-text {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode #instructions-container {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode #instructions-container h3 {
+  color: var(--secondary-color);
+}
+
+body.dark-mode #instructions-container li {
+  color: var(--dark-text-secondary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem;
+    width: 95%;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .settings-panel {
+    padding: 0.75rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  .settings-group {
+    grid-template-columns: 1fr;
+  }
+
+  button {
+    padding: 0.8rem;
+  }
+}

@@ -1,0 +1,38 @@
+{
+    "name": "mindful-breathing-vscode",
+    "displayName": "Mindful Breathing",
+    "description": "A mindful breathing pacer in your status bar.",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "mindful-breathing.start",
+                "title": "Start Mindful Breathing"
+            }
+        ],
+        "configuration": {
+            "title": "Mindful Breathing",
+            "properties": {
+                "mindfulBreathing.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable status bar breathing pacer."
+                }
+            }
+        }
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.80.0",
+        "eslint": "^8.41.0"
+    }
+}

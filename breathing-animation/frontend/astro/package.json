@@ -1,0 +1,12 @@
+{
+    "name": "breathing-visualizer-astro",
+    "version": "1.0.0",
+    "main": "BreathingVisualizer.astro",
+    "keywords": [
+        "astro",
+        "component",
+        "breathing"
+    ],
+    "author": "Antigravity",
+    "license": "ISC"
+}

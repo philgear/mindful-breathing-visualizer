@@ -1,0 +1,8 @@
+{
+    "name": "breathing-visualizer-svelte",
+    "version": "1.0.0",
+    "main": "BreathingVisualizer.svelte",
+    "peerDependencies": {
+        "svelte": "^4.0.0"
+    }
+}

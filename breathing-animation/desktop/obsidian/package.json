@@ -1,0 +1,23 @@
+{
+    "name": "mindful-breathing-obsidian",
+    "version": "1.0.0",
+    "description": "Mindful Breathing plugin for Obsidian",
+    "main": "main.js",
+    "scripts": {
+        "dev": "node esbuild.config.mjs",
+        "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
+    },
+    "keywords": [
+        "obsidian",
+        "plugin"
+    ],
+    "author": "Phil Gear",
+    "license": "MIT",
+    "devDependencies": {
+        "obsidian": "latest",
+        "tslib": "2.4.0",
+        "typescript": "4.7.4",
+        "@types/node": "^16.11.6",
+        "esbuild": "0.14.47"
+    }
+}

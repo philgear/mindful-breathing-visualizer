@@ -1,0 +1,30 @@
+{% schema %}
+{
+  "name": "Breathing Widget",
+  "target": "section",
+  "stylesheet": "breathing-widget.css",
+  "javascript": "breathing-widget.js",
+  "settings": [
+    {
+      "type": "select",
+      "id": "default_technique",
+      "label": "Default Technique",
+      "options": [
+        { "value": "box", "label": "Box Breathing" },
+        { "value": "diaphragmatic", "label": "Diaphragmatic" },
+        { "value": "alternate", "label": "Alternate Nostril" }
+      ],
+      "default": "box"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="breathing-widget-container" style="text-align: center; padding: 20px;">
+  <!-- Load the breathing-component.js from assets or CDN -->
+  <script src="{{ 'breathing-component.js' | asset_url }}" defer></script>
+  
+  <breathing-visualizer 
+    technique="{{ block.settings.default_technique | escape }}">
+  </breathing-visualizer>
+</div>

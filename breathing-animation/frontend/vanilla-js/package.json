@@ -1,0 +1,5 @@
+{
+    "name": "breathing-visualizer-vanilla",
+    "version": "1.0.0",
+    "main": "js/src/breathing.js"
+}

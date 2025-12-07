@@ -1,0 +1,10 @@
+{
+    "id": "mindful-breathing-obsidian",
+    "name": "Mindful Breathing",
+    "version": "1.0.0",
+    "minAppVersion": "0.15.0",
+    "description": "A mindful breathing visualizer for your workspace.",
+    "author": "Phil Gear",
+    "authorUrl": "https://github.com/philgear",
+    "isDesktopOnly": false
+}

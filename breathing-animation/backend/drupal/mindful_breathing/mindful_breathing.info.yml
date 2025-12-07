@@ -1,0 +1,7 @@
+name: Mindful Breathing
+type: module
+description: 'Adds a Mindful Breathing widget block to your site.'
+package: Custom
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:block

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindful Breathing Ecosystem</title>
+    <style>
+        :root {
+            --primary: #34d399;
+            --secondary: #60a5fa;
+            --accent: #fb7185;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            width: 100%;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 2.5rem;
+        }
+
+        p.subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 90%;
+            max-width: 1200px;
+            padding-bottom: 4rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card p {
+            color: #64748b;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .tag.web {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .tag.mobile {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .tag.system {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .tag.backend {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        button {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Mindful Breathing</h1>
+        <p class="subtitle">A cross-platform ecosystem for meditation & breathwork.</p>
+    </header>
+
+    <div class="grid">
+        <!-- Vanilla JS -->
+        <a href="breathing-animation/frontend/vanilla-js/public/index.html" class="card">
+            <span class="tag web">Web</span>
+            <h2>🌿 Vanilla JS</h2>
+            <p>The flagship PWA implementation. Features manual Dark Mode, Haptic Feedback, and full Offline support.
+            </p>
+            <button>Launch App &rarr;</button>
+        </a>
+
+        <!-- React -->
+        <a href="#" class="card" onclick="alert('Run npm start in frontend/react to view this demo.')">
+            <span class="tag web">Web</span>
+            <h2>⚛️ React</h2>
+            <p>A declarative component with Audio hooks and strict prop validation. Integrated into the modern web
+                stack.</p>
+            <button>View Source &rarr;</button>
+        </a>
+
+        <!-- PHP -->
+        <a href="breathing-animation/backend/php/index.php" class="card">
+            <span class="tag backend">Backend</span>
+            <h2>🐘 Vanilla PHP</h2>
+            <p>Server-side logic delivering a lightweight, zero-dependency visualizer. Runs on any LAMP stack.</p>
+            <button>Launch Demo &rarr;</button>
+        </a>
+
+        <!-- Android -->
+        <a href="#" class="card" onclick="alert('Open mobile/android in Android Studio.')">
+            <span class="tag mobile">Mobile</span>
+            <h2>🤖 Android (Kotlin)</h2>
+            <p>Native Jetpack Compose app with low-latency AudioTrack synthesis and haptics.</p>
+            <button>View Source &rarr;</button>
+        </a>
+
+        <!-- iOS -->
+        <a href="#" class="card" onclick="alert('Open mobile/ios in Xcode.')">
+            <span class="tag mobile">Mobile</span>
+            <h2>🍎 iOS (Swift)</h2>
+            <p>Native SwiftUI app using AVAudioEngine for crystal clear real-time audio synthesis.</p>
+            <button>View Source &rarr;</button>
+        </a>
+
+        <!-- CLI -->
+        <a href="#" class="card" onclick="alert('Run ./cli/bash/breathe.sh')">
+            <span class="tag system">System</span>
+            <h2>💻 Terminal (Bash)</h2>
+            <p>The "Mindful Terminal". ASCII-based breathing animation for your command line.</p>
+            <button>View Script &rarr;</button>
+        </a>
+    </div>
+
+    <footer style="padding: 2rem; color: #94a3b8; font-size: 0.9rem;">
+        v2.1.0 • Built with 💚 & 🧠
+    </footer>
+
+</body>
+
+</html>

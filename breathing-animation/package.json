@@ -1,15 +1,46 @@
 {
   "name": "breathing-animation",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "description": "A simple breathing animation",
+  "workspaces": [
+    "frontend/vanilla-js",
+    "frontend/react",
+    "frontend/vue",
+    "frontend/angular",
+    "frontend/typescript",
+    "frontend/web-components",
+    "frontend/svelte",
+    "backend/mcp-server"
+  ],
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^24.10.1",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-react": "^7.33.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.0"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write .",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,json,css,md}": "prettier --write",
+    "**/*.{js,jsx,ts,tsx}": "eslint --fix"
   }
 }

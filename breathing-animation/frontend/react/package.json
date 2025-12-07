@@ -1,0 +1,8 @@
+{
+    "name": "breathing-visualizer-react",
+    "version": "1.0.0",
+    "main": "BreathingVisualizer.jsx",
+    "peerDependencies": {
+        "react": "^18.0.0"
+    }
+}

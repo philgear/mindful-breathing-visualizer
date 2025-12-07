@@ -1,0 +1,349 @@
+---
+
+---
+
+<div class="breathing-container">
+  <h3 id="technique-name">Box Breathing</h3>
+  <button
+    id="mute-btn"
+    style="margin-bottom: 20px; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; cursor: pointer;"
+    >🔊 Mute</button
+  >
+  <div id="visualizer" class="visualizer" role="status" aria-live="polite">
+    <span id="phase-name">Inhale</span>
+  </div>
+
+  <div class="controls">
+    <label>
+      Shape:
+      <select id="shape-select" style="margin-left: 10px; padding: 5px; border-radius: 4px;">
+        <option value="circle">Circle</option>
+        <option value="square">Square</option>
+        <option value="lotus">Lotus</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="controls" id="controls">
+    <button data-technique="box" disabled>Box Breathing</button>
+    <button data-technique="diaphragmatic">Diaphragmatic</button>
+    <button data-technique="alternate">Alternate Nostril</button>
+  </div>
+</div>
+
+<script>
+  interface Phase {
+    name: string;
+    duration: number;
+    scale: number;
+    color: string;
+    x: number;
+  }
+
+  interface Technique {
+    name: string;
+    phases: readonly Phase[];
+  }
+
+  // SECURITY: Tamper-Proof Configuration
+  const TECHNIQUES: Record<string, Technique> = Object.freeze({
+    box: Object.freeze({
+      name: 'Box Breathing',
+      phases: Object.freeze([
+        Object.freeze({ name: 'Inhale', duration: 4000, scale: 1.5, color: '#34d399', x: 0 }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.5, color: '#60a5fa', x: 0 }),
+        Object.freeze({ name: 'Exhale', duration: 4000, scale: 1.0, color: '#fb7185', x: 0 }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+      ]),
+    }),
+    diaphragmatic: Object.freeze({
+      name: 'Diaphragmatic',
+      phases: Object.freeze([
+        Object.freeze({ name: 'Inhale', duration: 5000, scale: 1.5, color: '#34d399', x: 0 }),
+        Object.freeze({ name: 'Exhale', duration: 5000, scale: 1.0, color: '#fb7185', x: 0 }),
+      ]),
+    }),
+    alternate: Object.freeze({
+      name: 'Alternate Nostril',
+      phases: Object.freeze([
+        Object.freeze({
+          name: 'Inhale Left',
+          duration: 4000,
+          scale: 1.0,
+          color: '#34d399',
+          x: -50,
+        }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+        Object.freeze({
+          name: 'Exhale Right',
+          duration: 4000,
+          scale: 1.0,
+          color: '#fb7185',
+          x: 50,
+        }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+        Object.freeze({
+          name: 'Inhale Right',
+          duration: 4000,
+          scale: 1.0,
+          color: '#34d399',
+          x: 50,
+        }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+        Object.freeze({
+          name: 'Exhale Left',
+          duration: 4000,
+          scale: 1.0,
+          color: '#fb7185',
+          x: -50,
+        }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+      ]),
+    }),
+  });
+
+  let currentTechniqueKey: string = 'box';
+  let currentPhaseIndex: number = 0;
+  let timeoutId: number | undefined;
+
+  const visualizer = document.getElementById('visualizer');
+  const phaseNameEl = document.getElementById('phase-name');
+  const techniqueNameEl = document.getElementById('technique-name');
+  const buttons = document.querySelectorAll('.controls button');
+
+  // Audio Controller
+  class AudioController {
+    constructor() {
+      this.ctx = null;
+      this.oscillator = null;
+      this.gainNode = null;
+      this.isPlaying = false;
+      this.isMuted = false;
+    }
+
+    init() {
+      if (!this.ctx) {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.gainNode = this.ctx.createGain();
+        this.gainNode.connect(this.ctx.destination);
+        this.gainNode.gain.value = 0;
+      }
+    }
+
+    toggleMute() {
+      this.isMuted = !this.isMuted;
+      if (this.gainNode) {
+        this.gainNode.gain.value = this.isMuted ? 0 : 0.1;
+      }
+      return this.isMuted;
+    }
+
+    startTone() {
+      if (this.isMuted) return;
+      this.init();
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+      if (this.oscillator) this.oscillator.stop();
+
+      this.oscillator = this.ctx.createOscillator();
+      this.oscillator.type = 'sine';
+      this.oscillator.frequency.value = 150;
+      this.oscillator.connect(this.gainNode);
+      this.oscillator.start();
+      this.isPlaying = true;
+
+      this.gainNode.gain.cancelScheduledValues(this.ctx.currentTime);
+      this.gainNode.gain.setValueAtTime(0, this.ctx.currentTime);
+      this.gainNode.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 1);
+    }
+
+    stopTone() {
+      if (this.oscillator && this.isPlaying) {
+        const now = this.ctx.currentTime;
+        this.gainNode.gain.cancelScheduledValues(now);
+        this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
+        this.gainNode.gain.linearRampToValueAtTime(0, now + 1);
+
+        setTimeout(() => {
+          if (this.oscillator) {
+            this.oscillator.stop();
+            this.oscillator = null;
+          }
+        }, 1000);
+        this.isPlaying = false;
+      }
+    }
+
+    setPhase(phaseName, duration) {
+      if (this.isMuted || !this.isPlaying || !this.ctx) return;
+      const now = this.ctx.currentTime;
+      const rampTime = duration / 1000;
+
+      this.oscillator.frequency.cancelScheduledValues(now);
+      this.gainNode.gain.cancelScheduledValues(now);
+
+      const isInhale = phaseName.toLowerCase().includes('inhale');
+      const isExhale = phaseName.toLowerCase().includes('exhale');
+
+      if (isInhale) {
+        this.oscillator.frequency.setValueAtTime(150, now);
+        this.oscillator.frequency.linearRampToValueAtTime(200, now + rampTime);
+        this.gainNode.gain.setValueAtTime(0.1, now);
+        this.gainNode.gain.linearRampToValueAtTime(0.2, now + rampTime);
+      } else if (isExhale) {
+        this.oscillator.frequency.setValueAtTime(200, now);
+        this.oscillator.frequency.linearRampToValueAtTime(150, now + rampTime);
+        this.gainNode.gain.setValueAtTime(0.2, now);
+        this.gainNode.gain.linearRampToValueAtTime(0.1, now + rampTime);
+      } else {
+        this.oscillator.frequency.setValueAtTime(this.oscillator.frequency.value, now);
+        this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
+      }
+    }
+  }
+
+  const audioController = new AudioController();
+
+  function updatePhase() {
+    // SECURITY: Safe lookup with fallback
+    const technique = TECHNIQUES[currentTechniqueKey] || TECHNIQUES['box'];
+    const phase = technique.phases[currentPhaseIndex];
+
+    if (visualizer && phaseNameEl) {
+      phaseNameEl.textContent = phase.name;
+      visualizer.style.transform = `scale(${phase.scale}) translateX(${phase.x || 0}px)`;
+      visualizer.style.backgroundColor = phase.color;
+      visualizer.style.transition = `transform ${phase.duration}ms ease-in-out, background-color ${phase.duration}ms ease-in-out`;
+
+      // A11y Update
+      visualizer.setAttribute('aria-label', `Current phase: ${phase.name}`);
+
+      // Audio Update
+      audioController.setPhase(phase.name, phase.duration);
+    }
+
+    timeoutId = window.setTimeout(() => {
+      currentPhaseIndex = (currentPhaseIndex + 1) % technique.phases.length;
+      updatePhase();
+    }, phase.duration);
+  }
+
+  function setTechnique(key: string) {
+    // SECURITY: Validate key
+    if (!TECHNIQUES[key]) return;
+
+    if (timeoutId) clearTimeout(timeoutId);
+
+    currentTechniqueKey = key;
+    currentPhaseIndex = 0;
+
+    const technique = TECHNIQUES[key];
+    if (techniqueNameEl) techniqueNameEl.textContent = technique.name;
+
+    // Update buttons state
+    buttons.forEach((btn) => {
+      if (btn instanceof HTMLButtonElement) {
+        btn.disabled = btn.dataset.technique === key;
+        btn.setAttribute('aria-pressed', (btn.dataset.technique === key).toString());
+      }
+    });
+
+    updatePhase();
+  }
+
+  // Initialize event listeners
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target instanceof HTMLButtonElement && target.dataset.technique) {
+        setTechnique(target.dataset.technique);
+      }
+    });
+  });
+
+  // Shape Logic
+  const shapeSelect = document.getElementById('shape-select') as HTMLSelectElement;
+
+  if (shapeSelect) {
+    shapeSelect.addEventListener('change', () => {
+      const shape = shapeSelect.value;
+      let borderRadius = '12px';
+      if (shape === 'circle') borderRadius = '50%';
+      else if (shape === 'lotus') borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%';
+
+      if (visualizer) visualizer.style.borderRadius = borderRadius;
+    });
+  }
+
+  // Mute Logic
+  const muteBtn = document.getElementById('mute-btn');
+  if (muteBtn) {
+    muteBtn.addEventListener('click', () => {
+      const isMuted = audioController.toggleMute();
+      muteBtn.textContent = isMuted ? '🔇 Unmute' : '🔊 Mute';
+    });
+  }
+
+  // Start initial animation & Audio
+  updatePhase();
+  audioController.startTone();
+</script>
+
+<style>
+  .breathing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #f0f4f8;
+    border-radius: 12px;
+    font-family:
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
+    color: #1e293b;
+  }
+
+  h3 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .visualizer {
+    width: 100px;
+    height: 100px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Default, overridden by JS */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    /* Transitions handled in JS for dynamic durations, but base styles here */
+  }
+
+  .controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+
+  button {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    background: #e5e7eb;
+    cursor: default;
+  }
+
+  button:hover:not(:disabled) {
+    background: #f3f4f6;
+  }
+</style>

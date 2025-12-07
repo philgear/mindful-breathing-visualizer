@@ -1,0 +1,30 @@
+# Project Context: Mindful Breathing Visualizer
+
+## 1. Design System (The Serene Palette)
+- **Primary (Inhale)**: `#34d399` (Emerald)
+- **Secondary (Hold)**: `#60a5fa` (Blue)
+- **Accent (Exhale)**: `#fb7185` (Rose)
+- **Typography**: `Inter`, system-ui, sans-serif.
+
+## 2. Audio Standards
+- **Frequency Base**: 150 Hz (Start of Inhale / End of Exhale).
+- **Frequency Peak**: 200 Hz (End of Inhale / Start of Exhale).
+- **Waveform**: Sine wave (`oscillator.type = 'sine'`).
+- **Gain**: 0.1 (Base) to 0.2 (Peak). Smooth linear ramps (1-4s durations).
+
+## 3. Accessibility (A11y)
+- **Role**: `role="status"` on the visualizer container.
+- **Live Region**: `aria-live="polite"`.
+- **Label**: `aria-label="Current phase: Inhale/Exhale/Hold"`.
+- **Controls**: All buttons must have accessible names or `aria-label`.
+
+## 4. Architecture & Security
+- **Isolation**: Each pillar (frontend/react, mobile/flutter, etc.) must be self-contained. No relative imports outside the pillar root.
+- **Immutability**: Configuration objects (Techniques) must be `Object.freeze()` or `const`.
+- **Input Validation**: All inputs (Technique Phase durations) must be validated.
+- **Secret Hygiene**: No secrets in repo (`.gitignore` handles `*.pem`, `*.key`, `.env`).
+
+## 5. Shape Logic
+- **Circle**: `border-radius: 50%`
+- **Square**: `border-radius: 12px`
+- **Lotus**: `border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%`

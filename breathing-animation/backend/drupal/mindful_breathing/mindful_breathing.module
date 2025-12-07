@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Contains mindful_breathing.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function mindful_breathing_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.mindful_breathing':
+      return '<h3>' . t('About') . '</h3>' . '<p>' . t('A mindful breathing visualizer block.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function mindful_breathing_theme() {
+  return [
+    'mindful_breathing_block' => [
+      'variables' => [
+        'technique' => 'box',
+      ],
+      'template' => 'mindful-breathing-block',
+    ],
+  ];
+}
