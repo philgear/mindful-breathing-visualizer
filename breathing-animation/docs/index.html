@@ -8,13 +8,13 @@
     <!-- Title of the page, displayed in the browser tab -->
     <title>Mindful Breathing Visualizer</title>
     <!-- Links to the CSS styling sheet -->
-    <link rel="stylesheet" href="../src/styles/styles.css">
+    <link rel="stylesheet" href="styles/styles.css">
     <link rel="manifest" href="manifest.json">
     <link id="dynamic-favicon" rel="icon" type="image/png" href="assets/favicons/favicon-default.png">
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('../sw.js')
+                navigator.serviceWorker.register('sw.js')
                     .then(registration => {
                         console.log('ServiceWorker registration successful with scope: ', registration.scope);
                     }, err => {
@@ -104,10 +104,6 @@
                 <button id="muteButton" class="outline">🔊 Sound On</button>
                 <button id="darkModeButton" class="outline">🌙 Dark Mode</button>
             </div>
-            <div style="margin-top: 20px;">
-                <a href="../../../../index.html"
-                    style="color: var(--primary-color); text-decoration: none; font-weight: bold;">← Back to Home</a>
-            </div>
         </section>
 
         <!-- Section for instructions -->
@@ -127,8 +123,8 @@
 
     <!-- Link to the JavaScript file -->
     <!-- Link to the JavaScript file -->
-    <script src="../js/src/i18n.js"></script>
-    <script src="../js/src/breathing.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/breathing.js"></script>
 </body>
 
 </html>
