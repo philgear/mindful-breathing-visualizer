@@ -2,6 +2,29 @@
 
 All notable changes to the **Mindful Breathing Visualizer** project will be documented in this file.
 
+## [3.0.0] - 2026-01-11 - SWEBOK v4 Compliance Upgrade
+
+### Added
+- **Ecosystem Expansion**: Added 6 new pillars (`Lua`, `R`, `Julia`, `Perl`, `Kubernetes`, `Notebooks`) reaching a total of 39 supported implementations.
+- **Infrastructure**: Added `infrastructure/kubernetes` with production-ready `deployment.yaml`, `service.yaml`, and `Dockerfile`.
+- **Math/Scientific**: Added `math/r` (R Script), `math/julia` (Julia Script), and `cli/lua` (Lua CLI).
+- **Legacy Scripting**: Added `cli/perl` for legacy audit compliance.
+- **Mobile Audit**: Formally verified Native Android (Kotlin) and Native iOS (Swift) as standalone compliant pillars.
+
+### Changed
+- **Visual Standards (KA 2.1)**: Strictly enforced the **Serene Palette** (Emerald `#34d399`, Blue `#60a5fa`, Rose `#fb7185`) across all 39 pillars.
+    - Patched JAX, LaTeX, Wolfram, and Notebooks to use precise hex/RGB values.
+    - Updated all CLI tools (Bash, Python, Ruby, C++, Rust, Go, Java, Lua, Perl) to use ANSI TrueColor.
+- **Audio Feedback (KA 2)**: Standardized 150Hz audio feedback.
+    - **Web**: 150Hz sine wave via `AudioContext`.
+    - **Native Mobile**: `AudioTrack` (Android) and `AVAudioSourceNode` (iOS).
+    - **CLI/Sci**: System beep (`\7`) signaling.
+- **Vanilla JS**: Rewrote `frontend/vanilla-js` to strictly adhere to ES6+ standards without React dependencies.
+
+### Fixed
+- **Jupyter Notebooks**: Corrected hardcoded `indigo` color in `breathing_visualization.ipynb` to match Serene Blue.
+- **Web Components**: Fixed standard compliance for `breathing-component.js`.
+
 ## [2.1.0] - 2025-12-07
 
 ### Added

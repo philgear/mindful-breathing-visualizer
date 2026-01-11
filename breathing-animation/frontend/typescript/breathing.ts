@@ -10,6 +10,100 @@ interface PhaseDurations {
 
 type BreathingPhase = 'inhale' | 'hold' | 'exhale' | 'holdAfterExhale';
 
+class AudioController {
+    private ctx: AudioContext | null = null;
+    private oscillator: OscillatorNode | null = null;
+    private gainNode: GainNode | null = null;
+    private isPlaying: boolean = false;
+    private isMuted: boolean = true;
+
+    constructor() { }
+
+    init(): void {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            this.gainNode = this.ctx.createGain();
+            this.gainNode.connect(this.ctx.destination);
+            this.gainNode.gain.value = 0;
+        }
+    }
+
+    toggleMute(): boolean {
+        this.isMuted = !this.isMuted;
+        if (!this.isMuted) {
+            this.startTone();
+        } else {
+            this.stopTone();
+        }
+        return this.isMuted;
+    }
+
+    startTone(): void {
+        if (this.isMuted) return;
+        this.init();
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+        if (this.oscillator) this.oscillator.stop();
+
+        if (!this.ctx || !this.gainNode) return;
+
+        this.oscillator = this.ctx.createOscillator();
+        this.oscillator.type = 'sine';
+        this.oscillator.frequency.value = 150;
+        this.oscillator.connect(this.gainNode);
+        this.oscillator.start();
+        this.isPlaying = true;
+
+        this.gainNode.gain.cancelScheduledValues(this.ctx.currentTime);
+        this.gainNode.gain.setValueAtTime(0, this.ctx.currentTime);
+        this.gainNode.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 1);
+    }
+
+    stopTone(): void {
+        if (this.oscillator && this.isPlaying && this.ctx && this.gainNode) {
+            const now = this.ctx.currentTime;
+            this.gainNode.gain.cancelScheduledValues(now);
+            this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
+            this.gainNode.gain.linearRampToValueAtTime(0, now + 1);
+
+            setTimeout(() => {
+                if (this.oscillator) {
+                    this.oscillator.stop();
+                    this.oscillator = null;
+                }
+            }, 1000);
+            this.isPlaying = false;
+        }
+    }
+
+    setPhase(phaseName: BreathingPhase, durationMs: number): void {
+        if (this.isMuted || !this.isPlaying || !this.ctx || !this.oscillator || !this.gainNode) return;
+        const now = this.ctx.currentTime;
+        const rampTime = durationMs / 1000;
+
+        this.oscillator.frequency.cancelScheduledValues(now);
+        this.gainNode.gain.cancelScheduledValues(now);
+
+        const isInhale = phaseName === 'inhale';
+        const isExhale = phaseName === 'exhale';
+
+        if (isInhale) {
+            this.oscillator.frequency.setValueAtTime(150, now);
+            this.oscillator.frequency.linearRampToValueAtTime(200, now + rampTime);
+            this.gainNode.gain.setValueAtTime(0.1, now);
+            this.gainNode.gain.linearRampToValueAtTime(0.2, now + rampTime);
+        } else if (isExhale) {
+            this.oscillator.frequency.setValueAtTime(200, now);
+            this.oscillator.frequency.linearRampToValueAtTime(150, now + rampTime);
+            this.gainNode.gain.setValueAtTime(0.2, now);
+            this.gainNode.gain.linearRampToValueAtTime(0.1, now + rampTime);
+        } else {
+            // Hold
+            this.oscillator.frequency.setValueAtTime(this.oscillator.frequency.value, now);
+            this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
+        }
+    }
+}
+
 abstract class BreathingExercise {
     protected animationContainer: HTMLElement;
     protected options: BreathingOptions;
@@ -19,14 +113,49 @@ abstract class BreathingExercise {
     protected currentPhase: BreathingPhase | null = null;
     protected promptContainer: HTMLElement | null = null;
     protected promptElement: HTMLElement | null = null;
+    protected audioController: AudioController;
+    protected muteButton: HTMLButtonElement | null = null;
 
     constructor(animationContainer: HTMLElement, options: BreathingOptions) {
         this.animationContainer = animationContainer;
         this.options = options;
+        this.audioController = new AudioController();
     }
 
     setupAnimation(): void {
         this.animationContainer.innerHTML = '';
+
+        // Mute Button
+        this.muteButton = document.createElement('button');
+        this.muteButton.textContent = '🔊 Unmute Audio';
+        this.muteButton.style.padding = '8px 16px';
+        this.muteButton.style.marginBottom = '20px';
+        this.muteButton.style.border = '1px solid #cbd5e1';
+        this.muteButton.style.borderRadius = '8px';
+        this.muteButton.style.background = 'white';
+        this.muteButton.style.cursor = 'pointer';
+
+        this.muteButton.addEventListener('click', () => {
+            const isMuted = this.audioController.toggleMute();
+            if (this.muteButton) {
+                this.muteButton.textContent = isMuted ? '🔊 Unmute Audio' : '🔇 Mute Audio';
+            }
+            // Sync immediate audio
+            if (!isMuted && this.currentPhase && this.phaseDurations) {
+                // We don't have the exact remaining duration here easily without more state,
+                // but we can trigger the phase sound.
+                // Ideally we'd calculate remaining, but full duration is safe for a tone update.
+                let duration = 0;
+                if (this.currentPhase === 'inhale') duration = this.phaseDurations.inhaleDuration;
+                else if (this.currentPhase === 'exhale') duration = this.phaseDurations.exhaleDuration;
+                else duration = this.phaseDurations.holdDuration;
+
+                this.audioController.setPhase(this.currentPhase, duration);
+            }
+        });
+
+        this.animationContainer.appendChild(this.muteButton);
+
         this.animationElement = document.createElement('div');
         this.animationElement.classList.add(this.options.animationStyle + '-animation');
         this.animationContainer.appendChild(this.animationElement);
@@ -58,6 +187,7 @@ abstract class BreathingExercise {
             this.promptElement.textContent = '';
             this.promptElement.className = 'prompt-text';
         }
+        this.audioController.stopTone();
     }
 
     protected getPhaseDurations(inhaleTime: number, holdTime: number, exhaleTime: number): PhaseDurations {
@@ -119,6 +249,7 @@ class BoxBreathing extends BreathingExercise {
         if (this.currentPhase === 'inhale') {
             this.animationElement.classList.add('inhale');
             this.promptElement.textContent = 'Inhale';
+            this.audioController.setPhase('inhale', this.phaseDurations.inhaleDuration);
 
             const duration = this.phaseDurations.inhaleDuration / 1000;
             this.animationElement.style.transition = `transform ${duration}s ease, background-color ${duration}s ease, box-shadow ${duration}s ease`;
@@ -133,6 +264,7 @@ class BoxBreathing extends BreathingExercise {
         } else if (this.currentPhase === 'hold') {
             this.animationElement.classList.add('hold');
             this.promptElement.textContent = 'Hold';
+            this.audioController.setPhase('hold', this.phaseDurations.holdDuration);
 
             const duration = this.phaseDurations.holdDuration / 1000;
             this.animationElement.style.transition = `background-color ${duration}s ease, box-shadow ${duration}s ease`;
@@ -145,6 +277,7 @@ class BoxBreathing extends BreathingExercise {
         } else if (this.currentPhase === 'exhale') {
             this.animationElement.classList.add('exhale');
             this.promptElement.textContent = 'Exhale';
+            this.audioController.setPhase('exhale', this.phaseDurations.exhaleDuration);
 
             const duration = this.phaseDurations.exhaleDuration / 1000;
             this.animationElement.style.transition = `transform ${duration}s ease, background-color ${duration}s ease, box-shadow ${duration}s ease`;
@@ -159,6 +292,7 @@ class BoxBreathing extends BreathingExercise {
         } else if (this.currentPhase === 'holdAfterExhale') {
             this.animationElement.classList.add('holdAfterExhale');
             this.promptElement.textContent = 'Hold';
+            this.audioController.setPhase('hold', this.phaseDurations.holdDuration);
 
             const duration = this.phaseDurations.holdDuration / 1000;
             this.animationElement.style.transition = `background-color ${duration}s ease, box-shadow ${duration}s ease`;

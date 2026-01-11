@@ -14,7 +14,8 @@ public class BreathingController {
         // Java Record: Concise, immutable data carriers.
         // SECURITY: Immutability prevents state tampering/side-effects during
         // processing.
-        public record BreathingPhase(String name, int duration) {
+        // SWEBOK v4: Added 'color' field for "Serene Palette" compliance.
+        public record BreathingPhase(String name, int duration, String color) {
         }
 
         public record BreathingTechnique(String name, List<BreathingPhase> phases) {
@@ -22,30 +23,35 @@ public class BreathingController {
 
         @GetMapping("/api/techniques")
         public Map<String, BreathingTechnique> getTechniques() {
+                // SWEBOK v4 "Serene Palette"
+                String EMERALD = "#34d399";
+                String BLUE = "#60a5fa";
+                String ROSE = "#fb7185";
+
                 return Map.of(
                                 "box", new BreathingTechnique(
                                                 "Box Breathing",
                                                 List.of(
-                                                                new BreathingPhase("Inhale", 4000),
-                                                                new BreathingPhase("Hold", 4000),
-                                                                new BreathingPhase("Exhale", 4000),
-                                                                new BreathingPhase("Hold", 4000))),
+                                                                new BreathingPhase("Inhale", 4000, EMERALD),
+                                                                new BreathingPhase("Hold", 4000, BLUE),
+                                                                new BreathingPhase("Exhale", 4000, ROSE),
+                                                                new BreathingPhase("Hold", 4000, BLUE))),
                                 "diaphragmatic", new BreathingTechnique(
                                                 "Diaphragmatic",
                                                 List.of(
-                                                                new BreathingPhase("Inhale", 5000),
-                                                                new BreathingPhase("Exhale", 5000))),
+                                                                new BreathingPhase("Inhale", 5000, EMERALD),
+                                                                new BreathingPhase("Exhale", 5000, ROSE))),
                                 "alternate", new BreathingTechnique(
                                                 "Alternate Nostril",
                                                 List.of(
-                                                                new BreathingPhase("Inhale Left", 4000),
-                                                                new BreathingPhase("Hold", 4000),
-                                                                new BreathingPhase("Exhale Right", 4000),
-                                                                new BreathingPhase("Hold", 4000),
-                                                                new BreathingPhase("Inhale Right", 4000),
-                                                                new BreathingPhase("Hold", 4000),
-                                                                new BreathingPhase("Exhale Left", 4000),
-                                                                new BreathingPhase("Hold", 4000))));
+                                                                new BreathingPhase("Inhale Left", 4000, EMERALD),
+                                                                new BreathingPhase("Hold", 4000, BLUE),
+                                                                new BreathingPhase("Exhale Right", 4000, ROSE),
+                                                                new BreathingPhase("Hold", 4000, BLUE),
+                                                                new BreathingPhase("Inhale Right", 4000, EMERALD),
+                                                                new BreathingPhase("Hold", 4000, BLUE),
+                                                                new BreathingPhase("Exhale Left", 4000, ROSE),
+                                                                new BreathingPhase("Hold", 4000, BLUE))));
         }
 
         @GetMapping("/")

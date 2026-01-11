@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Metadata for the document -->
     <meta charset="UTF-8">
@@ -13,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <!-- Main container for the page content -->
     <div class="container">
@@ -20,6 +22,11 @@
         <header>
             <h1>Mindful Breathing</h1>
             <p id="tagline">Find your calm, one breath at a time.</p>
+            <nav style="margin-top: 1rem; text-align: center;">
+                <a href="SWEBOK_ALIGNMENT.md"
+                    style="color: var(--primary-color, #34d399); text-decoration: none; border-bottom: 1px dashed;">Engineering
+                    Standards (SWEBOK v4)</a>
+            </nav>
         </header>
 
         <!-- Section for selecting options (breathing exercise and animation style) -->
@@ -30,7 +37,7 @@
                 <option value="diaphragmaticBreathing">Diaphragmatic Breathing</option>
                 <option value="alternateNostrilBreathing">Alternate Nostril Breathing</option>
             </select>
-        
+
             <label for="animationStyle">Animation Style:</label>
             <select id="animationStyle" aria-label="Choose Animation Style">
                 <option value="circle">Circle</option>
@@ -40,7 +47,7 @@
 
         <!-- Main section where the animation will be rendered -->
         <main id="animation-container" aria-live="polite">
-             <!-- Div to display the current phase of the animation -->
+            <!-- Div to display the current phase of the animation -->
             <div id="animationPhase" class="animation-phase" aria-label="Animation Phase"></div>
         </main>
 
@@ -70,7 +77,7 @@
                     <!-- Options will be dynamically inserted by JavaScript -->
                 </select>
             </div>
-        
+
             <button id="startButton" aria-label="Start Breathing Exercise">Start</button>
             <button id="stopButton" disabled aria-label="Stop Breathing Exercise">Stop</button>
         </section>
@@ -84,4 +91,5 @@
     <!-- Link to the JavaScript file -->
     <script src="js/breathing.js"></script>
 </body>
+
 </html>

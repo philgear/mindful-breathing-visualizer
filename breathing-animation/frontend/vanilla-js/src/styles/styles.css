@@ -13,16 +13,15 @@
   --bg-gradient-start: #e0e7ff;
   --bg-gradient-end: #f3e8ff;
 
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-
-  --text-primary: #1e293b;
+  --glass-bg: #ffffff;
+  --glass-border: transparent;
+  --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
 
-  --input-bg: rgba(255, 255, 255, 0.5);
-  --input-border: rgba(255, 255, 255, 0.3);
+  --input-bg: #f1f5f9;
+  --input-border: #cbd5e1;
 
   /* Animation Colors */
   --inhale-color: #34d399;
@@ -33,14 +32,14 @@
   /* Rose */
 
   /* Dark Mode Variables */
-  --dark-bg-gradient-start: #0f172a;
-  --dark-bg-gradient-end: #1e1b4b;
-  --dark-glass-bg: rgba(30, 41, 59, 0.7);
-  --dark-glass-border: rgba(255, 255, 255, 0.1);
-  --dark-text-primary: #f1f5f9;
-  --dark-text-secondary: #cbd5e1;
+  --dark-bg-gradient-start: #020617;
+  --dark-bg-gradient-end: #1e293b;
+  --dark-glass-bg: #1e293b;
+  --dark-glass-border: #334155;
+  --dark-text-primary: #f8fafc;
+  --dark-text-secondary: #94a3b8;
   --dark-text-muted: #64748b;
-  --dark-input-bg: rgba(15, 23, 42, 0.5);
+  --dark-input-bg: #020617;
 }
 
 /* Reset & Base Styles */
@@ -52,55 +51,45 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
+  background: #f8fafc;
+  /* Solid, calm backgound (Slate-50) */
   color: var(--text-primary);
   min-height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
-  /* Prevent horizontal scroll on mobile */
 }
 
-@keyframes gradientBG {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Main Container - Glassmorphism */
+/* Remove Gradient Animation for Zen Calm */
+/* Minimalist Container - detailed redesign */
 .container {
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+  /* Solid White */
+  border: none;
+  /* Removed border */
   box-shadow: var(--glass-shadow);
+  /* Deep elevation */
   border-radius: 24px;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
+  /* Increased top/bottom padding */
   width: 90%;
-  max-width: 500px;
+  max-width: 480px;
+  /* Slightly narrower for elegance */
   text-align: center;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.8s ease-out forwards;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(10px);
 }
 
-@keyframes slideUp {
+@keyframes fadeIn {
   to {
     opacity: 1;
     transform: translateY(0);
@@ -318,6 +307,48 @@ select:focus {
   transition: transform 0.1s linear, box-shadow 0.5s ease;
 }
 
+/* Alternate Nostril - Visualizing Side */
+.alternate-nostril-animation {
+  width: 100px;
+  height: 100px;
+  background: var(--glass-bg);
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 1.2rem;
+  color: white;
+  position: relative;
+  z-index: 10;
+  transition: transform var(--current-duration) ease,
+    background-color var(--current-duration) ease,
+    box-shadow var(--current-duration) ease,
+    left var(--current-duration) ease;
+  /* Animate position */
+  left: 0;
+  /* Default center */
+}
+
+/* Move Left/Right - Generic Support for All Shapes */
+.circle-animation.left,
+.square-animation.left,
+.lotus-animation.left,
+.sun-animation.left,
+.alternate-nostril-animation.left {
+  transform: translateX(-60px) scale(1.1);
+}
+
+.circle-animation.right,
+.square-animation.right,
+.lotus-animation.right,
+.sun-animation.right,
+.alternate-nostril-animation.right {
+  transform: translateX(60px) scale(1.1);
+}
+
 .sun-animation.inhale {
   box-shadow: 0 0 60px #fbbf24, 0 0 100px #f59e0b;
   transform: scale(1.5);
@@ -409,13 +440,17 @@ button:disabled {
 
 /* Instructions (Hidden by default, can be a modal or bottom section) */
 #instructions-container {
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--input-bg);
+  /* Matches input/surface color */
   border-radius: 12px;
   padding: 1.5rem;
   margin-top: 2rem;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--input-border);
+  /* Subtle definition */
   text-align: left;
   transition: opacity 0.5s ease;
+  box-shadow: none;
+  /* Flat inside the card */
 }
 
 #instructions-container h3 {
@@ -425,10 +460,13 @@ button:disabled {
 }
 
 #instructions-container li {
-  margin-bottom: 0.5rem;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.5;
+  margin-bottom: 0.8rem;
+  color: var(--text-primary);
+  /* Darker text for better contrast */
+  font-size: 1rem;
+  /* Slightly larger text */
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 /* Utilities */
@@ -439,6 +477,19 @@ button:disabled {
 .fade-out {
   opacity: 0;
   pointer-events: none;
+}
+
+/* Screen Reader Only Utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* Dark Mode Support (System or Class) */
@@ -457,18 +508,147 @@ button:disabled {
 }
 
 body.dark-mode {
-  --bg-gradient-start: var(--dark-bg-gradient-start);
-  --bg-gradient-end: var(--dark-bg-gradient-end);
-  --glass-bg: var(--dark-glass-bg);
-  --glass-border: var(--dark-glass-border);
-  --text-primary: var(--dark-text-primary);
-  --text-secondary: var(--dark-text-secondary);
-  --text-muted: var(--dark-text-muted);
-  --input-bg: var(--dark-input-bg);
-  --input-border: var(--dark-glass-border);
+  background: #0f172a;
+  /* Slate-900 */
+  color: var(--dark-text-primary);
 }
 
-/* Specific overrides for dark mode elements */
+body.dark-mode .container {
+  background: var(--dark-glass-bg);
+  /* Slate-800 */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  /* Deep dark shadow */
+}
+
+/* UX: Focus Mode Logic */
+body.focus-mode header,
+body.focus-mode .settings-group,
+body.focus-mode footer,
+body.focus-mode #instructions-container {
+  opacity: 0.1;
+  /* Dim distractions */
+  pointer-events: none;
+  /* Prevent clicks */
+  transition: opacity 1s ease;
+}
+
+/* Mimic Human Focus: Stillness (Hide Cursor) */
+body.focus-mode {
+  cursor: none;
+  overflow: hidden;
+  /* Prevent scrolling distractions */
+}
+
+/* Mimic Human Focus: Tunnel Vision (Vignette) */
+body.focus-mode::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+  z-index: 999;
+  animation: fadeInVignette 2s ease-out forwards;
+}
+
+@keyframes fadeInVignette {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+body.focus-mode .container {
+  /* Keep container visible */
+  opacity: 1;
+  /* Mimic Human Focus: Leaning In (Gentle Zoom) */
+  transform: scale(1.05);
+  transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* UX: Progress Bar */
+/* UX: Progress Bar */
+.progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  /* Wider but at bottom */
+  height: 6px;
+  background: var(--input-bg);
+  /* Subtler background */
+  border-radius: 3px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 5;
+  /* Below animation z-index of 10? No, animation is 10. Let's make this 5 so it's behind if they overlap, but layout separation is key. */
+}
+
+/* Show when active (we add classes to it now) */
+.progress-bar.inhale,
+.progress-bar.exhale,
+.progress-bar.hold,
+.progress-bar.holdAfterExhale {
+  opacity: 1;
+}
+
+
+/* Center-out Progress Fill */
+.progress-bar {
+  display: flex;
+  justify-content: center;
+  /* Key change: Center the fill */
+  background: var(--input-bg);
+  /* Subtler background */
+  border-radius: 3px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 5;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--primary-color);
+  border-radius: 3px;
+  /* Remove absolute positioning to respect flex centering */
+}
+
+/* Progress Animations triggered by classes on .progress-bar itself */
+.progress-bar.inhale .progress-fill {
+  background: var(--inhale-color);
+  animation: progressFill var(--current-duration) linear forwards;
+}
+
+.progress-bar.exhale .progress-fill {
+  background: var(--exhale-color);
+  animation: progressFill var(--current-duration) linear forwards;
+}
+
+.progress-bar.hold .progress-fill,
+.progress-bar.holdAfterExhale .progress-fill {
+  background: var(--hold-color);
+  animation: progressFill var(--current-duration) linear forwards;
+}
+
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   select option {
     background-color: #1e293b;
@@ -492,7 +672,9 @@ body.dark-mode .prompt-text {
 }
 
 body.dark-mode #instructions-container {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(15, 23, 42, 0.95);
+  /* Almost solid dark for contrast */
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 body.dark-mode #instructions-container h3 {
@@ -506,27 +688,39 @@ body.dark-mode #instructions-container li {
 /* Responsive adjustments */
 @media (max-width: 480px) {
   .container {
-    padding: 1.5rem;
+    padding: 1.5rem 1.25rem;
     width: 95%;
+    gap: 1rem;
   }
 
   h1 {
     font-size: 2rem;
   }
 
-  .settings-panel {
-    padding: 0.75rem;
+  #tagline {
+    font-size: 1rem;
   }
 
-  h2 {
-    font-size: 1.25rem;
+  .settings-panel {
+    padding: 0;
+    gap: 1rem;
   }
 
   .settings-group {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  select,
+  input {
+    padding: 14px;
+    /* Reduced from 20px */
+    font-size: 1rem;
+    /* Prevent zoom on iOS */
   }
 
   button {
     padding: 0.8rem;
+    margin-top: 0.5rem;
   }
 }

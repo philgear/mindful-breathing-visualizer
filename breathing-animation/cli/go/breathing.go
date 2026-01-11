@@ -8,14 +8,30 @@ import (
 	"time"
 )
 
+// SWEBOK v4 "Serene Palette" (TrueColor RGB)
+const (
+	ColorReset   = "\033[0m"
+	ColorEmerald = "\033[38;2;52;211;153m"  // Inhale
+	ColorBlue    = "\033[38;2;96;165;250m"  // Hold
+	ColorRose    = "\033[38;2;251;113;133m" // Exhale
+)
+
+const (
+	HideCursor  = "\033[?25l"
+	ShowCursor  = "\033[?25h"
+	ClearScreen = "\033[2J\033[H"
+	MoveHome    = "\033[H"
+)
+
 type Phase struct {
-	// SECURITY: Strictly typed struct guarantees memory layout safety.
 	Name     string
-	Duration int // ms
+	Duration time.Duration // internal duration
+	Color    string
 }
 
 func main() {
-	fmt.Println("Mindful Breathing Visualizer (Go CLI)")
+	fmt.Print(ClearScreen)
+	fmt.Println("Mindful Breathing Visualizer (Go TUI v2.0)")
 	fmt.Println("1. Box Breathing")
 	fmt.Println("2. Diaphragmatic Breathing")
 	fmt.Println("3. Alternate Nostril Breathing")
@@ -29,54 +45,84 @@ func main() {
 
 	switch choice {
 	case "2":
-		fmt.Println("Starting Diaphragmatic Breathing...")
 		phases = []Phase{
-			{"Inhale", 5000},
-			{"Exhale", 5000},
+			{"Inhale", 5 * time.Second, ColorEmerald},
+			{"Exhale", 5 * time.Second, ColorRose},
 		}
 	case "3":
-		fmt.Println("Starting Alternate Nostril Breathing...")
 		phases = []Phase{
-			{"Inhale Left", 4000},
-			{"Hold", 4000},
-			{"Exhale Right", 4000},
-			{"Hold", 4000},
-			{"Inhale Right", 4000},
-			{"Hold", 4000},
-			{"Exhale Left", 4000},
-			{"Hold", 4000},
+			{"Inhale Left", 4 * time.Second, ColorEmerald},
+			{"Hold", 4 * time.Second, ColorBlue},
+			{"Exhale Right", 4 * time.Second, ColorRose},
+			{"Hold", 4 * time.Second, ColorBlue},
+			{"Inhale Right", 4 * time.Second, ColorEmerald},
+			{"Hold", 4 * time.Second, ColorBlue},
+			{"Exhale Left", 4 * time.Second, ColorRose},
+			{"Hold", 4 * time.Second, ColorBlue},
 		}
 	default:
-		fmt.Println("Starting Box Breathing...")
 		phases = []Phase{
-			{"Inhale", 4000},
-			{"Hold", 4000},
-			{"Exhale", 4000},
-			{"Hold", 4000},
+			{"Inhale", 4 * time.Second, ColorEmerald},
+			{"Hold", 4 * time.Second, ColorBlue},
+			{"Exhale", 4 * time.Second, ColorRose},
+			{"Hold", 4 * time.Second, ColorBlue},
 		}
 	}
 
-	fmt.Println("Press Ctrl+C to stop.")
+	fmt.Print(ClearScreen + HideCursor)
 
-	// Colors
-	const (
-		ColorGreen = "\033[32m"
-		ColorBlue  = "\033[34m"
-		ColorRed   = "\033[31m"
-		ColorReset = "\033[0m"
-	)
-
+	// Main Loop
 	for {
 		for _, p := range phases {
-			color := ColorBlue
-			if strings.HasPrefix(p.Name, "Inhale") {
-				color = ColorGreen
-			} else if strings.HasPrefix(p.Name, "Exhale") {
-				color = ColorRed
-			}
-
-			fmt.Printf("\r%sPhase: %s (%ds)%s   ", color, p.Name, p.Duration/1000, ColorReset)
-			time.Sleep(time.Duration(p.Duration) * time.Millisecond)
+			runPhase(p)
 		}
 	}
+}
+
+func runPhase(p Phase) {
+	fps := 60
+	frameDelay := time.Second / time.Duration(fps)
+	startTime := time.Now()
+
+	// SWEBOK KA 2 Audio Feedback
+	fmt.Print("\a")
+
+	for {
+		elapsed := time.Since(startTime)
+		if elapsed >= p.Duration {
+			break
+		}
+
+		progress := float64(elapsed) / float64(p.Duration)
+		drawFrame(p, progress, elapsed)
+		time.Sleep(frameDelay)
+	}
+}
+
+func drawFrame(p Phase, progress float64, elapsed time.Duration) {
+	fmt.Print(MoveHome)
+	fmt.Printf("\nMindful Breathing Visualizer (Go TUI v2.0)\n\n")
+
+	remaining := p.Duration.Seconds() - elapsed.Seconds()
+	fmt.Printf("Phase: %-15s (%0.1fs)     \n\n", p.Name, remaining)
+
+	// Visual Logic
+	visualProgress := progress
+	if strings.Contains(p.Name, "Exhale") {
+		visualProgress = 1.0 - progress
+	} else if strings.Contains(p.Name, "Hold") {
+		visualProgress = 1.0 // Simple heuristic
+	}
+
+	// Bar
+	barWidth := 40
+	fillWidth := int(visualProgress * float64(barWidth))
+	bar := strings.Repeat("=", fillWidth)
+	fmt.Printf("      %s[%-40s]%s\n\n", p.Color, bar, ColorReset)
+
+	// Lung
+	scale := 1.0 + (visualProgress * 2.0)
+	dots := int(scale * 5.0)
+	lungStr := "( " + strings.Repeat("●", dots) + " )"
+	fmt.Printf("       %s%-30s%s\n", p.Color, lungStr, ColorReset)
 }

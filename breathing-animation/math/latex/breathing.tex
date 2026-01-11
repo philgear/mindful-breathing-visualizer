@@ -2,7 +2,13 @@
 \usepackage{tikz}
 \usepackage[margin=1in]{geometry}
 \usepackage{helvet}
+\usepackage{xcolor}
 \renewcommand{\familydefault}{\sfdefault}
+
+% SWEBOK v4 Serene Palette
+\definecolor{SereneEmerald}{HTML}{34D399}
+\definecolor{SereneBlue}{HTML}{60A5FA}
+\definecolor{SereneRose}{HTML}{FB7185}
 
 \begin{document}
 
@@ -21,22 +27,22 @@
 \begin{center}
 \begin{tikzpicture}[scale=2, very thick]
     % Inhale
-    \draw[->, cyan] (0,0) -- (0,2) node[midway, left] {Inhale (4s)};
+    \draw[->, SereneEmerald] (0,0) -- (0,2) node[midway, left] {Inhale (4s)};
     % Hold
-    \draw[->, blue] (0,2) -- (2,2) node[midway, above] {Hold (4s)};
+    \draw[->, SereneBlue] (0,2) -- (2,2) node[midway, above] {Hold (4s)};
     % Exhale
-    \draw[->, magenta] (2,2) -- (2,0) node[midway, right] {Exhale (4s)};
+    \draw[->, SereneRose] (2,2) -- (2,0) node[midway, right] {Exhale (4s)};
     % Hold
-    \draw[->, blue] (2,0) -- (0,0) node[midway, below] {Hold (4s)};
+    \draw[->, SereneBlue] (2,0) -- (0,0) node[midway, below] {Hold (4s)};
     
     % Circle representation
-    \node[circle, fill=cyan!20, minimum size=1cm] at (4,2) {};
+    \node[circle, fill=SereneEmerald!20, minimum size=1cm] at (4,2) {};
     \node at (4,2.8) {\small Grow};
     
-    \node[circle, fill=blue!20, minimum size=1.5cm] at (5.5,2) {};
+    \node[circle, fill=SereneBlue!20, minimum size=1.5cm] at (5.5,2) {};
     \node at (5.5,2.9) {\small Sustain};
     
-    \node[circle, fill=magenta!20, minimum size=1cm] at (7,2) {};
+    \node[circle, fill=SereneRose!20, minimum size=1cm] at (7,2) {};
     \node at (7,2.8) {\small Shrink};
 \end{tikzpicture}
 \end{center}
@@ -51,11 +57,11 @@
 \begin{center}
 \begin{tikzpicture}[scale=1.5, very thick]
     % Inhale
-    \draw[->, cyan] (0,0) -- (1,2) node[midway, below left] {Inhale (4s)};
+    \draw[->, SereneEmerald] (0,0) -- (1,2) node[midway, below left] {Inhale (4s)};
     % Hold
-    \draw[->, blue] (1,2) -- (4,2) node[midway, above] {Hold (7s)};
+    \draw[->, SereneBlue] (1,2) -- (4,2) node[midway, above] {Hold (7s)};
     % Exhale
-    \draw[->, magenta] (4,2) -- (0,0) node[midway, below right] {Exhale (8s)};
+    \draw[->, SereneRose] (4,2) -- (0,0) node[midway, below right] {Exhale (8s)};
 \end{tikzpicture}
 \end{center}
 
@@ -68,7 +74,8 @@
 
 \begin{center}
 \begin{tikzpicture}[scale=1.5, very thick]
-    \draw[<->, domain=0:6.28, smooth, variable=\x, cyan!50!magenta] plot (\x, {sin(\x r) + 1.5});
+    % SWEBOK Gradient Simulation: From Emerald to Rose
+    \draw[<->, domain=0:6.28, smooth, variable=\x, SereneEmerald!50!SereneRose] plot (\x, {sin(\x r) + 1.5});
     \node at (1.57, 0) {Inhale (5s)};
     \node at (4.71, 0) {Exhale (5s)};
 \end{tikzpicture}

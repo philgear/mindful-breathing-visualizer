@@ -111,10 +111,11 @@
         <!-- Accessibility: Live Region for Screen Readers -->
         <div id="a11y-announcer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
 
-        <div class="instructions-toggle"
-            onclick="this.parentElement.querySelector('.instructions-content').classList.toggle('hidden')">
+        <button class="instructions-toggle" id="instructionsToggle" aria-expanded="false"
+            aria-controls="instructions-container"
+            onclick="const content = document.getElementById('instructions-container'); content.classList.toggle('hidden'); this.setAttribute('aria-expanded', !content.classList.contains('hidden'));">
             Instructions (Click to expand)
-        </div>
+        </button>
         <section id="instructions-container" aria-labelledby="instructions-heading" class="hidden">
             <h2 id="instructions-heading" class="sr-only">Instructions</h2>
             <!-- Instructions for the selected exercise will be displayed here -->

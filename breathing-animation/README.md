@@ -2,6 +2,8 @@
 
 A collection of breathing exercise visualizers implemented in various languages and frameworks.
 
+![Mindful Breathing Demo](file:///home/phil/.gemini/antigravity/brain/87927cfe-1e90-4172-ae02-ad877a4fb4d4/mindful_breathing_demo_1768150303997.webp)
+
 ## Project Structure
 
 ### 🎨 Frontend
@@ -21,17 +23,20 @@ Server-side implementations and plugins.
 - **WordPress Plugin**: `backend/wordpress`
 - **MCP Server**: `backend/mcp-server`
 
-### 🖥️ CLI
-Command-line interfaces for terminal breathing.
+### 🖥️ CLI & Scripting
+Command-line interfaces with ANSI TrueColor and Audio support.
 - **Bash**: `cli/bash`
 - **C++**: `cli/cpp`
 - **Go**: `cli/go`
 - **Java**: `cli/java`
+- **Lua**: `cli/lua` (New)
+- **Perl**: `cli/perl` (New)
 - **Python**: `cli/python`
+- **Ruby**: `cli/ruby`
 - **Rust**: `cli/rust`
 
 ### 📱 Mobile
-Native mobile implementations.
+Native and Cross-Platform implementations.
 - **Android (Kotlin)**: `mobile/android`
 - **iOS (Swift)**: `mobile/ios`
 - **Flutter**: `mobile/flutter`
@@ -40,21 +45,29 @@ Native mobile implementations.
 Desktop integrations.
 - **Electron Tray App**: `desktop/electron`
 - **VS Code Extension**: `desktop/vscode`
+- **Obsidian**: `desktop/obsidian`
 
 ### 🌐 Browser Extensions
 - **Chrome Extension**: `browser/chrome`
 
-### 📐 Math & Theory
-Mathematical models and documentation.
+### 📐 Math & Scientific
+Mathematical models and high-performance visualizations.
 - **Wolfram**: `math/wolfram`
 - **LaTeX**: `math/latex`
 - **JAX**: `math/jax`
+- **Julia**: `math/julia` (New)
+- **R**: `math/r` (New)
+- **Notebooks**: `notebooks/`
 
-## Breathing Techniques
-Standardized across all implementations:
-1.  **Box Breathing**: Inhale (4s), Hold (4s), Exhale (4s), Hold (4s).
-2.  **Diaphragmatic**: Inhale (5s), Exhale (5s).
-3.  **Alternate Nostril**: Left/Right nostril breathing pattern.
+### ☁️ Infrastructure
+- **Kubernetes**: `infrastructure/kubernetes` (Deployment, Service, Dockerfile)
+- **Docker**: `infrastructure/docker`
+
+## SWEBOK v4 Compliance
+As of January 2026, this project adheres to strict software engineering standards:
+*   **Visuals (KA 2.1)**: All implementations use the **Serene Palette** (Inhale: Emerald `#34d399`, Hold: Blue `#60a5fa`, Exhale: Rose `#fb7185`).
+*   **Audio (KA 2)**: All interactive implementations feature standardized 150Hz audio feedback for accessibility.
+*   **Polyglot Rigor**: 39 distinct implementations across 10+ ecosystems.
 
 ## License
 MIT

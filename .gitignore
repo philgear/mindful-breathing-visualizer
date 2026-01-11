@@ -40,7 +40,7 @@ dist/
 .nuxt/
 .next/
 coverage/
-browser/
+
 test-results/
 playwright-report/
 blob-report/
@@ -85,3 +85,27 @@ DerivedData/
 # Misc
 .gemini/
 tmp/
+
+# Ruby
+*.gem
+pkg/
+
+# Java
+*.class
+*.jar
+*.war
+
+# Lua
+*.luac
+
+# R
+.RData
+.Rhistory
+
+# Julia
+*.ji
+*.cov
+
+# Perl
+*.tdy
+*.swp

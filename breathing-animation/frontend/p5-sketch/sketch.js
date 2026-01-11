@@ -72,6 +72,102 @@ const sketch = (p) => {
         }
     }
 
+    // Audio Controller Logic (Shared Standard)
+    class AudioController {
+        constructor() {
+            this.ctx = null;
+            this.oscillator = null;
+            this.gainNode = null;
+            this.isPlaying = false;
+            this.isMuted = true;
+        }
+
+        init() {
+            if (!this.ctx) {
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                this.gainNode = this.ctx.createGain();
+                this.gainNode.connect(this.ctx.destination);
+                this.gainNode.gain.value = 0;
+            }
+        }
+
+        toggleMute() {
+            this.isMuted = !this.isMuted;
+            if (!this.isMuted) {
+                this.startTone();
+            } else {
+                this.stopTone();
+            }
+            return this.isMuted;
+        }
+
+        startTone() {
+            if (this.isMuted) return;
+            this.init();
+            if (this.ctx.state === 'suspended') this.ctx.resume();
+            if (this.oscillator) this.oscillator.stop();
+
+            this.oscillator = this.ctx.createOscillator();
+            this.oscillator.type = 'sine';
+            this.oscillator.frequency.value = 150;
+            this.oscillator.connect(this.gainNode);
+            this.oscillator.start();
+            this.isPlaying = true;
+
+            this.gainNode.gain.cancelScheduledValues(this.ctx.currentTime);
+            this.gainNode.gain.setValueAtTime(0, this.ctx.currentTime);
+            this.gainNode.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 1);
+        }
+
+        stopTone() {
+            if (this.oscillator && this.isPlaying && this.ctx) {
+                const now = this.ctx.currentTime;
+                this.gainNode.gain.cancelScheduledValues(now);
+                this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
+                this.gainNode.gain.linearRampToValueAtTime(0, now + 1);
+
+                setTimeout(() => {
+                    if (this.oscillator) {
+                        this.oscillator.stop();
+                        this.oscillator = null;
+                    }
+                }, 1000);
+                this.isPlaying = false;
+            }
+        }
+
+        setPhase(phaseName, duration) {
+            if (this.isMuted || !this.isPlaying || !this.ctx) return;
+            const now = this.ctx.currentTime;
+            const rampTime = duration / 1000;
+
+            this.oscillator.frequency.cancelScheduledValues(now);
+            this.gainNode.gain.cancelScheduledValues(now);
+
+            const isInhale = phaseName.startsWith('Inhale');
+            const isExhale = phaseName.startsWith('Exhale');
+
+            if (isInhale) {
+                this.oscillator.frequency.setValueAtTime(150, now);
+                this.oscillator.frequency.linearRampToValueAtTime(200, now + rampTime);
+                this.gainNode.gain.setValueAtTime(0.1, now);
+                this.gainNode.gain.linearRampToValueAtTime(0.2, now + rampTime);
+            } else if (isExhale) {
+                this.oscillator.frequency.setValueAtTime(200, now);
+                this.oscillator.frequency.linearRampToValueAtTime(150, now + rampTime);
+                this.gainNode.gain.setValueAtTime(0.2, now);
+                this.gainNode.gain.linearRampToValueAtTime(0.1, now + rampTime);
+            } else {
+                // Hold
+                this.oscillator.frequency.setValueAtTime(this.oscillator.frequency.value, now);
+                this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
+            }
+        }
+    }
+
+    const audioController = new AudioController();
+    let isMuted = true;
+
     p.setup = () => {
         p.createCanvas(p.windowWidth, p.windowHeight);
         lastPhaseChange = p.millis();
@@ -87,6 +183,14 @@ const sketch = (p) => {
         if (p.key === '1') setTechnique('box');
         else if (p.key === '2') setTechnique('diaphragmatic');
         else if (p.key === '3') setTechnique('alternate');
+        else if (p.key === 'm' || p.key === 'M') {
+            isMuted = audioController.toggleMute();
+            // Sync immediate phase if unmuting
+            if (!isMuted) {
+                const currentPhase = phases[phaseIndex];
+                audioController.setPhase(currentPhase.name, currentPhase.duration);
+            }
+        }
     };
 
     function setTechnique(key) {
@@ -96,6 +200,10 @@ const sketch = (p) => {
             phases = TECHNIQUES[key];
             phaseIndex = 0;
             lastPhaseChange = p.millis();
+
+            // Sync Audio
+            const currentPhase = phases[phaseIndex];
+            audioController.setPhase(currentPhase.name, currentPhase.duration);
         }
     }
 
@@ -112,7 +220,14 @@ const sketch = (p) => {
             phaseIndex = (phaseIndex + 1) % phases.length;
             lastPhaseChange = currentTick;
             elapsed = 0;
+
+            // Trigger Audio Change
+            const newPhase = phases[phaseIndex];
+            audioController.setPhase(newPhase.name, newPhase.duration);
         }
+
+        // Re-fetch phase after update
+        currentPhase = phases[phaseIndex];
 
         // Calculate Progress (0 to 1)
         let progress = elapsed / currentPhase.duration;
@@ -146,6 +261,7 @@ const sketch = (p) => {
         p.fill(100);
         p.noStroke();
         p.text("Press 1, 2, or 3 to change technique", p.width / 2, 30);
+        p.text(isMuted ? "Press M to Unmute" : "Press M to Mute", p.width / 2, 60);
 
         p.textSize(32);
         p.fill(50);

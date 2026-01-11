@@ -153,8 +153,16 @@
             this.promptElement = document.createElement('div');
             this.promptElement.className = 'prompt-text';
             this.promptContainer.appendChild(this.promptElement);
-
             this.animationContainer.appendChild(this.promptContainer);
+
+            // UX: Progress Bar (Moved to main container)
+            this.progressBar = document.createElement('div');
+            this.progressBar.className = 'progress-bar';
+            this.progressFill = document.createElement('div');
+            this.progressFill.className = 'progress-fill';
+            this.progressBar.appendChild(this.progressFill);
+            this.animationContainer.appendChild(this.progressBar);
+
             this.announcerElement = document.getElementById('a11y-announcer');
         }
 
@@ -173,12 +181,17 @@
             if (this.animationElement) {
                 this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
                 // Remove custom properties
-                this.animationElement.style.removeProperty('--current-duration');
+                this.animationContainer.style.removeProperty('--current-duration'); // Updated to container
             }
             if (this.promptElement) {
                 this.promptElement.textContent = '';
                 this.promptElement.className = 'prompt-text';
+                this.promptContainer.className = 'prompt-container'; // Reset classes
             }
+            if (this.progressBar) {
+                this.progressBar.className = 'progress-bar';
+            }
+            document.title = 'Mindful Breathing Visualizer'; // UX: Reset Title
         }
 
         getPhaseDurations(inhaleTime, holdTime, exhaleTime) {
@@ -195,8 +208,9 @@
 
         // Helper to set transition info on CSS variables
         setTransitionDuration(durationMs) {
-            if (this.animationElement) {
-                this.animationElement.style.setProperty('--current-duration', (durationMs / 1000) + 's');
+            if (this.animationContainer) {
+                // UX: Set on container so siblings can access it
+                this.animationContainer.style.setProperty('--current-duration', (durationMs / 1000) + 's');
             }
         }
     }
@@ -226,14 +240,20 @@
         animate() {
             // Reset classes
             this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
+            this.progressBar.className = 'progress-bar';
 
             // Read durations safely
             const { inhaleDuration, holdDuration, exhaleDuration } = this.phaseDurations;
 
+            // UX: Force reflow for progress bar animation restart
+            void this.progressFill.offsetWidth;
+
             if (this.currentPhase === 'inhale') {
                 this.setTransitionDuration(inhaleDuration);
                 this.animationElement.classList.add('inhale');
+                this.progressBar.classList.add('inhale');
                 this.promptElement.textContent = 'Inhale';
+                document.title = 'Inhale... 🌿'; // UX: Dynamic Title
                 this.announce('Inhale');
                 audioController.setPhase('inhale', inhaleDuration);
 
@@ -249,7 +269,9 @@
             } else if (this.currentPhase === 'hold') {
                 this.setTransitionDuration(holdDuration);
                 this.animationElement.classList.add('hold');
+                this.progressBar.classList.add('hold');
                 this.promptElement.textContent = 'Hold';
+                document.title = 'Hold... ✋';
                 this.announce('Hold');
                 audioController.setPhase('hold', holdDuration);
 
@@ -261,7 +283,9 @@
             } else if (this.currentPhase === 'exhale') {
                 this.setTransitionDuration(exhaleDuration);
                 this.animationElement.classList.add('exhale');
+                this.progressBar.classList.add('exhale');
                 this.promptElement.textContent = 'Exhale';
+                document.title = 'Exhale... 🌬️';
                 this.announce('Exhale');
                 audioController.setPhase('exhale', exhaleDuration);
 
@@ -273,7 +297,9 @@
             } else if (this.currentPhase === 'holdAfterExhale') {
                 this.setTransitionDuration(holdDuration);
                 this.animationElement.classList.add('holdAfterExhale');
+                this.progressBar.classList.add('holdAfterExhale');
                 this.promptElement.textContent = 'Hold';
+                document.title = 'Hold... ✋';
                 this.announce('Hold');
                 audioController.setPhase('holdAfterExhale', holdDuration);
 
@@ -308,12 +334,19 @@
 
         animate() {
             this.animationElement.classList.remove('inhale', 'exhale');
+            this.progressBar.className = 'progress-bar';
+
+            // UX: Force reflow
+            void this.progressFill.offsetWidth;
+
             const { inhaleDuration, exhaleDuration } = this.phaseDurations;
 
             if (this.currentPhase === 'inhale') {
                 this.setTransitionDuration(inhaleDuration);
                 this.animationElement.classList.add('inhale');
+                this.progressBar.classList.add('inhale');
                 this.promptElement.textContent = 'Inhale';
+                document.title = 'Inhale... 🌿';
                 audioController.setPhase('inhale', inhaleDuration);
 
                 this.timerId = setTimeout(() => {
@@ -324,7 +357,9 @@
             } else if (this.currentPhase === 'exhale') {
                 this.setTransitionDuration(exhaleDuration);
                 this.animationElement.classList.add('exhale');
+                this.progressBar.classList.add('exhale');
                 this.promptElement.textContent = 'Exhale';
+                document.title = 'Exhale... 🌬️';
                 audioController.setPhase('exhale', exhaleDuration);
 
                 this.timerId = setTimeout(() => {
@@ -341,6 +376,7 @@
     class AlternateNostrilBreathing extends BreathingExercise {
         constructor(animationContainer, options) {
             super(animationContainer, options);
+            this.side = 'left'; // Start with inhaling left
             this.setupAnimation();
         }
 
@@ -357,20 +393,28 @@
         }
 
         animate() {
-            this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
+            this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale', 'left', 'right');
+            this.progressBar.className = 'progress-bar';
+
+            // UX: Force reflow
+            void this.progressFill.offsetWidth;
+
             const { inhaleDuration, holdDuration, exhaleDuration } = this.phaseDurations;
+
+            // Side logic variables
+            const startSide = this.side; // 'left' or 'right'
+            const endSide = this.side === 'left' ? 'right' : 'left';
 
             if (this.currentPhase === 'inhale') {
                 this.setTransitionDuration(inhaleDuration);
-                this.animationElement.classList.add('inhale');
-                this.promptElement.textContent = 'Inhale Left';
-                audioController.setPhase('inhale', inhaleDuration);
+                this.animationElement.classList.add('inhale', startSide);
+                this.progressBar.classList.add('inhale');
 
-                // Specific transform for left nostril logic might be needed in CSS or here
-                // We'll rely on CSS doing `transform: translateX(...)` if class is present
-                // But previously we passed translation values. Let's fix that in CSS
-                // using custom properties or classes.
-                // Or we can use a specific class for direction.
+                const inhaleSideText = startSide === 'left' ? 'Left' : 'Right';
+
+                this.promptElement.textContent = `Inhale ${inhaleSideText}`;
+                document.title = `Inhale ${inhaleSideText}... 🌿`;
+                audioController.setPhase('inhale', inhaleDuration);
 
                 this.timerId = setTimeout(() => {
                     this.currentPhase = 'hold';
@@ -379,8 +423,12 @@
 
             } else if (this.currentPhase === 'hold') {
                 this.setTransitionDuration(holdDuration);
-                this.animationElement.classList.add('hold');
+                // Move Inside: Animate from startSide to endSide
+                this.animationElement.classList.add('hold', endSide);
+                this.progressBar.classList.add('hold');
+
                 this.promptElement.textContent = 'Hold';
+                document.title = 'Hold... ✋';
                 audioController.setPhase('hold', holdDuration);
 
                 this.timerId = setTimeout(() => {
@@ -390,8 +438,13 @@
 
             } else if (this.currentPhase === 'exhale') {
                 this.setTransitionDuration(exhaleDuration);
-                this.animationElement.classList.add('exhale');
-                this.promptElement.textContent = 'Exhale Right';
+                this.animationElement.classList.add('exhale', endSide);
+                this.progressBar.classList.add('exhale');
+
+                const exhaleSideText = endSide === 'left' ? 'Left' : 'Right';
+
+                this.promptElement.textContent = `Exhale ${exhaleSideText}`;
+                document.title = `Exhale ${exhaleSideText}... 🌬️`;
                 audioController.setPhase('exhale', exhaleDuration);
 
                 this.timerId = setTimeout(() => {
@@ -401,12 +454,17 @@
 
             } else if (this.currentPhase === 'holdAfterExhale') {
                 this.setTransitionDuration(holdDuration);
-                this.animationElement.classList.add('holdAfterExhale');
+                // Stay on endSide
+                this.animationElement.classList.add('holdAfterExhale', endSide);
+                this.progressBar.classList.add('holdAfterExhale');
                 this.promptElement.textContent = 'Hold';
+                document.title = 'Hold... ✋';
                 audioController.setPhase('holdAfterExhale', holdDuration);
 
                 this.timerId = setTimeout(() => {
-                    this.currentPhase = 'inhale'; // Needs logic to swap sides in real app, keeping simple
+                    this.currentPhase = 'inhale';
+                    // Swap side for next inhale logic to pick up
+                    this.side = endSide;
                     this.animate();
                 }, holdDuration);
             }
@@ -465,11 +523,11 @@
         setDefaultSelectValues('inhaleTime', 'holdTime', 'exhaleTime', 'sessionDuration', '4', '4', '4', '5');
 
         // Exercise Definitions
-        const exerciseClasses = {
+        const exerciseClasses = Object.freeze({
             boxBreathing: BoxBreathing,
             diaphragmaticBreathing: DiaphragmaticBreathing,
             alternateNostrilBreathing: AlternateNostrilBreathing
-        };
+        });
         // Safe lookup
         const safeKey = Object.keys(exerciseClasses).includes(exerciseSelect.value) ? exerciseSelect.value : 'boxBreathing';
         const ExerciseClass = exerciseClasses[safeKey];
@@ -478,7 +536,7 @@
             currentExercise = new ExerciseClass(animationContainer, { animationStyle: animationStyleSelect.value });
         }
 
-        const instructions = {
+        const instructions = Object.freeze({
             boxBreathing: `
                 <h3>Box Breathing</h3>
                 <ul>
@@ -504,7 +562,7 @@
                     <li>Repeat, alternating sides.</li>
                 </ul>
             `
-        };
+        });
 
         function initExercise() {
             if (currentExercise) {
@@ -550,6 +608,9 @@
             // UI State
             startButton.classList.add('hidden');
             stopButton.classList.remove('hidden');
+
+            // UX: Focus Mode
+            document.body.classList.add('focus-mode'); // Enable Focus
 
             document.querySelectorAll('.settings-group').forEach(el => el.classList.add('fade-out'));
             document.querySelectorAll('.settings-group select').forEach(el => el.disabled = true);
@@ -608,8 +669,15 @@
             }
             clearInterval(sessionTimer);
 
+            // UX: Disable Focus Mode
+            document.body.classList.remove('focus-mode');
+            document.title = 'Mindful Breathing Visualizer';
+
             document.getElementById('startButton').classList.remove('hidden');
-            document.getElementById('stopButton').classList.add('hidden');
+            document.getElementById('stopButton').classList.remove('hidden'); // Fix: ensure stop disappears? 
+            // original code had start hidden, stop remove hidden.
+            // On stop, swap back?
+            document.getElementById('stopButton').classList.add('hidden'); // Corrected logic
 
             document.getElementById('timerDisplay').textContent = '';
             document.querySelectorAll('.settings-group').forEach(el => el.classList.remove('fade-out'));

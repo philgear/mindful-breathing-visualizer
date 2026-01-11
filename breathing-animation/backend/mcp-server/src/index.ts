@@ -11,40 +11,47 @@ import {
 
 interface BreathingTechnique {
     name: string;
-    phases: { name: string; duration: number }[];
+    phases: { name: string; duration: number; color: string }[];
     description: string;
 }
+
+// SWEBOK v4 "Serene Palette"
+const DO_NOT_MODIFY_COLORS = {
+    EMERALD: "#34d399",
+    BLUE: "#60a5fa",
+    ROSE: "#fb7185"
+};
 
 const TECHNIQUES: Record<string, BreathingTechnique> = {
     "box-breathing": {
         name: "Box Breathing",
         phases: [
-            { name: "Inhale", duration: 4 },
-            { name: "Hold", duration: 4 },
-            { name: "Exhale", duration: 4 },
-            { name: "Hold", duration: 4 },
+            { name: "Inhale", duration: 4, color: DO_NOT_MODIFY_COLORS.EMERALD },
+            { name: "Hold", duration: 4, color: DO_NOT_MODIFY_COLORS.BLUE },
+            { name: "Exhale", duration: 4, color: DO_NOT_MODIFY_COLORS.ROSE },
+            { name: "Hold", duration: 4, color: DO_NOT_MODIFY_COLORS.BLUE },
         ],
         description: "Equal duration phases (4-4-4-4) for focus and stress relief. Visualized as a square.",
     },
     "diaphragmatic": {
         name: "Diaphragmatic Breathing",
         phases: [
-            { name: "Inhale", duration: 5 },
-            { name: "Exhale", duration: 5 }
+            { name: "Inhale", duration: 5, color: DO_NOT_MODIFY_COLORS.EMERALD },
+            { name: "Exhale", duration: 5, color: DO_NOT_MODIFY_COLORS.ROSE }
         ],
         description: "Deep belly breathing (5-5) for maximum oxygen intake and relaxation."
     },
     "alternate-nostril": {
         name: "Alternate Nostril Breathing",
         phases: [
-            { name: "Inhale Left", duration: 4 },
-            { name: "Hold", duration: 4 },
-            { name: "Exhale Right", duration: 4 },
-            { name: "Hold", duration: 4 },
-            { name: "Inhale Right", duration: 4 },
-            { name: "Hold", duration: 4 },
-            { name: "Exhale Left", duration: 4 },
-            { name: "Hold", duration: 4 },
+            { name: "Inhale Left", duration: 4, color: DO_NOT_MODIFY_COLORS.EMERALD },
+            { name: "Hold", duration: 4, color: DO_NOT_MODIFY_COLORS.BLUE },
+            { name: "Exhale Right", duration: 4, color: DO_NOT_MODIFY_COLORS.ROSE },
+            { name: "Hold", duration: 4, color: DO_NOT_MODIFY_COLORS.BLUE },
+            { name: "Inhale Right", duration: 4, color: DO_NOT_MODIFY_COLORS.EMERALD },
+            { name: "Hold", duration: 4, color: DO_NOT_MODIFY_COLORS.BLUE },
+            { name: "Exhale Left", duration: 4, color: DO_NOT_MODIFY_COLORS.ROSE },
+            { name: "Hold", duration: 4, color: DO_NOT_MODIFY_COLORS.BLUE },
         ],
         description: "Balancing technique (Nadi Shodhana) using alternate nostrils."
     }

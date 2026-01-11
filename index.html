@@ -47,89 +47,82 @@
             margin-top: 0.5rem;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            width: 90%;
-            max-width: 1200px;
-            padding-bottom: 4rem;
-        }
-
-        .card {
+        /* Featured Card logic */
+        .card.featured {
             background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            padding: 3rem;
+            width: 100%;
+            text-align: center;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease;
             text-decoration: none;
             color: inherit;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #e2e8f0;
         }
 
-        .card:hover {
+        .card.featured:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary);
         }
 
-        .card h2 {
-            margin-top: 0;
-            font-size: 1.5rem;
-            color: #334155;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .card.featured h2 {
+            font-size: 2rem;
+            margin: 1rem 0;
+            color: var(--text);
         }
 
-        .card p {
+        /* Ecosystem Section */
+        .ecosystem-section {
+            width: 100%;
+            text-align: center;
+        }
+
+        .ecosystem-section h3 {
+            color: #94a3b8;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+
+        .link-group h4 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .link-group a {
+            display: block;
             color: #64748b;
-            line-height: 1.5;
-            flex-grow: 1;
+            text-decoration: none;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            transition: color 0.2s;
         }
 
-        .tag {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-right: 0.5rem;
-            background: #e2e8f0;
-            color: #475569;
-        }
-
-        .tag.web {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .tag.mobile {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .tag.system {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .tag.backend {
-            background: #f3e8ff;
-            color: #6b21a8;
+        .link-group a:hover {
+            color: var(--primary);
         }
 
         button {
-            margin-top: 1rem;
-            padding: 0.75rem;
+            margin-top: 1.5rem;
+            padding: 1rem 2rem;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 0.5rem;
-            font-weight: bold;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 1.1rem;
             cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(52, 211, 153, 0.4);
         }
     </style>
 </head>
@@ -141,60 +134,53 @@
         <p class="subtitle">A cross-platform ecosystem for meditation & breathwork.</p>
     </header>
 
-    <div class="grid">
-        <!-- Vanilla JS -->
-        <a href="breathing-animation/frontend/vanilla-js/public/index.html" class="card">
-            <span class="tag web">Web</span>
-            <h2>🌿 Vanilla JS</h2>
-            <p>The flagship PWA implementation. Features manual Dark Mode, Haptic Feedback, and full Offline support.
+    <main style="width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center; gap: 3rem;">
+
+        <!-- Featured Hero -->
+        <a href="breathing-animation/frontend/vanilla-js/public/index.html" class="card featured">
+            <span class="tag web">Flagship Experience</span>
+            <h2>🌿 Launch Web Visualizer</h2>
+            <p>The definitive PWA implementation. Features manual Dark Mode, Haptic Feedback, and full Offline support.
             </p>
-            <button>Launch App &rarr;</button>
+            <button>Start Breathing &rarr;</button>
         </a>
 
-        <!-- React -->
-        <a href="#" class="card" onclick="alert('Run npm start in frontend/react to view this demo.')">
-            <span class="tag web">Web</span>
-            <h2>⚛️ React</h2>
-            <p>A declarative component with Audio hooks and strict prop validation. Integrated into the modern web
-                stack.</p>
-            <button>View Source &rarr;</button>
-        </a>
+        <!-- Consolidated Ecosystem -->
+        <div class="ecosystem-section">
+            <h3>Explore the Ecosystem (39 Pillars)</h3>
+            <div class="links-grid">
+                <div class="link-group">
+                    <h4>📱 Mobile</h4>
+                    <a href="#" onclick="alert('Open mobile/android')">Android (Kotlin)</a>
+                    <a href="#" onclick="alert('Open mobile/ios')">iOS (Swift)</a>
+                </div>
+                <div class="link-group">
+                    <h4>💻 System & CLI</h4>
+                    <a href="#" onclick="alert('Run ./cli/bash/breathe.sh')">Bash Terminal</a>
+                    <a href="#" onclick="alert('Check cli/ directory')">Polyglot Scripts (Lua, Perl, Rust)</a>
+                </div>
+                <div class="link-group">
+                    <h4>📐 Science & Backend</h4>
+                    <a href="#" onclick="alert('Check math/ directory')">Julia, R, Wolfram</a>
+                    <a href="breathing-animation/backend/php/index.php">PHP Backend</a>
+                </div>
+                <div class="link-group">
+                    <h4>☁️ Infrastructure</h4>
+                    <a href="#" onclick="alert('Check infrastructure/kubernetes')">Kubernetes & Docker</a>
+                </div>
+            </div>
+        </div>
 
-        <!-- PHP -->
-        <a href="breathing-animation/backend/php/index.php" class="card">
-            <span class="tag backend">Backend</span>
-            <h2>🐘 Vanilla PHP</h2>
-            <p>Server-side logic delivering a lightweight, zero-dependency visualizer. Runs on any LAMP stack.</p>
-            <button>Launch Demo &rarr;</button>
-        </a>
+    </main>
 
-        <!-- Android -->
-        <a href="#" class="card" onclick="alert('Open mobile/android in Android Studio.')">
-            <span class="tag mobile">Mobile</span>
-            <h2>🤖 Android (Kotlin)</h2>
-            <p>Native Jetpack Compose app with low-latency AudioTrack synthesis and haptics.</p>
-            <button>View Source &rarr;</button>
-        </a>
-
-        <!-- iOS -->
-        <a href="#" class="card" onclick="alert('Open mobile/ios in Xcode.')">
-            <span class="tag mobile">Mobile</span>
-            <h2>🍎 iOS (Swift)</h2>
-            <p>Native SwiftUI app using AVAudioEngine for crystal clear real-time audio synthesis.</p>
-            <button>View Source &rarr;</button>
-        </a>
-
-        <!-- CLI -->
-        <a href="#" class="card" onclick="alert('Run ./cli/bash/breathe.sh')">
-            <span class="tag system">System</span>
-            <h2>💻 Terminal (Bash)</h2>
-            <p>The "Mindful Terminal". ASCII-based breathing animation for your command line.</p>
-            <button>View Script &rarr;</button>
-        </a>
-    </div>
-
-    <footer style="padding: 2rem; color: #94a3b8; font-size: 0.9rem;">
-        v2.1.0 • Built with 💚 & 🧠
+    <footer style="padding: 2rem; color: #94a3b8; font-size: 0.9rem; text-align: center;">
+        v3.0.0 • 39 Pillars of Mindfulness • Built with 💚 & 🧠 <br>
+        <div style="margin-top: 0.5rem;">
+            <a href="https://github.com/philgear/mindful-breathing-visualizer" target="_blank"
+                style="color: #64748b; text-decoration: none; font-weight: 500; transition: color 0.2s;">
+                View Source on GitHub ↗
+            </a>
+        </div>
     </footer>
 
 </body>

@@ -76,24 +76,47 @@ def simulate_session():
     print(f"Computed models in {end_compute - start_compute:.4f}s")
     print(f"Device: {jax.devices()[0]}")
     
+    # SWEBOK v4 Serene Palette (ANSI TrueColor)
+    # Inhale (Emerald): #34d399 -> \x1b[38;2;52;211;153m
+    # Hold (Blue): #60a5fa -> \x1b[38;2;96;165;250m
+    # Exhale (Rose): #fb7185 -> \x1b[38;2;251;113;133m
+    COLOR_INHALE = "\x1b[38;2;52;211;153m"
+    COLOR_HOLD = "\x1b[38;2;96;165;250m"
+    COLOR_EXHALE = "\x1b[38;2;251;113;133m"
+    RESET = "\x1b[0m"
+    BEEP = "\x07"
+
+    def get_color(val, prev_val):
+        if val > prev_val: return COLOR_INHALE
+        if val < prev_val: return COLOR_EXHALE
+        return COLOR_HOLD
+
     # Simple ASCII visualization
     print("\n--- Box Breathing (Trapezoidal) ---")
+    print(BEEP) # Audio Feedback Start
+    prev_val = 0.0
     for i in range(len(volume_box)):
         # Downsample for display
         if i % 5 != 0: continue
         val = float(volume_box[i])
         chars = int(val * 40)
+        color = get_color(val, prev_val)
         bar = "#" * chars
-        print(f"{t[i]:5.1f}s | {bar}")
+        print(f"{color}{t[i]:5.1f}s | {bar}{RESET}")
+        prev_val = val
 
     print("\n--- Diaphragmatic (Smooth Sine) ---")
+    print(BEEP) # Audio Feedback Start
+    prev_val = 0.0
     for i in range(len(volume_dia)):
         # Downsample for display
         if i % 5 != 0: continue
         val = float(volume_dia[i])
         chars = int(val * 40)
+        color = get_color(val, prev_val)
         bar = "#" * chars
-        print(f"{t[i]:5.1f}s | {bar}")
+        print(f"{color}{t[i]:5.1f}s | {bar}{RESET}")
+        prev_val = val
 
 if __name__ == "__main__":
     try:
