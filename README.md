@@ -138,7 +138,7 @@ docker run -p 8080:80 breathing-visualizer
 ---
 
 ## 🤝 Contributing
-Adheres to strictly enforced **SWEBOK v4 Engineering Standards**. See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 <p align="center">
   <i>"Practicing mindfulness, one byte at a time."</i>
