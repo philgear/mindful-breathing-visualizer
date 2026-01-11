@@ -36,6 +36,8 @@ Maintained by **Phil Gear** and an open-source community dedicated to mental res
 ## 🌿 What (The Ecosystem)
 **New in v3.0.0**: The **Mindful Breathing Visualizer** is a cross-platform ecosystem designed to bring mindfulness to every device. It features:
 *   **Serene Palette™**: A standardized, high-contrast color system (Emerald Inhale, Blue Hold, Rose Exhale).
+*   **Smart Durations**: Context-aware defaults (Box=4s, 4-7-8=4s/7s/8s, Diaphragmatic=Relaxing) that auto-adapt to user selection.
+*   **New Technique**: Added "4-7-8 Relaxing Breath" (Dr. Weil's method) across all pillars.
 *   **150Hz Audio Sync**: Real-time sine wave synthesis that rises/falls with breath, allowing eyes-closed practice.
 *   **Scientific Rigor**: Animations modeled on piece-wise respiratory sinus arrhythmia (RSA) functions.
 
@@ -51,10 +53,10 @@ We have ported the **exact same** 150Hz sine-wave logic and "Serene Palette" des
 
 #### 📱 Native & Desktop (The App)
 *   **Mobile**: `Kotlin` (Android Native), `Swift` (iOS Native), `Flutter` (Cross-Platform)
-*   **Desktop**: `Electron` (App), `Obsidian` (Plugin), `VSCode` (Extension)
+*   **Desktop**: `Tauri` (Linux/macOS/Windows), `Electron` (App), `Obsidian` (Plugin), `VSCode` (Extension)
 
 #### 📟 CLI (The Terminal)
-*   **Systems**: `Rust` (TUI), `Go`, `C++`, `Java`
+*   **Systems**: `Rust` (TUI), `Zig` (Math Optimized), `Go`, `C++`, `Java`
 *   **Scripting**: `Python`, `Ruby`, `Lua`, `Perl`, `Bash`
 
 #### 📐 Math & Science (The Proof)

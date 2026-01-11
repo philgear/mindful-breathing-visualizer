@@ -6,13 +6,13 @@ let mainWindow = null;
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 300,
-        height: 350,
+        width: 420,  // Mobile-like width
+        height: 680, // Tall enough for settings
         show: false,
-        frame: false,
+        frame: true, // Enable standard frame for moving/closing since we lost custom header
         fullscreenable: false,
-        resizable: false,
-        transparent: true,
+        resizable: true, // Allow resizing to test responsiveness
+        transparent: false, // Standard window
         webPreferences: {
             // SECURITY: Disable Node integration and enable context isolation to prevent RCE
             nodeIntegration: false,
@@ -20,7 +20,9 @@ const createWindow = () => {
         }
     });
 
-    mainWindow.loadFile('index.html');
+    // Load the canonical "docs" artifact which serves as the single source of truth
+    const docsPath = path.join(__dirname, '../../docs/index.html');
+    mainWindow.loadFile(docsPath);
 
     // Hide the window when it loses focus
     mainWindow.on('blur', () => {

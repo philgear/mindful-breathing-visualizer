@@ -38,6 +38,9 @@ jobs:
           mkdir -p breathing-animation/docs/js
           cp breathing-animation/frontend/vanilla-js/src/styles/styles.css breathing-animation/docs/styles/
           cp breathing-animation/frontend/vanilla-js/js/src/breathing.js breathing-animation/docs/js/
+          cp breathing-animation/frontend/vanilla-js/js/src/i18n.js breathing-animation/docs/js/
+          cp breathing-animation/frontend/vanilla-js/sw.js breathing-animation/docs/
+          cp -r breathing-animation/frontend/vanilla-js/public/locales breathing-animation/docs/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

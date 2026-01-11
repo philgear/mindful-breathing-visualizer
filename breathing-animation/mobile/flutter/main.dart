@@ -41,6 +41,11 @@ class BreathingData {
       BreathingGenericPhase("Exhale", 4, Color(0xFFFB7185), 1.0),
       BreathingGenericPhase("Hold", 4, Color(0xFF60A5FA), 1.0),
     ],
+    "4-7-8": [
+      BreathingGenericPhase("Inhale", 4, Color(0xFF34D399), 1.5),
+      BreathingGenericPhase("Hold", 7, Color(0xFF60A5FA), 1.5),
+      BreathingGenericPhase("Exhale", 8, Color(0xFFFB7185), 1.0),
+    ],
     "Diaphragmatic": [
       BreathingGenericPhase("Inhale", 5, Color(0xFF34D399), 1.5),
       BreathingGenericPhase("Exhale", 5, Color(0xFFFB7185), 1.0),

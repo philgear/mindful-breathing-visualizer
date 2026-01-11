@@ -1,0 +1,32 @@
+:root {
+  --animation-duration: 5s;
+  --animation-delay: 0s;
+  --circle-size: 100px;
+  --circle-color: #007bff;
+  --circle-border-width: 5px;
+  --circle-border-color: #007bff;
+}
+
+.breathing-animation {
+  width: var(--circle-size);
+  height: var(--circle-size);
+  border-radius: 50%;
+  border: var(--circle-border-width) solid var(--circle-border-color);
+  animation: breathing var(--animation-duration) ease-in-out infinite;
+  animation-delay: var(--animation-delay);
+}
+
+@keyframes breathing {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

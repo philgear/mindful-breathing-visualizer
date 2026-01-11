@@ -49,6 +49,12 @@ fun BreathingScreen() {
         BreathingPhase("Exhale", 5000, Color(0xFFFB7185), 1.0f)
     )
 
+    val fourSevenEightPhases = listOf(
+        BreathingPhase("Inhale", 4000, Color(0xFF34D399), 1.5f),
+        BreathingPhase("Hold", 7000, Color(0xFF60A5FA), 1.5f),
+        BreathingPhase("Exhale", 8000, Color(0xFFFB7185), 1.0f)
+    )
+
     val alternatePhases = listOf(
         BreathingPhase("Inhale Left", 4000, Color(0xFF34D399), 1.5f),
         BreathingPhase("Hold", 4000, Color(0xFF60A5FA), 1.5f),
@@ -76,6 +82,7 @@ fun BreathingScreen() {
         val phases = when (selectedTechnique) {
             "Diaphragmatic" -> diaphragmaticPhases
             "Alternate" -> alternatePhases
+            "4-7-8" -> fourSevenEightPhases
             else -> boxPhases
         }
 
@@ -119,6 +126,7 @@ fun BreathingScreen() {
                 Button(onClick = { selectedTechnique = "Box" }) { Text("Box") }
                 Button(onClick = { selectedTechnique = "Diaphragmatic" }) { Text("Dia") }
                 Button(onClick = { selectedTechnique = "Alternate" }) { Text("Alt") }
+                Button(onClick = { selectedTechnique = "4-7-8" }) { Text("478") }
             }
 
             // Shape Selectors

@@ -46,6 +46,15 @@ TECHNIQUES = {
             ("Exhale Left", 4.0, COLOR_ROSE),
             ("Hold", 4.0, COLOR_BLUE)
         ]
+        ]
+    },
+    "4": {
+        "name": "4-7-8 Relaxing Breath",
+        "phases": [
+            ("Inhale", 4.0, COLOR_EMERALD),
+            ("Hold", 7.0, COLOR_BLUE),
+            ("Exhale", 8.0, COLOR_ROSE)
+        ]
     }
 }
 
@@ -125,7 +134,8 @@ def main():
     print("1. Box Breathing")
     print("2. Diaphragmatic Breathing")
     print("3. Alternate Nostril Breathing")
-    choice = input("Select a technique (1-3): ").strip()
+    print("4. 4-7-8 Relaxing Breath")
+    choice = input("Select a technique (1-4): ").strip()
     
     technique = TECHNIQUES.get(choice, TECHNIQUES["1"])
     phases = technique["phases"]
