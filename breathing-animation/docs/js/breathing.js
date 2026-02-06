@@ -703,7 +703,7 @@
             }
 
             instructionsContainer.innerHTML = instructions[safeKey] || '';
-            instructionsContainer.classList.remove('hidden');
+            // REMOVED: instructionsContainer.classList.remove('hidden'); -> Instructions should be collapsed by default
         }
 
         // Initial setup
@@ -760,6 +760,24 @@
                 document.body.classList.toggle('dark-mode');
                 const isDark = document.body.classList.contains('dark-mode');
                 darkModeBtn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+            });
+        }
+
+        // Instructions Toggle Logic
+        const instructionsToggle = document.getElementById('instructionsToggle');
+        if (instructionsToggle && instructionsContainer) {
+            instructionsToggle.addEventListener('click', () => {
+                const isHidden = instructionsContainer.classList.toggle('hidden');
+
+                // Update ARIA
+                instructionsToggle.setAttribute('aria-expanded', !isHidden);
+
+                // Update Button Text
+                if (isHidden) {
+                    instructionsToggle.textContent = 'Instructions (Click to expand)';
+                } else {
+                    instructionsToggle.textContent = 'Instructions (Click to collapse)';
+                }
             });
         }
         // Haptic Feedback Helper
