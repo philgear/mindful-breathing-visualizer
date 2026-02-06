@@ -7,7 +7,7 @@
 <p align="center">
   </a>
   <a href="https://github.com/philgear/mindful-breathing-visualizer/releases/tag/v3.0.0">
-     <img src="https://img.shields.io/badge/Design-Less_But_Better-ea5b0c?style=for-the-badge" alt="Dieter Rams Approved">
+     <img src="https://img.shields.io/badge/Design-Less_But_Better-ea5b0c?style=for-the-badge" alt="Minimalist DesignApproved">
   </a>
   <a href="LICENSE">
      <img src="https://img.shields.io/badge/License-CC_BY_4.0-60a5fa?style=for-the-badge" alt="License">
@@ -35,7 +35,7 @@ Maintained by **Phil Gear** and an open-source community dedicated to mental res
 ---
 
 ## 🌿 What (The Ecosystem)
-**New in v3.1.0 "The Rams Edition"**: The **Mindful Breathing Visualizer** has been completely overhauled to follow the **"Less, but better"** design philosophy.
+**New in v3.1.0 "The Minimalist Edition"**: The **Mindful Breathing Visualizer** has been completely overhauled to follow the **"Less, but better"** design philosophy.
 *   **Minimalist Aesthetic**: A strict monochromatic palette with a single **International Orange** interaction accent. No gradients, no shadows, no distractions.
 *   **Stereo Balance Indicator**: A new high-fidelity UI for Alternate Nostril Breathing that mimics analog audio equipment.
 *   **Pure Function**: Emojis and decorative text stripped away. Information is conveyed through clear, geometric signals.

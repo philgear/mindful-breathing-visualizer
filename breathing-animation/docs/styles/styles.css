@@ -1,8 +1,8 @@
-/* styles.css - Dieter Rams "Less, but better" Redesign */
+/* styles.css - Minimalist "Less, but better" Redesign */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 :root {
-  /* Palladium / Braun Color Palette */
+  /* Minimalist / Neutral Color Palette */
   --bg-color: #f4f4f4;
   --surface-color: #ffffff;
   --text-main: #111111;
@@ -378,7 +378,7 @@ button:active {
   opacity: 1;
   /* Note: mix-blend-mode might not work well on gray backgrounds with white text. 
      Let's use absolute logic based on shape color?
-     Rams: "Clarify". Text is clear.
+     Text is clear.
   */
   color: white;
   text-shadow: none;
@@ -462,8 +462,8 @@ button:active {
   /* Geometric list style */
 }
 
-/* Dark Mode (Rams Black) */
-/* Actually, Rams designs were usually white/gray. 
+/* Dark Mode */
+/* Minimalist designs were usually white/gray. 
    Simple inversion for dark mode. */
 @media (prefers-color-scheme: dark) {
   :root {

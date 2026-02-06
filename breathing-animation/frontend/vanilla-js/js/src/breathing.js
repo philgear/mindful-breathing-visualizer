@@ -253,9 +253,9 @@
                 this.setTransitionDuration(inhaleDuration);
                 this.animationElement.classList.add('inhale');
                 this.progressBar.classList.add('inhale');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '🌿' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 this.announce(text.label);
                 audioController.setPhase('inhale', inhaleDuration);
 
@@ -272,9 +272,9 @@
                 this.setTransitionDuration(holdDuration);
                 this.animationElement.classList.add('hold');
                 this.progressBar.classList.add('hold');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 this.announce(text.label);
                 audioController.setPhase('hold', holdDuration);
 
@@ -287,9 +287,9 @@
                 this.setTransitionDuration(exhaleDuration);
                 this.animationElement.classList.add('exhale');
                 this.progressBar.classList.add('exhale');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '🌬️' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 this.announce(text.label);
                 audioController.setPhase('exhale', exhaleDuration);
 
@@ -302,9 +302,9 @@
                 this.setTransitionDuration(holdDuration);
                 this.animationElement.classList.add('holdAfterExhale');
                 this.progressBar.classList.add('holdAfterExhale');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 this.announce(text.label);
                 audioController.setPhase('holdAfterExhale', holdDuration);
 
@@ -350,9 +350,9 @@
                 this.setTransitionDuration(inhaleDuration);
                 this.animationElement.classList.add('inhale');
                 this.progressBar.classList.add('inhale');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '🌿' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 audioController.setPhase('inhale', inhaleDuration);
 
                 this.timerId = setTimeout(() => {
@@ -364,9 +364,9 @@
                 this.setTransitionDuration(exhaleDuration);
                 this.animationElement.classList.add('exhale');
                 this.progressBar.classList.add('exhale');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '🌬️' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 audioController.setPhase('exhale', exhaleDuration);
 
                 this.timerId = setTimeout(() => {
@@ -384,6 +384,8 @@
         constructor(animationContainer, options) {
             super(animationContainer, options);
             this.side = 'left'; // Start with inhaling left
+            // Force the correct visual form for this exercise ("Form follows function")
+            this.options.animationStyle = 'alternate-nostril';
             this.setupAnimation();
         }
 
@@ -417,11 +419,11 @@
                 this.animationElement.classList.add('inhale', startSide);
                 this.progressBar.classList.add('inhale');
 
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '🌿' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '' };
                 const sideText = typeof I18n !== 'undefined' ? I18n.t(`ui.${startSide}`) : (startSide === 'left' ? 'Left' : 'Right');
 
                 this.promptElement.textContent = `${text.label} (${sideText})`;
-                document.title = `${text.label} (${sideText}) ${text.emoji}`;
+                document.title = `${text.label} (${sideText})`;
                 audioController.setPhase('inhale', inhaleDuration);
 
                 this.timerId = setTimeout(() => {
@@ -435,9 +437,9 @@
                 this.animationElement.classList.add('hold', endSide);
                 this.progressBar.classList.add('hold');
 
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 this.announce(text.label);
                 audioController.setPhase('hold', holdDuration);
 
@@ -451,11 +453,11 @@
                 this.animationElement.classList.add('exhale', endSide);
                 this.progressBar.classList.add('exhale');
 
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '🌬️' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '' };
                 const sideText = typeof I18n !== 'undefined' ? I18n.t(`ui.${endSide}`) : (endSide === 'left' ? 'Left' : 'Right');
 
                 this.promptElement.textContent = `${text.label} (${sideText})`;
-                document.title = `${text.label} (${sideText}) ${text.emoji}`;
+                document.title = `${text.label} (${sideText})`;
                 audioController.setPhase('exhale', exhaleDuration);
 
                 this.timerId = setTimeout(() => {
@@ -468,9 +470,9 @@
                 // Stay on endSide
                 this.animationElement.classList.add('holdAfterExhale', endSide);
                 this.progressBar.classList.add('holdAfterExhale');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 this.announce(text.label);
                 audioController.setPhase('holdAfterExhale', holdDuration);
 
@@ -518,9 +520,9 @@
                 this.setTransitionDuration(inhaleDuration);
                 this.animationElement.classList.add('inhale');
                 this.progressBar.classList.add('inhale');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '🌿' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 this.announce(text.label);
                 audioController.setPhase('inhale', inhaleDuration);
 
@@ -533,9 +535,9 @@
                 this.setTransitionDuration(holdDuration);
                 this.animationElement.classList.add('hold');
                 this.progressBar.classList.add('hold');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 this.announce(text.label);
                 audioController.setPhase('hold', holdDuration);
 
@@ -548,9 +550,9 @@
                 this.setTransitionDuration(exhaleDuration);
                 this.animationElement.classList.add('exhale');
                 this.progressBar.classList.add('exhale');
-                const text = typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '🌬️' };
+                const text = typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '' };
                 this.promptElement.textContent = text.label;
-                document.title = `${text.label} ${text.emoji}`;
+                document.title = `${text.label}`;
                 this.announce(text.label);
                 audioController.setPhase('exhale', exhaleDuration);
 

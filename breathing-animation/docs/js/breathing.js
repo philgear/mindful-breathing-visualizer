@@ -384,6 +384,8 @@
         constructor(animationContainer, options) {
             super(animationContainer, options);
             this.side = 'left'; // Start with inhaling left
+            // Force the correct visual form for this exercise ("Form follows function")
+            this.options.animationStyle = 'alternate-nostril';
             this.setupAnimation();
         }
 

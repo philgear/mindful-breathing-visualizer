@@ -5,183 +5,243 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mindful Breathing Ecosystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #34d399;
-            --secondary: #60a5fa;
-            --accent: #fb7185;
-            --bg: #f8fafc;
-            --text: #1e293b;
+            /* Minimalist Palette */
+            --bg-color: #f4f4f4;
+            --surface-color: #ffffff;
+            --text-main: #111111;
+            --text-muted: #888888;
+            --border-color: #dcdcdc;
+            --accent-color: #ea5b0c;
+            /* International Orange */
         }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             min-height: 100vh;
         }
 
+        /* Container: Strict Structure */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
         header {
-            background: white;
-            width: 100%;
-            padding: 2rem 0;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        h1 {
-            margin: 0;
-            color: var(--primary);
-            font-size: 2.5rem;
-        }
-
-        p.subtitle {
-            color: #64748b;
-            font-size: 1.1rem;
-            margin-top: 0.5rem;
-        }
-
-        /* Featured Card logic */
-        .card.featured {
-            background: white;
-            border: none;
-            padding: 3rem;
-            width: 100%;
-            text-align: center;
-            border-radius: 1.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            transition: transform 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .card.featured:hover {
-            transform: translateY(-5px);
-        }
-
-        .card.featured h2 {
-            font-size: 2rem;
-            margin: 1rem 0;
-            color: var(--text);
-        }
-
-        /* Ecosystem Section */
-        .ecosystem-section {
-            width: 100%;
-            text-align: center;
-        }
-
-        .ecosystem-section h3 {
-            color: #94a3b8;
-            font-weight: 500;
-            margin-bottom: 2rem;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
+            border-bottom: 2px solid var(--text-main);
+            padding-bottom: 2rem;
             text-align: left;
         }
 
-        .link-group h4 {
-            color: var(--text);
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .link-group a {
-            display: block;
-            color: #64748b;
-            text-decoration: none;
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-
-        .link-group a:hover {
-            color: var(--primary);
-        }
-
-        button {
-            margin-top: 1.5rem;
-            padding: 1rem 2rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 9999px;
+        h1 {
+            font-size: 1.5rem;
             font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(52, 211, 153, 0.4);
+            letter-spacing: -0.02em;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin: 0;
+            max-width: 400px;
+            line-height: 1.5;
+        }
+
+        /* Featured Section */
+        .featured-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .primary-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: border-color 0.2s;
+        }
+
+        .primary-action:hover {
+            border-color: var(--accent-color);
+        }
+
+        .primary-action h2 {
+            font-size: 1.25rem;
+            margin: 0 0 0.5rem 0;
+            font-weight: 600;
+        }
+
+        .primary-action p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            max-width: 400px;
+        }
+
+        .action-arrow {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        /* Ecosystem List: Functional Grid */
+        .ecosystem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+
+        .group-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: block;
+            font-weight: 600;
+        }
+
+        .link-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .link-list a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding-bottom: 2px;
+            border-bottom: 1px solid transparent;
+            transition: border-bottom-color 0.2s;
+            width: fit-content;
+        }
+
+        .link-list a:hover {
+            border-bottom-color: var(--accent-color);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .primary-action {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 2rem 1.5rem;
+                gap: 3rem;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <h1>Mindful Breathing</h1>
-        <p class="subtitle">A cross-platform ecosystem for meditation & breathwork.</p>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Mindful Breathing</h1>
+            <p class="subtitle">Ecosystem v3.0 // Minimalist Edition</p>
+        </header>
 
-    <main style="width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center; gap: 3rem;">
+        <main>
+            <!-- Featured -->
+            <section class="featured-section">
+                <span class="label">Primary Interface</span>
+                <a href="breathing-animation/docs/index.html" class="primary-action">
+                    <div>
+                        <h2>Visualizer Web App</h2>
+                        <p>Progressive Web App • Offline Capable • Strict Mode</p>
+                    </div>
+                    <span class="action-arrow">Launch &rarr;</span>
+                </a>
+            </section>
 
-        <!-- Featured Hero -->
-        <a href="breathing-animation/frontend/vanilla-js/public/index.html" class="card featured">
-            <span class="tag web">Flagship Experience</span>
-            <h2>🌿 Launch Web Visualizer</h2>
-            <p>The definitive PWA implementation. Features manual Dark Mode, Haptic Feedback, and full Offline support.
-            </p>
-            <button>Start Breathing &rarr;</button>
-        </a>
+            <!-- Ecosystem -->
+            <section>
+                <div class="ecosystem-grid">
+                    <div>
+                        <span class="group-title">Source</span>
+                        <ul class="link-list">
+                            <li><a href="breathing-animation/frontend/vanilla-js/public/index.html">Vanilla JS
+                                    Source</a></li>
+                            <li><a href="https://github.com/philgear/mindful-breathing-visualizer">GitHub Repository</a>
+                            </li>
+                        </ul>
+                    </div>
 
-        <!-- Consolidated Ecosystem -->
-        <div class="ecosystem-section">
-            <h3>Explore the Ecosystem (39 Pillars)</h3>
-            <div class="links-grid">
-                <div class="link-group">
-                    <h4>📱 Mobile</h4>
-                    <a href="#" onclick="alert('Open mobile/android')">Android (Kotlin)</a>
-                    <a href="#" onclick="alert('Open mobile/ios')">iOS (Swift)</a>
+                    <div>
+                        <span class="group-title">Native</span>
+                        <ul class="link-list">
+                            <li><a href="#" onclick="alert('Android Build')">Android (Kotlin)</a></li>
+                            <li><a href="#" onclick="alert('iOS Build')">iOS (Swift)</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <span class="group-title">Core</span>
+                        <ul class="link-list">
+                            <li><a href="#" onclick="alert('CLI Tool')">CLI (Rust)</a></li>
+                            <li><a href="breathing-animation/backend/php/index.php">Backend API</a></li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="link-group">
-                    <h4>💻 System & CLI</h4>
-                    <a href="#" onclick="alert('Run ./cli/bash/breathe.sh')">Bash Terminal</a>
-                    <a href="#" onclick="alert('Check cli/ directory')">Polyglot Scripts (Lua, Perl, Rust)</a>
-                </div>
-                <div class="link-group">
-                    <h4>📐 Science & Backend</h4>
-                    <a href="#" onclick="alert('Check math/ directory')">Julia, R, Wolfram</a>
-                    <a href="breathing-animation/backend/php/index.php">PHP Backend</a>
-                </div>
-                <div class="link-group">
-                    <h4>☁️ Infrastructure</h4>
-                    <a href="#" onclick="alert('Check infrastructure/kubernetes')">Kubernetes & Docker</a>
-                </div>
-            </div>
-        </div>
+            </section>
+        </main>
 
-    </main>
-
-    <footer style="padding: 2rem; color: #94a3b8; font-size: 0.9rem; text-align: center;">
-        v3.0.0 • 39 Pillars of Mindfulness • Built with 💚 & 🧠 <br>
-        <div style="margin-top: 0.5rem;">
-            <a href="https://github.com/philgear/mindful-breathing-visualizer" target="_blank"
-                style="color: #64748b; text-decoration: none; font-weight: 500; transition: color 0.2s;">
-                View Source on GitHub ↗
-            </a>
-        </div>
-    </footer>
+        <footer>
+            <span>Mindful Breathing Visualizer</span>
+            <span>Design: Minimalist & Pure</span>
+        </footer>
+    </div>
 
 </body>
 

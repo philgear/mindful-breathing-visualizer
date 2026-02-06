@@ -5,16 +5,13 @@
     },
     "phases": {
         "inhale": {
-            "label": "Inhale...",
-            "emoji": "🌿"
+            "label": "Inhale"
         },
         "hold": {
-            "label": "Hold...",
-            "emoji": "☁️"
+            "label": "Hold"
         },
         "exhale": {
-            "label": "Exhale...",
-            "emoji": "🌸"
+            "label": "Exhale"
         }
     },
     "ui": {
