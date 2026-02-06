@@ -5,8 +5,9 @@
 </p>
 
 <p align="center">
+  </a>
   <a href="https://github.com/philgear/mindful-breathing-visualizer/releases/tag/v3.0.0">
-     <img src="https://img.shields.io/badge/Release-v3.0.0-34d399?style=for-the-badge" alt="Release v3.0.0">
+     <img src="https://img.shields.io/badge/Design-Less_But_Better-ea5b0c?style=for-the-badge" alt="Dieter Rams Approved">
   </a>
   <a href="LICENSE">
      <img src="https://img.shields.io/badge/License-CC_BY_4.0-60a5fa?style=for-the-badge" alt="License">
@@ -34,11 +35,12 @@ Maintained by **Phil Gear** and an open-source community dedicated to mental res
 ---
 
 ## 🌿 What (The Ecosystem)
-**New in v3.0.0**: The **Mindful Breathing Visualizer** is a cross-platform ecosystem designed to bring mindfulness to every device. It features:
-*   **Serene Palette™**: A standardized, high-contrast color system (Emerald Inhale, Blue Hold, Rose Exhale).
-*   **Smart Durations**: Context-aware defaults (Box=4s, 4-7-8=4s/7s/8s, Diaphragmatic=Relaxing) that auto-adapt to user selection.
-*   **New Technique**: Added "4-7-8 Relaxing Breath" (Dr. Weil's method) across all pillars.
-*   **150Hz Audio Sync**: Real-time sine wave synthesis that rises/falls with breath, allowing eyes-closed practice.
+**New in v3.1.0 "The Rams Edition"**: The **Mindful Breathing Visualizer** has been completely overhauled to follow the **"Less, but better"** design philosophy.
+*   **Minimalist Aesthetic**: A strict monochromatic palette with a single **International Orange** interaction accent. No gradients, no shadows, no distractions.
+*   **Stereo Balance Indicator**: A new high-fidelity UI for Alternate Nostril Breathing that mimics analog audio equipment.
+*   **Pure Function**: Emojis and decorative text stripped away. Information is conveyed through clear, geometric signals.
+*   **Smart Durations**: Context-aware defaults (Box=4s, 4-7-8=4s/7s/8s, Diaphragmatic=Relaxing).
+*   **150Hz Audio Sync**: Real-time sine wave synthesis that rises/falls with breath.
 *   **Scientific Rigor**: Animations modeled on piece-wise respiratory sinus arrhythmia (RSA) functions.
 
 ### 🌌 The "Serene Palette" Across 39+ Dimensions

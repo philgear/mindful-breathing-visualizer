@@ -1,48 +1,24 @@
-/* styles.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;500;700&family=DM+Serif+Display&display=swap');
+/* styles.css - Dieter Rams "Less, but better" Redesign */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 :root {
-  /* Colors */
-  --primary-color: #6366f1;
-  /* Indigo */
-  --secondary-color: #a855f7;
-  /* Purple */
-  --accent-color: #ec4899;
-  /* Pink */
+  /* Palladium / Braun Color Palette */
+  --bg-color: #f4f4f4;
+  --surface-color: #ffffff;
+  --text-main: #111111;
+  --text-muted: #888888;
+  --border-color: #dcdcdc;
 
-  --bg-gradient-start: #e0e7ff;
-  --bg-gradient-end: #f3e8ff;
+  /* Interaction Points Only */
+  --accent-color: #ea5b0c;
+  /* International Orange */
 
-  --glass-bg: #ffffff;
-  --glass-border: transparent;
-  --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-
-  --input-bg: #f1f5f9;
-  --input-border: #cbd5e1;
-
-  /* Animation Colors */
-  --inhale-color: #34d399;
-  /* Emerald */
-  --hold-color: #60a5fa;
-  /* Blue */
-  --exhale-color: #fb7185;
-  /* Rose */
-
-  /* Dark Mode Variables */
-  --dark-bg-gradient-start: #020617;
-  --dark-bg-gradient-end: #1e293b;
-  --dark-glass-bg: #1e293b;
-  --dark-glass-border: #334155;
-  --dark-text-primary: #f8fafc;
-  --dark-text-secondary: #94a3b8;
-  --dark-text-muted: #64748b;
-  --dark-input-bg: #020617;
+  /* Animation States (Functional Only) */
+  --active-color: #ea5b0c;
+  --inactive-color: #dcdcdc;
 }
 
-/* Reset & Base Styles */
+/* Reset & Base */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -51,83 +27,59 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background: #f8fafc;
-  /* Solid, calm backgound (Slate-50) */
-  color: var(--text-primary);
-  min-height: 100vh;
+  /* Geometric Sans-serif */
+  background-color: var(--bg-color);
+  color: var(--text-main);
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
+
+  /* Safe Area Support */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
-/* Remove Gradient Animation for Zen Calm */
-/* Minimalist Container - detailed redesign */
+/* Container: The "Device" */
 .container {
-  background: var(--glass-bg);
-  /* Solid White */
-  border: none;
-  /* Removed border */
-  box-shadow: var(--glass-shadow);
-  /* Deep elevation */
-  border-radius: 24px;
-  padding: 2.5rem 2rem;
-  /* Increased top/bottom padding */
+  background: transparent;
   width: 90%;
-  max-width: 480px;
-  /* Slightly narrower for elegance */
-  text-align: center;
-  transition: all 0.3s ease;
+  max-width: 400px;
+  /* Reduced width for focus */
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  animation: fadeIn 0.8s ease-out forwards;
-  opacity: 0;
-  transform: translateY(10px);
+  gap: 2rem;
+  /* No shadows, no rounded corners, just structure */
 }
 
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Typography */
+/* Typography: Information Hierarchy */
 h1 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 2.5rem;
-  font-weight: 400;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+  margin: 0;
 }
 
 #tagline {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 300;
-  color: var(--text-secondary);
-  font-size: 1.1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 0.25rem;
 }
 
-/* Layout Sections */
 header {
-  margin-bottom: 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--text-main);
+  /* Structural separator */
+  padding-bottom: 1rem;
 }
 
-.options,
-.controls {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-/* Settings Panel (Groups options and controls) */
+/* Controls: The "Switches" */
 .settings-panel {
   display: flex;
   flex-direction: column;
@@ -140,336 +92,301 @@ header {
   gap: 1rem;
 }
 
-
 .input-group {
   display: flex;
   flex-direction: column;
-  text-align: left;
+  gap: 0.5rem;
 }
 
 label {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 0.4rem;
   text-transform: uppercase;
+  color: var(--text-muted);
   letter-spacing: 0.05em;
 }
 
+/* Tactile Inputs */
 select,
-input {
-  appearance: none;
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  padding: 20px;
-  background: var(--bg-color);
-  border-radius: 12px;
-  font-family: var(--font-family);
-  text-align: center;
-  color: var(--text-primary);
+button {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  min-height: 44px;
+  /* Touch Target */
+  border-radius: 2px;
+  /* Slight rounding for "physical" feel, mostly square */
   outline: none;
-  transition: all 0.2s ease;
   cursor: pointer;
   width: 100%;
 }
 
-select:hover,
-select:focus {
-  background: rgba(255, 255, 255, 0.8);
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+select {
+  appearance: none;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0 1rem;
+  transition: border-color 0.2s;
 }
 
-/* Animation Area */
+select:focus {
+  border-color: var(--text-main);
+}
+
+button {
+  background-color: var(--surface-color);
+  border: 1px solid var(--text-main);
+  color: var(--text-main);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+button:hover {
+  background-color: var(--text-main);
+  color: var(--surface-color);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Primary Action Button ("Switch") */
+#startButton {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+#startButton:hover {
+  background-color: #d14f0a;
+}
+
+#stopButton {
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+#stopButton:hover {
+  border-color: var(--active-color);
+  /* Orange warning on hover */
+  color: var(--active-color);
+  background: transparent;
+}
+
+/* Animation Area: The "Function" */
+#animation-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+#timerDisplay {
+  font-family: 'Inter', sans-serif;
+  font-feature-settings: "tnum";
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--text-main);
+  margin-bottom: 2rem;
+}
+
 #animation-container {
-  min-height: 250px;
-  max-height: 40vh;
-  /* limit height on tall screens */
-  height: auto;
+  position: relative;
+  width: 200px;
+  height: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  margin: 1rem 0;
-  flex-grow: 1;
 }
 
-/* The Element being animated (Circle/Square) */
+/* Geometric Forms */
+/* All animations share a common neutral state */
 .circle-animation,
 .square-animation,
 .lotus-animation,
 .sun-animation {
-  width: min(150px, 25vw);
-  /* Responsive size */
-  height: min(150px, 25vw);
-  background: var(--glass-bg);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 500;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  /* Responsive font */
-  color: white;
-  transition: transform var(--current-duration) ease,
-    background-color var(--current-duration) ease,
-    box-shadow var(--current-duration) ease;
-  position: relative;
-  z-index: 10;
+  width: 100px;
+  height: 100px;
+  background-color: var(--border-color);
+  /* Inactive State: Gray */
+  transition: all var(--current-duration) ease-in-out;
 }
 
-.circle-animation {
+/* Alternate Nostril - Stereo Balance Indicator */
+.alternate-nostril-animation {
+  width: 150px;
+  /* Fixed width to contain two points */
+  height: 60px;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  /* L / R Labels */
+}
+
+/* The two channels (Left and Right) */
+.alternate-nostril-animation::before,
+.alternate-nostril-animation::after {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+  /* Inactive Gray */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Left Active State */
+/* Logic: When 'left' class is present AND 'inhale' or 'exhale' is present...
+   Wait, the JS adds 'inhale' + 'left'.
+*/
+
+
+
+/* Inhale Left */
+.alternate-nostril-animation.inhale.left::before {
+  background-color: var(--active-color);
+  transform: scale(1.2);
+}
+
+/* Exhale Right */
+.alternate-nostril-animation.exhale.right::after {
+  background-color: var(--active-color);
+  transform: scale(1.2);
+}
+
+/* Inhale Right (Cycle 2) */
+.alternate-nostril-animation.inhale.right::after {
+  background-color: var(--active-color);
+  transform: scale(1.2);
+}
+
+/* Exhale Left (Cycle 2) */
+.alternate-nostril-animation.exhale.left::before {
+  background-color: var(--active-color);
+  transform: scale(1.2);
+}
+
+/* Hold States - Both Quiet or specific? Plan said "Both Gray" */
+.alternate-nostril-animation.hold::before,
+.alternate-nostril-animation.hold::after,
+.alternate-nostril-animation.holdAfterExhale::before,
+.alternate-nostril-animation.holdAfterExhale::after {
+  background-color: var(--border-color);
+  transform: scale(1);
+}
+
+/* Reset generic overrides from above */
+.alternate-nostril-animation.left,
+.alternate-nostril-animation.right {
+  transform: none;
+  /* Disable the old movement */
+}
+
+.circle-animation,
+.sun-animation,
+.lotus-animation {
   border-radius: 50%;
 }
 
 .square-animation {
-  border-radius: 16px;
+  border-radius: 0;
 }
 
-/* Lotus Animation */
-.lotus-animation {
-  width: min(150px, 25vw);
-  height: min(150px, 25vw);
-  background-color: var(--glass-bg);
-  border-radius: 50% 0 50% 0;
-  transform: rotate(45deg);
-  position: relative;
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.lotus-animation::before,
-.lotus-animation::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: inherit;
-  border-radius: inherit;
-  box-shadow: inherit;
-  z-index: -1;
-  transition: background-color 0.5s ease, box-shadow 0.5s ease;
-}
-
-.lotus-animation::before {
-  transform: rotate(60deg);
-}
-
-.lotus-animation::after {
-  transform: rotate(120deg);
-}
-
-/* Lotus specific active states */
-.lotus-animation.inhale,
-.lotus-animation.inhale::before,
-.lotus-animation.inhale::after {
-  background-color: var(--inhale-color);
-  box-shadow: 0 0 30px var(--inhale-color);
-}
-
-.circle-animation.exhale,
-.square-animation.exhale,
-.lotus-animation.exhale,
-.sun-animation.exhale,
-.alternate-nostril-animation.exhale {
-  background-color: var(--exhale-color);
-  box-shadow: 0 0 30px var(--exhale-color);
-}
-
-.circle-animation.hold,
-.square-animation.hold,
-.circle-animation.holdAfterExhale,
-.square-animation.holdAfterExhale,
-.alternate-nostril-animation.hold,
-.alternate-nostril-animation.holdAfterExhale,
-.lotus-animation.hold,
-.lotus-animation.holdAfterExhale,
-.sun-animation.hold,
-.sun-animation.holdAfterExhale {
-  background-color: var(--hold-color);
-  box-shadow: 0 0 30px var(--hold-color);
-}
-
-/* Sun Animation */
-.sun-animation {
-  width: min(150px, 25vw);
-  height: min(150px, 25vw);
-  border-radius: 50%;
-  background: radial-gradient(circle, #fcd34d 0%, #f59e0b 100%);
-  box-shadow: 0 0 20px #f59e0b;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 10;
-  transition: transform 0.1s linear, box-shadow 0.5s ease;
-}
-
-/* Alternate Nostril - Visualizing Side */
-.alternate-nostril-animation {
-  width: min(150px, 25vw);
-  height: min(150px, 25vw);
-  background: var(--glass-bg);
-  border-radius: 50%;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 500;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  color: white;
-  position: relative;
-  z-index: 10;
-  transition: transform var(--current-duration) ease,
-    background-color var(--current-duration) ease,
-    box-shadow var(--current-duration) ease,
-    left var(--current-duration) ease;
-  left: 0;
-}
-
+/* Functional Active States - Size Changes Only,*/
 /* Move Left/Right - Generic Support for All Shapes */
 .circle-animation.left,
 .square-animation.left,
 .lotus-animation.left,
-.sun-animation.left,
-.alternate-nostril-animation.left {
+.sun-animation.left {
   transform: translateX(-60px) scale(1.1);
 }
 
 .circle-animation.right,
 .square-animation.right,
 .lotus-animation.right,
-.sun-animation.right,
-.alternate-nostril-animation.right {
+.sun-animation.right {
   transform: translateX(60px) scale(1.1);
-}
-
-.sun-animation.inhale {
-  box-shadow: 0 0 60px #fbbf24, 0 0 100px #f59e0b;
-  transform: scale(1.5);
-  background: radial-gradient(circle, #fde047 0%, #fbbf24 100%);
-}
-
-.sun-animation.exhale {
-  box-shadow: 0 0 10px #d97706;
-  transform: scale(0.8);
-  background: radial-gradient(circle, #f59e0b 0%, #d97706 100%);
-}
-
-.sun-animation.hold,
-.sun-animation.holdAfterExhale {
-  box-shadow: 0 0 30px #f59e0b;
 }
 
 .circle-animation.inhale,
 .square-animation.inhale,
-.alternate-nostril-animation.inhale,
+.sun-animation.inhale,
 .lotus-animation.inhale {
-  background-color: var(--inhale-color);
-  box-shadow: 0 0 30px var(--inhale-color);
+  transform: scale(1.5);
+  background-color: var(--active-color);
 }
 
-
-/* Buttons */
-button {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-  width: 100%;
-  margin-top: 1rem;
+.circle-animation.exhale,
+.square-animation.exhale,
+.sun-animation.exhale,
+.lotus-animation.exhale {
+  transform: scale(0.8);
+  /* Contract */
+  background-color: var(--active-color);
 }
 
-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+.circle-animation.hold,
+.square-animation.hold,
+.sun-animation.hold,
+.lotus-animation.hold,
+.circle-animation.holdAfterExhale,
+.square-animation.holdAfterExhale {
+  /* Hold state maintains scale from previous state usually, or sets a specific static state */
+  background-color: var(--text-main);
+  /* Hold: Black/Solid */
 }
 
-button:active {
-  transform: translateY(-1px);
+/* Remove decorative glow/shadows */
+.circle-animation,
+.square-animation {
+  box-shadow: none !important;
 }
 
-button:disabled {
-  background: var(--text-muted);
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+/* Lotus specific simplification: Just a circle */
+.lotus-animation::before,
+.lotus-animation::after {
+  display: none;
+  /* Simplify complex shapes */
 }
 
-/* Feedback Text */
+/* Prompt Text */
 .prompt-container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  pointer-events: none;
   width: 100%;
   text-align: center;
-  pointer-events: none;
-  z-index: 20;
 }
 
 .prompt-text {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
-  transition: opacity 0.3s ease;
-}
-
-/* Timer */
-#timerDisplay {
-  font-family: 'Outfit', sans-serif;
-  font-variant-numeric: tabular-nums;
-  font-size: 2rem;
-  font-weight: 300;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
-  letter-spacing: 2px;
-}
-
-/* Instructions (Hidden by default, can be a modal or bottom section) */
-#instructions-container {
-  background: var(--input-bg);
-  /* Matches input/surface color */
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-top: 2rem;
-  border: 1px solid var(--input-border);
-  /* Subtle definition */
-  text-align: left;
-  transition: opacity 0.5s ease;
-  box-shadow: none;
-  /* Flat inside the card */
-}
-
-#instructions-container h3 {
-  font-family: 'Outfit', sans-serif;
-  color: var(--primary-color);
-  margin-bottom: 0.8rem;
-}
-
-#instructions-container li {
-  margin-bottom: 0.8rem;
-  color: var(--text-primary);
-  /* Darker text for better contrast */
   font-size: 1rem;
-  /* Slightly larger text */
-  line-height: 1.6;
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--surface-color);
+  /* Contrast against the shape color */
+  mix-blend-mode: difference;
+  /* Ensure visibility */
+  opacity: 0;
+  /* Hidden by default to reduce noise? Or keep it? keeping it for clarity */
+  opacity: 1;
+  /* Note: mix-blend-mode might not work well on gray backgrounds with white text. 
+     Let's use absolute logic based on shape color?
+     Rams: "Clarify". Text is clear.
+  */
+  color: white;
+  text-shadow: none;
+}
+
+/* Inactive state text might need to be dark if background is light gray */
+#animation-container:not(:has(.inhale)):not(:has(.exhale)):not(:has(.hold)) .prompt-text {
+  color: var(--text-main);
 }
 
 /* Utilities */
@@ -477,12 +394,6 @@ button:disabled {
   display: none !important;
 }
 
-.fade-out {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Screen Reader Only Utility */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -495,252 +406,129 @@ button:disabled {
   border-width: 0;
 }
 
-/* Dark Mode Support (System or Class) */
+/* Secondary Actions */
+.action-buttons button.outline {
+  border: none;
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.action-buttons button.outline:hover {
+  color: var(--text-main);
+  background: transparent;
+  text-decoration: underline;
+}
+
+/* Progress Bar: Minimalist Line */
+.progress-bar {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--border-color);
+  border-radius: 0;
+}
+
+.progress-fill {
+  background: var(--active-color);
+  height: 100%;
+  width: 0%;
+}
+
+/* Instructions */
+#instructions-container {
+  border-top: 1px solid var(--border-color);
+  margin-top: 2rem;
+  padding-top: 1rem;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+#instructions-container h3 {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+#instructions-container li {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  list-style: square;
+  /* Geometric list style */
+}
+
+/* Dark Mode (Rams Black) */
+/* Actually, Rams designs were usually white/gray. 
+   Simple inversion for dark mode. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-gradient-start: var(--dark-bg-gradient-start);
-    --bg-gradient-end: var(--dark-bg-gradient-end);
-    --glass-bg: var(--dark-glass-bg);
-    --glass-border: var(--dark-glass-border);
-    --text-primary: var(--dark-text-primary);
-    --text-secondary: var(--dark-text-secondary);
-    --text-muted: var(--dark-text-muted);
-    --input-bg: var(--dark-input-bg);
-    --input-border: var(--dark-glass-border);
+    --bg-color: #111111;
+    --surface-color: #1a1a1a;
+    --text-main: #eeeeee;
+    --text-muted: #666666;
+    --border-color: #333333;
+    /* --accent-color stays orange */
   }
 }
 
 body.dark-mode {
-  background: #0f172a;
-  /* Slate-900 */
-  color: var(--dark-text-primary);
+  background-color: #111111;
+  color: #eeeeee;
 }
 
 body.dark-mode .container {
-  background: var(--dark-glass-bg);
-  /* Slate-800 */
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  /* Deep dark shadow */
+  background: transparent;
+  box-shadow: none;
 }
 
-/* UX: Focus Mode Logic */
-body.focus-mode header,
-body.focus-mode .settings-group,
-body.focus-mode footer,
-body.focus-mode #instructions-container {
-  opacity: 0.1;
-  /* Dim distractions */
-  pointer-events: none;
-  /* Prevent clicks */
-  transition: opacity 1s ease;
-}
-
-/* Mimic Human Focus: Stillness (Hide Cursor) */
-body.focus-mode {
-  cursor: none;
-  overflow: hidden;
-  /* Prevent scrolling distractions */
-}
-
-/* Mimic Human Focus: Tunnel Vision (Vignette) */
-body.focus-mode::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
-  z-index: 999;
-  animation: fadeInVignette 2s ease-out forwards;
-}
-
-@keyframes fadeInVignette {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-body.focus-mode .container {
-  /* Keep container visible */
-  opacity: 1;
-  /* Mimic Human Focus: Leaning In (Gentle Zoom) */
-  transform: scale(1.05);
-  transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* UX: Progress Bar */
-.progress-bar {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  /* Wider but at bottom */
-  height: 6px;
-  background: var(--input-bg);
-  /* Subtler background */
-  border-radius: 3px;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: 5;
-}
-
-/* Show when active (we add classes to it now) */
-.progress-bar.inhale,
-.progress-bar.exhale,
-.progress-bar.hold,
-.progress-bar.holdAfterExhale {
-  opacity: 1;
-}
-
-
-/* Center-out Progress Fill */
-.progress-bar {
-  display: flex;
-  justify-content: center;
-  /* Key change: Center the fill */
-  background: var(--input-bg);
-  /* Subtler background */
-  border-radius: 3px;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: 5;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: var(--primary-color);
-  border-radius: 3px;
-  /* Remove absolute positioning to respect flex centering */
-}
-
-/* Progress Animations triggered by classes on .progress-bar itself */
-.progress-bar.inhale .progress-fill {
-  background: var(--inhale-color);
-  animation: progressFill var(--current-duration) linear forwards;
-}
-
-.progress-bar.exhale .progress-fill {
-  background: var(--exhale-color);
-  animation: progressFill var(--current-duration) linear forwards;
-}
-
-.progress-bar.hold .progress-fill,
-.progress-bar.holdAfterExhale .progress-fill {
-  background: var(--hold-color);
-  animation: progressFill var(--current-duration) linear forwards;
-}
-
-@keyframes progressFill {
-  from {
-    width: 0%;
-  }
-
-  to {
-    width: 100%;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  select option {
-    background-color: #1e293b;
-    color: #f1f5f9;
-  }
-}
-
-body.dark-mode select option {
-  background-color: #1e293b;
-  color: #f1f5f9;
-}
-
-body.dark-mode .circle-animation,
-body.dark-mode .square-animation {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-body.dark-mode .prompt-text {
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-body.dark-mode #instructions-container {
-  background: rgba(15, 23, 42, 0.95);
-  /* Almost solid dark for contrast */
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-body.dark-mode #instructions-container h3 {
-  color: var(--secondary-color);
-}
-
-body.dark-mode #instructions-container li {
-  color: var(--dark-text-secondary);
-}
-
-/* --- RESPONSIVE DESIGN - MEDIA QUERIES --- */
-
-/* Mobile Devices (Max Width 480px) */
-@media (max-width: 480px) {
+/* Landscape Mode for Mobile (Preserved functionality) */
+@media (max-height: 500px) and (orientation: landscape) {
   .container {
-    padding: 1.5rem 1.25rem;
-    width: 95%;
-    gap: 1rem;
-    max-width: 100%;
-    /* Ensure full use of space */
+    flex-direction: row;
+    align-items: center;
+    max-width: 90%;
   }
 
-  h1 {
-    font-size: 2rem;
+  header {
+    border-bottom: none;
+    border-right: 2px solid var(--text-main);
+    padding-right: 1rem;
+    padding-bottom: 0;
+    margin-right: 1rem;
+    margin-bottom: 0;
   }
 
   #tagline {
-    font-size: 1rem;
+    display: none;
   }
 
+  /* Compact Layout */
   .settings-panel {
-    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
 
   .settings-group {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  select,
-  input {
-    padding: 14px;
-    font-size: 1rem;
-  }
-
-  button {
-    padding: 0.8rem;
-    margin-top: 0.5rem;
+    /* Stack inputs in grid cells */
   }
 }
 
-/* Tablet & Smaller Laptops (Min Width 640px) */
-@media (min-width: 640px) {
-  .container {
-    max-width: 700px;
-    /* Allow wider container */
+/* Mobile Portrait Specifics */
+@media (max-width: 480px) {
+  .settings-group {
+    grid-template-columns: 1fr;
+    /* Stack inputs on narrow screens */
   }
 
-  /* Create a side-by-side layout for large screens if desired, or keep centered column. 
-     For simple breathing apps, centered column is usually more "Zen". 
-     We'll relax the constraints.*/
-
-  .settings-group {
-    gap: 1.5rem;
-    /* More breathing room */
+  h1 {
+    font-size: 1.25rem;
+    /* Slightly smaller header */
   }
 }
