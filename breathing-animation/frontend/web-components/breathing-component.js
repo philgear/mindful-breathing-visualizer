@@ -182,45 +182,48 @@ class BreathingVisualizer extends HTMLElement {
                 justify-content: center;
                 gap: 20px;
                 padding: 20px;
-                background: #f0f4f8;
-                border-radius: 12px;
+                background: #f4f4f4;
+                border: 1px solid #dcdcdc;
+                border-radius: 0;
                 text-align: center;
             }
             .visualizer {
                 width: 100px;
                 height: 100px;
                 border-radius: 50%;
-                background-color: #34d399;
-                transition: transform 4s ease-in-out, background-color 4s ease-in-out, margin-left 4s ease-in-out;
+                background-color: #dcdcdc;
+                transition: transform 4s cubic-bezier(0.4, 0.0, 0.2, 1), background-color 4s cubic-bezier(0.4, 0.0, 0.2, 1);
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: white;
                 font-weight: bold;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                box-shadow: none;
                 position: relative;
             }
             .mute-btn {
                 padding: 8px 16px;
-                border: 1px solid #cbd5e1;
-                border-radius: 8px;
+                border: 1px solid #111111;
+                border-radius: 2px;
                 background: white;
+                color: #111111;
                 cursor: pointer;
                 font-size: 0.9rem;
             }
             .mute-btn:hover {
-                background: #f3f4f6;
+                background: #111111;
+                color: white;
             }
             /* Techniques mapping */
-            .inhale { transform: scale(1.5); background-color: #34d399; }
-            .hold { transform: scale(1.5); background-color: #60a5fa; }
-            .exhale { transform: scale(1); background-color: #fb7185; }
+            .inhale { transform: scale(1.5); background-color: #ea5b0c; }
+            .hold { transform: scale(1.5); background-color: #111111; }
+            .exhale { transform: scale(1); background-color: #ea5b0c; }
             
             /* Alternate Nostril offsets using margin or transform logic */
-            .inhale-left { transform: scale(1.0) translateX(-50px); background-color: #34d399; }
-            .exhale-right { transform: scale(1.0) translateX(50px); background-color: #fb7185; }
-            .inhale-right { transform: scale(1.0) translateX(50px); background-color: #34d399; }
-            .exhale-left { transform: scale(1.0) translateX(-50px); background-color: #fb7185; }
+            .inhale-left { transform: scale(1.0) translateX(-50px); background-color: #ea5b0c; }
+            .exhale-right { transform: scale(1.0) translateX(50px); background-color: #ea5b0c; }
+            .inhale-right { transform: scale(1.0) translateX(50px); background-color: #ea5b0c; }
+            .exhale-left { transform: scale(1.0) translateX(-50px); background-color: #ea5b0c; }
         `;
 
         // SECURITY: Use textContent for user-derived values (though techniques name is trusted here)

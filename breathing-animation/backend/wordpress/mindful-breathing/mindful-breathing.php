@@ -20,10 +20,10 @@ function render_mindful_breathing_visualizer() {
     
     // Inline Script with Frozen Config
     ?>
-    <div id="<?php echo esc_attr($uniq); ?>_container" style="display:flex; flex-direction:column; align-items:center; padding:20px; background:#f0f4f8; border-radius:12px;">
-        <h3 id="<?php echo esc_attr($uniq); ?>_phase" style="margin-bottom:20px; color:#333;">Inhale</h3>
-        <div id="<?php echo esc_attr($uniq); ?>_circle" style="width:100px; height:100px; background:#34d399; border-radius:50%; transition: all 4s ease-in-out;"></div>
-        <div style="margin-top:15px; font-size:12px; color:#666;">Take a moment to breathe.</div>
+    <div id="<?php echo esc_attr($uniq); ?>_container" style="display:flex; flex-direction:column; align-items:center; padding:20px; background:#f4f4f4; border: 1px solid #dcdcdc; border-radius:0; font-family: 'Inter', sans-serif;">
+        <h3 id="<?php echo esc_attr($uniq); ?>_phase" style="margin-bottom:20px; color:#111; font-weight: 600; text-transform: uppercase;">Inhale</h3>
+        <div id="<?php echo esc_attr($uniq); ?>_circle" style="width:100px; height:100px; background:#ea5b0c; border-radius:50%; transition: all 4s cubic-bezier(0.4, 0.0, 0.2, 1);"></div>
+        <div style="margin-top:20px; font-size:14px; color:#888;">Take a moment to breathe.</div>
     </div>
     <script>
     (function() {
@@ -35,26 +35,26 @@ function render_mindful_breathing_visualizer() {
         const TECHNIQUES = Object.freeze({
             box: Object.freeze({
                 phases: Object.freeze([
-                { name: 'Inhale', scale: 1.5, color: '#34d399', dur: 4000, x: 0 },
-                { name: 'Hold', scale: 1.5, color: '#60a5fa', dur: 4000, x: 0 },
-                { name: 'Exhale', scale: 1.0, color: '#fb7185', dur: 4000, x: 0 },
-                { name: 'Hold', scale: 1.0, color: '#60a5fa', dur: 4000, x: 0 }
+                { name: 'Inhale', scale: 1.5, color: '#ea5b0c', dur: 4000, x: 0 },
+                { name: 'Hold', scale: 1.5, color: '#111111', dur: 4000, x: 0 },
+                { name: 'Exhale', scale: 1.0, color: '#ea5b0c', dur: 4000, x: 0 },
+                { name: 'Hold', scale: 1.0, color: '#111111', dur: 4000, x: 0 }
             ])}),
             diaphragmatic: Object.freeze({
                 phases: Object.freeze([
-                { name: 'Inhale', scale: 1.5, color: '#34d399', dur: 5000, x: 0 },
-                { name: 'Exhale', scale: 1.0, color: '#fb7185', dur: 5000, x: 0 }
+                { name: 'Inhale', scale: 1.5, color: '#ea5b0c', dur: 5000, x: 0 },
+                { name: 'Exhale', scale: 1.0, color: '#ea5b0c', dur: 5000, x: 0 }
             ])}),
             alternate: Object.freeze({
                 phases: Object.freeze([
-                { name: 'Inhale Left', scale: 1.0, color: '#34d399', dur: 4000, x: -30 },
-                { name: 'Hold', scale: 1.0, color: '#60a5fa', dur: 4000, x: 0 },
-                { name: 'Exhale Right', scale: 1.0, color: '#fb7185', dur: 4000, x: 30 },
-                { name: 'Hold', scale: 1.0, color: '#60a5fa', dur: 4000, x: 0 },
-                { name: 'Inhale Right', scale: 1.0, color: '#34d399', dur: 4000, x: 30 },
-                { name: 'Hold', scale: 1.0, color: '#60a5fa', dur: 4000, x: 0 },
-                { name: 'Exhale Left', scale: 1.0, color: '#fb7185', dur: 4000, x: -30 },
-                { name: 'Hold', scale: 1.0, color: '#60a5fa', dur: 4000, x: 0 }
+                { name: 'Inhale Left', scale: 1.0, color: '#ea5b0c', dur: 4000, x: -30 },
+                { name: 'Hold', scale: 1.0, color: '#111111', dur: 4000, x: 0 },
+                { name: 'Exhale Right', scale: 1.0, color: '#ea5b0c', dur: 4000, x: 30 },
+                { name: 'Hold', scale: 1.0, color: '#111111', dur: 4000, x: 0 },
+                { name: 'Inhale Right', scale: 1.0, color: '#ea5b0c', dur: 4000, x: 30 },
+                { name: 'Hold', scale: 1.0, color: '#111111', dur: 4000, x: 0 },
+                { name: 'Exhale Left', scale: 1.0, color: '#ea5b0c', dur: 4000, x: -30 },
+                { name: 'Hold', scale: 1.0, color: '#111111', dur: 4000, x: 0 }
             ])})
         });
 
@@ -72,7 +72,7 @@ function render_mindful_breathing_visualizer() {
             phaseLabel.innerText = p.name;
             circle.style.transform = `scale(${p.scale}) translateX(${p.x}px)`;
             circle.style.backgroundColor = p.color;
-            circle.style.transition = `all ${p.dur}ms ease-in-out`; 
+            circle.style.transition = `all ${p.dur}ms cubic-bezier(0.4, 0.0, 0.2, 1)`; 
             
             timeoutId = setTimeout(() => {
                 idx++;
@@ -89,9 +89,10 @@ function render_mindful_breathing_visualizer() {
             btn.style.margin = '0 5px';
             btn.style.padding = '5px 10px';
             btn.style.cursor = 'pointer';
-            btn.style.background = '#fff';
-            btn.style.border = '1px solid #ddd';
-            btn.style.borderRadius = '4px';
+            btn.style.background = '#ffffff';
+            btn.style.border = '1px solid #111111';
+            btn.style.borderRadius = '2px';
+            btn.style.color = '#111111';
             btn.onclick = (e) => {
                 e.preventDefault();
                 // SECURITY: Validate tech exists via safe lookup logic above
@@ -99,8 +100,12 @@ function render_mindful_breathing_visualizer() {
                     currentTech = tech;
                     idx = 0;
                     clearTimeout(timeoutId);
-                    document.querySelectorAll('#<?php echo esc_js($uniq); ?>_container button').forEach(b => b.style.fontWeight = 'normal');
-                    btn.style.fontWeight = 'bold';
+                    document.querySelectorAll('#<?php echo esc_js($uniq); ?>_container button').forEach(b => {
+                        b.style.background = '#ffffff';
+                        b.style.color = '#111111';
+                    });
+                    btn.style.background = '#111111';
+                    btn.style.color = '#ffffff';
                     tick();
                 }
             };
