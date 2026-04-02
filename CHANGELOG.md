@@ -2,6 +2,21 @@
 
 All notable changes to the **Mindful Breathing Visualizer** project will be documented in this file.
 
+## [3.1.0] - 2026-04-01 - Animation & Aesthetic Overhaul
+
+### Added
+- **Vestibular Accessibility**: Implemented comprehensive `@media (prefers-reduced-motion: reduce)` fallbacks across all 5 primary styling implementations to disable aggressive `scale()` and translation transforms, substituting them with gentle opacity fades for users with motion sensitivity.
+- **Geometric Lotus**: Restored the crisp overlapping 3-petal 60/120 degree geometric form for the Lotus visualization in Vanilla JS and Docs.
+- **Subconscious Pulsing**: Added an ultra-subtle 4-second opacity pulse to visually signify active focus without breaking the minimalist aesthetic during breath holds.
+
+### Changed
+- **Organic Easing**: Replaced rigid linear and material timing functions with a natural sine curve (`cubic-bezier(0.42, 0, 0.58, 1)`) across Web, Docs, and Extensions for more realistic lung expansion simulation.
+- **Hold States**: Maintained explicit state scaling (`transform: scale(1.5)` and `scale(0.8)`) during `hold` and `holdAfterExhale` phases to ensure visualizations don't erroneously snap to neutral mid-exercise.
+
+### Fixed
+- **Alternate Nostril Timing**: Fixed a bug where the left/right active indicators were hardcoded to a 0.3-second transition instead of smoothly swelling across the entire dynamic breath interval.
+- **Progress Bar States**: Synchronized progress bar layout and CSS transitions with hold states in Vanilla JS implementations.
+
 ## [3.0.0] - 2026-01-11 - SWEBOK v4 Compliance Upgrade
 
 ### Added

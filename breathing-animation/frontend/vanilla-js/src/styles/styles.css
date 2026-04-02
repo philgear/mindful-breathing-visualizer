@@ -210,7 +210,7 @@ button:active {
   height: 100px;
   background-color: var(--border-color);
   /* Inactive State: Gray */
-  transition: all var(--current-duration) ease-in-out;
+  transition: all var(--current-duration) cubic-bezier(0.45, 0.05, 0.55, 0.95);
 }
 
 /* Alternate Nostril - Stereo Balance Indicator */
@@ -237,7 +237,7 @@ button:active {
   border-radius: 50%;
   background-color: var(--border-color);
   /* Inactive Gray */
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition: background-color var(--current-duration) ease, transform var(--current-duration) ease;
 }
 
 /* Left Active State */
@@ -333,12 +333,17 @@ button:active {
 .circle-animation.hold,
 .square-animation.hold,
 .sun-animation.hold,
-.lotus-animation.hold,
-.circle-animation.holdAfterExhale,
-.square-animation.holdAfterExhale {
-  /* Hold state maintains scale from previous state usually, or sets a specific static state */
+.lotus-animation.hold {
+  transform: scale(1.5);
   background-color: var(--text-main);
-  /* Hold: Black/Solid */
+}
+
+.circle-animation.holdAfterExhale,
+.square-animation.holdAfterExhale,
+.sun-animation.holdAfterExhale,
+.lotus-animation.holdAfterExhale {
+  transform: scale(0.8);
+  background-color: var(--text-main);
 }
 
 /* Remove decorative glow/shadows */
@@ -347,11 +352,40 @@ button:active {
   box-shadow: none !important;
 }
 
-/* Lotus specific simplification: Just a circle */
+/* Restored Minimalist Geometric Lotus */
+.lotus-animation {
+  border-radius: 50% 0 50% 0 !important;
+  transform: rotate(45deg);
+}
+
 .lotus-animation::before,
 .lotus-animation::after {
-  display: none;
-  /* Simplify complex shapes */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: inherit;
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+  transition: all var(--current-duration) cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.lotus-animation::before {
+  transform: rotate(60deg);
+}
+
+.lotus-animation::after {
+  transform: rotate(120deg);
+}
+
+/* Lotus rotational preservation */
+.lotus-animation.inhale, .lotus-animation.hold {
+  transform: scale(1.5) rotate(45deg) !important;
+}
+.lotus-animation.exhale, .lotus-animation.holdAfterExhale {
+  transform: scale(0.8) rotate(45deg) !important;
 }
 
 /* Prompt Text */
@@ -435,6 +469,17 @@ button:active {
 .progress-fill {
   background: var(--active-color);
   height: 100%;
+  width: 0%;
+  transition: width var(--current-duration) linear;
+}
+
+.progress-bar.inhale .progress-fill,
+.progress-bar.hold .progress-fill {
+  width: 100%;
+}
+
+.progress-bar.exhale .progress-fill,
+.progress-bar.holdAfterExhale .progress-fill {
   width: 0%;
 }
 
@@ -530,5 +575,100 @@ body.dark-mode .container {
   h1 {
     font-size: 1.25rem;
     /* Slightly smaller header */
+  }
+}
+
+/* Subtle Hold Pulse */
+@keyframes holdPulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.85; }
+  100% { opacity: 1; }
+}
+.circle-animation.hold,
+.square-animation.hold,
+.sun-animation.hold,
+.lotus-animation.hold,
+.alternate-nostril-animation.hold,
+.circle-animation.holdAfterExhale,
+.square-animation.holdAfterExhale,
+.sun-animation.holdAfterExhale,
+.lotus-animation.holdAfterExhale,
+.alternate-nostril-animation.holdAfterExhale {
+  animation: holdPulse 4s infinite ease-in-out;
+}
+
+/* Accessibility: Vestibular Disorders (WCAG 2.1 AAA) */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable hold pulse */
+  .circle-animation.hold,
+  .square-animation.hold,
+  .sun-animation.hold,
+  .lotus-animation.hold,
+  .alternate-nostril-animation.hold,
+  .circle-animation.holdAfterExhale,
+  .square-animation.holdAfterExhale,
+  .sun-animation.holdAfterExhale,
+  .lotus-animation.holdAfterExhale,
+  .alternate-nostril-animation.holdAfterExhale {
+    animation: none !important;
+  }
+
+  .circle-animation,
+  .square-animation,
+  .sun-animation,
+  .lotus-animation,
+  .alternate-nostril-animation,
+  .alternate-nostril-animation::before,
+  .alternate-nostril-animation::after,
+  .lotus-animation::before,
+  .lotus-animation::after {
+    transition: background-color var(--current-duration) ease, opacity var(--current-duration) ease !important;
+  }
+
+  /* Disable all scaling and rotation transforms completely */
+  .circle-animation.inhale,
+  .square-animation.inhale,
+  .sun-animation.inhale,
+  .alternate-nostril-animation.inhale,
+  .lotus-animation.inhale,
+  .circle-animation.hold,
+  .square-animation.hold,
+  .sun-animation.hold,
+  .lotus-animation.hold,
+  .alternate-nostril-animation.hold,
+  .alternate-nostril-animation.inhale.left::before,
+  .alternate-nostril-animation.exhale.right::after,
+  .alternate-nostril-animation.inhale.left,
+  .alternate-nostril-animation.exhale.right {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .circle-animation.exhale,
+  .square-animation.exhale,
+  .sun-animation.exhale,
+  .alternate-nostril-animation.exhale,
+  .lotus-animation.exhale,
+  .circle-animation.holdAfterExhale,
+  .square-animation.holdAfterExhale,
+  .sun-animation.holdAfterExhale,
+  .lotus-animation.holdAfterExhale,
+  .alternate-nostril-animation.holdAfterExhale {
+    transform: none !important;
+    opacity: 0.3 !important;
+  }
+
+  /* Disable position translation */
+  .circle-animation.left,
+  .square-animation.left,
+  .lotus-animation.left,
+  .sun-animation.left,
+  .alternate-nostril-animation.left,
+  .circle-animation.right,
+  .square-animation.right,
+  .lotus-animation.right,
+  .sun-animation.right,
+  .alternate-nostril-animation.right {
+    transform: none !important;
   }
 }

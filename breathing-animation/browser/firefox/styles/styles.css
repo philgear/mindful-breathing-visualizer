@@ -212,9 +212,9 @@ select:focus {
   font-size: clamp(1rem, 2vw, 1.5rem);
   /* Responsive font */
   color: white;
-  transition: transform var(--current-duration) ease,
-    background-color var(--current-duration) ease,
-    box-shadow var(--current-duration) ease;
+  transition: transform var(--current-duration) cubic-bezier(0.42, 0, 0.58, 1),
+    background-color var(--current-duration) cubic-bezier(0.42, 0, 0.58, 1),
+    box-shadow var(--current-duration) cubic-bezier(0.42, 0, 0.58, 1);
   position: relative;
   z-index: 10;
 }
@@ -280,20 +280,27 @@ select:focus {
 .alternate-nostril-animation.exhale {
   background-color: var(--exhale-color);
   box-shadow: 0 0 30px var(--exhale-color);
+  transform: scale(0.8);
 }
 
 .circle-animation.hold,
 .square-animation.hold,
+.alternate-nostril-animation.hold,
+.lotus-animation.hold,
+.sun-animation.hold {
+  background-color: var(--hold-color);
+  box-shadow: 0 0 30px var(--hold-color);
+  transform: scale(1.5);
+}
+
 .circle-animation.holdAfterExhale,
 .square-animation.holdAfterExhale,
-.alternate-nostril-animation.hold,
 .alternate-nostril-animation.holdAfterExhale,
-.lotus-animation.hold,
 .lotus-animation.holdAfterExhale,
-.sun-animation.hold,
 .sun-animation.holdAfterExhale {
   background-color: var(--hold-color);
   box-shadow: 0 0 30px var(--hold-color);
+  transform: scale(0.8);
 }
 
 /* Sun Animation */
@@ -327,10 +334,10 @@ select:focus {
   color: white;
   position: relative;
   z-index: 10;
-  transition: transform var(--current-duration) ease,
-    background-color var(--current-duration) ease,
-    box-shadow var(--current-duration) ease,
-    left var(--current-duration) ease;
+  transition: transform var(--current-duration) cubic-bezier(0.42, 0, 0.58, 1),
+    background-color var(--current-duration) cubic-bezier(0.42, 0, 0.58, 1),
+    box-shadow var(--current-duration) cubic-bezier(0.42, 0, 0.58, 1),
+    left var(--current-duration) cubic-bezier(0.42, 0, 0.58, 1);
   left: 0;
 }
 
@@ -374,6 +381,7 @@ select:focus {
 .lotus-animation.inhale {
   background-color: var(--inhale-color);
   box-shadow: 0 0 30px var(--inhale-color);
+  transform: scale(1.5);
 }
 
 
@@ -742,5 +750,100 @@ body.dark-mode #instructions-container li {
   .settings-group {
     gap: 1.5rem;
     /* More breathing room */
+  }
+}
+
+/* Subtle Hold Pulse */
+@keyframes holdPulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.85; }
+  100% { opacity: 1; }
+}
+.circle-animation.hold,
+.square-animation.hold,
+.sun-animation.hold,
+.lotus-animation.hold,
+.alternate-nostril-animation.hold,
+.circle-animation.holdAfterExhale,
+.square-animation.holdAfterExhale,
+.sun-animation.holdAfterExhale,
+.lotus-animation.holdAfterExhale,
+.alternate-nostril-animation.holdAfterExhale {
+  animation: holdPulse 4s infinite ease-in-out;
+}
+
+/* Accessibility: Vestibular Disorders (WCAG 2.1 AAA) */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable hold pulse */
+  .circle-animation.hold,
+  .square-animation.hold,
+  .sun-animation.hold,
+  .lotus-animation.hold,
+  .alternate-nostril-animation.hold,
+  .circle-animation.holdAfterExhale,
+  .square-animation.holdAfterExhale,
+  .sun-animation.holdAfterExhale,
+  .lotus-animation.holdAfterExhale,
+  .alternate-nostril-animation.holdAfterExhale {
+    animation: none !important;
+  }
+
+  .circle-animation,
+  .square-animation,
+  .sun-animation,
+  .lotus-animation,
+  .alternate-nostril-animation,
+  .alternate-nostril-animation::before,
+  .alternate-nostril-animation::after,
+  .lotus-animation::before,
+  .lotus-animation::after {
+    transition: background-color var(--current-duration) ease, opacity var(--current-duration) ease !important;
+  }
+
+  /* Disable all scaling and rotation transforms completely */
+  .circle-animation.inhale,
+  .square-animation.inhale,
+  .sun-animation.inhale,
+  .alternate-nostril-animation.inhale,
+  .lotus-animation.inhale,
+  .circle-animation.hold,
+  .square-animation.hold,
+  .sun-animation.hold,
+  .lotus-animation.hold,
+  .alternate-nostril-animation.hold,
+  .alternate-nostril-animation.inhale.left::before,
+  .alternate-nostril-animation.exhale.right::after,
+  .alternate-nostril-animation.inhale.left,
+  .alternate-nostril-animation.exhale.right {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .circle-animation.exhale,
+  .square-animation.exhale,
+  .sun-animation.exhale,
+  .alternate-nostril-animation.exhale,
+  .lotus-animation.exhale,
+  .circle-animation.holdAfterExhale,
+  .square-animation.holdAfterExhale,
+  .sun-animation.holdAfterExhale,
+  .lotus-animation.holdAfterExhale,
+  .alternate-nostril-animation.holdAfterExhale {
+    transform: none !important;
+    opacity: 0.3 !important;
+  }
+
+  /* Disable position translation */
+  .circle-animation.left,
+  .square-animation.left,
+  .lotus-animation.left,
+  .sun-animation.left,
+  .alternate-nostril-animation.left,
+  .circle-animation.right,
+  .square-animation.right,
+  .lotus-animation.right,
+  .sun-animation.right,
+  .alternate-nostril-animation.right {
+    transform: none !important;
   }
 }
