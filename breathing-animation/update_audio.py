@@ -1,43 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import os
+import re
 
-// SECURITY: Configuration outside class and frozen
-const TECHNIQUES: any = Object.freeze({
-  box: Object.freeze({
-    name: 'Box Breathing',
-    phases: Object.freeze([
-      Object.freeze({ name: 'Inhale', duration: 4000, scale: 1.5, color: '#34d399', x: 0 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.5, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Exhale', duration: 4000, scale: 1.0, color: '#fb7185', x: 0 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 })
-    ])
-  }),
-  diaphragmatic: Object.freeze({
-    name: 'Diaphragmatic',
-    phases: Object.freeze([
-      Object.freeze({ name: 'Inhale', duration: 5000, scale: 1.5, color: '#34d399', x: 0 }),
-      Object.freeze({ name: 'Exhale', duration: 5000, scale: 1.0, color: '#fb7185', x: 0 })
-    ])
-  }),
-  alternate: Object.freeze({
-    name: 'Alternate Nostril',
-    phases: Object.freeze([
-      Object.freeze({ name: 'Inhale Left', duration: 4000, scale: 1.0, color: '#34d399', x: -50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Exhale Right', duration: 4000, scale: 1.0, color: '#fb7185', x: 50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Inhale Right', duration: 4000, scale: 1.0, color: '#34d399', x: 50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Exhale Left', duration: 4000, scale: 1.0, color: '#fb7185', x: -50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 })
-    ])
-  })
-});
+audio_class = """class AudioController {
+    constructor() {
+        this.ctx = null; this.masterGain = null; this.nodes = [];
+        this.isPlaying = false; this.isMuted = false; this.soundscape = 'sine';
+    }
 
-class AudioController {
-    ctx: any = null; masterGain: any = null; nodes: any[] = [];
-    isPlaying = false; isMuted = false; soundscape = 'sine';
-
-    setSoundscape(type: string) {
+    setSoundscape(type) {
         if (this.soundscape === type) return;
         this.soundscape = type;
         if (this.isPlaying) {
@@ -45,13 +15,16 @@ class AudioController {
             setTimeout(() => this.startTone(), 50);
         }
     }
+
     init() {
         if (!this.ctx) {
-            this.ctx = new ((window as any).AudioContext || (window as any).webkitAudioContext)();
-            this.masterGain = this.ctx.createGain(); this.masterGain.connect(this.ctx.destination);
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.connect(this.ctx.destination);
             this.masterGain.gain.value = 0;
         }
     }
+
     toggleMute() {
         this.isMuted = !this.isMuted;
         if (this.isMuted) {
@@ -61,6 +34,7 @@ class AudioController {
         }
         return this.isMuted;
     }
+
     cleanupNodes() {
         this.nodes.forEach(n => {
             if(n.node.stop) { try { n.node.stop(); } catch(e){} }
@@ -68,12 +42,14 @@ class AudioController {
         });
         this.nodes = [];
     }
+
     startTone() {
         if (this.isMuted) return;
         this.init();
         if (this.ctx.state === 'suspended') this.ctx.resume();
         this.cleanupNodes();
         const now = this.ctx.currentTime;
+        
         if (this.soundscape === 'sine') {
             const osc = this.ctx.createOscillator();
             osc.type = 'sine'; osc.frequency.value = 150;
@@ -127,6 +103,7 @@ class AudioController {
         }
         this.isPlaying = true;
     }
+
     stopTone() {
         if (this.isPlaying && this.masterGain) {
             const now = this.ctx.currentTime;
@@ -137,7 +114,8 @@ class AudioController {
             this.isPlaying = false;
         }
     }
-    doHaptic(phaseName: string, duration: number) {
+    
+    doHaptic(phaseName, duration) {
         if (typeof navigator !== 'undefined' && navigator.vibrate) {
             const p = phaseName.toLowerCase();
             if (p.includes('inhale') || p.includes('exhale')) {
@@ -153,7 +131,10 @@ class AudioController {
             }
         }
     }
-    setPhaseTone(phaseName: string, duration: number) {
+
+    setPhaseTone(phaseName, duration) { this.setPhase(phaseName, duration); } // alias for angular
+
+    setPhase(phaseName, duration) {
         this.doHaptic(phaseName, duration);
         if (this.isMuted || !this.isPlaying || !this.ctx) return;
         const now = this.ctx.currentTime;
@@ -223,195 +204,26 @@ class AudioController {
         }
     }
 }
-const audioController = new AudioController();
+"""
 
-@Component({
-  selector: 'app-breathing-visualizer',
-  template: `
-    <div class="container">
-      <h3>{{ currentTechnique.name }}</h3>
-      <button class="mute-btn" (click)="toggleMute()">
-        {{ isMuted ? '🔇 Unmute' : '🔊 Mute' }}
-      </button>
+def replace_audio_controller(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
 
-      <div 
-        class="visualizer" 
-        [style.transform]="'scale(' + currentPhase.scale + ') translateX(' + (currentPhase.x || 0) + 'px)'"
-        [style.background-color]="currentPhase.color"
-        [style.border-radius]="borderRadius"
-        [style.transition]="'transform ' + currentPhase.duration + 'ms ease-in-out, background-color ' + currentPhase.duration + 'ms ease-in-out'"
-        role="status"
-        aria-live="polite"
-        [attr.aria-label]="'Current phase: ' + currentPhase.name"
-      >
-        {{ currentPhase.name }}
-      </div>
-      <div class="controls">
-        <label>
-            Shape: 
-            <select (change)="setShape($event)" style="margin-left: 10px; padding: 5px; border-radius: 4px;">
-                <option value="circle">Circle</option>
-                <option value="square">Square</option>
-                <option value="lotus">Lotus</option>
-                <option value="star">Star</option>
-                <option value="flower">Flower</option>
-                <option value="hexagon">Hexagon</option>
-                <option value="turtle">Turtle</option>
-            </select>
-        </label>
-        <label style="margin-left: 10px;">
-            Soundscape:
-            <select (change)="setSoundscape($event)" style="margin-left: 5px; padding: 5px; border-radius: 4px;">
-                <option value="sine">Pure Tone (Legacy)</option>
-                <option value="binaural">Singing Bowl (Binaural)</option>
-                <option value="ocean">Ocean Waves (Brown Noise)</option>
-                <option value="harmonic">Harmonic Swell</option>
-            </select>
-        </label>
-      </div>
-      <div class="controls">
-          <button *ngFor="let key of objectKeys" (click)="selectTechnique(key)" [disabled]="selectedKey === key">
-            {{ techniques[key].name }}
-          </button>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: #f0f4f8;
-      border-radius: 12px;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      text-align: center;
-      color: #1e293b;
-    }
-    .visualizer {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      transition: transform 4s ease, background-color 4s ease;
-      margin: 20px;
-    }
-    .controls {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    button {
-      padding: 8px 16px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      background: white;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #e2e8f0;
-      cursor: default;
-    }
-    .mute-btn {
-        margin-bottom: 20px;
-    }
-  `]
-})
-export class BreathingVisualizerComponent implements OnInit, OnDestroy {
-  // Read-only reference
-  techniques: any = TECHNIQUES;
+    # Regex to find 'class AudioController { ... }' or 'const audioController = { ... };'
+    if 'class AudioController' in content:
+        content = re.sub(r'class AudioController\s*\{.*?\n\}\nconst audioController = new AudioController\(\);', audio_class + '\nconst audioController = new AudioController();', content, flags=re.DOTALL)
+        content = re.sub(r'class AudioController\s*\{.*?\}\n', audio_class + '\n', content, flags=re.DOTALL)
+    elif 'const audioController = {' in content:
+        content = re.sub(r'const audioController = \{.*?\n\};\n', audio_class + '\nconst audioController = new AudioController();\n', content, flags=re.DOTALL)
 
-  selectedKey: string = 'box';
-  selectedShape: string = 'circle';
-  currentPhaseIndex: number = 0;
-  timer: any;
-  isMuted: boolean = false;
-  isPlaying: boolean = false;
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.write(content)
 
-  setSoundscape(event: any) { audioController.setSoundscape(event.target.value); }
-
-  get objectKeys() {
-    return Object.keys(this.techniques);
-  }
-
-  get currentTechnique() {
-    // SECURITY: Safe fallback
-    return this.techniques[this.selectedKey] || this.techniques['box'];
-  }
-
-  get currentPhase() {
-    return this.currentTechnique.phases[this.currentPhaseIndex];
-  }
-
-  get borderRadius() {
-    if (['circle', 'flower'].includes(this.selectedShape)) return '50%';
-    if (this.selectedShape === 'lotus') return '40% 60% 70% 30% / 40% 50% 60% 50%';
-    if (this.selectedShape === 'star') return '0';
-    if (this.selectedShape === 'hexagon') return '25%';
-    return '12px'; // Square/Rounded
-  }
-
-  ngOnInit() {
-    this.runPhase();
-    this.startTone();
-  }
-
-  ngOnDestroy() {
-    clearTimeout(this.timer);
-    this.stopTone();
-  }
-
-  selectTechnique(key: string) {
-    if (this.selectedKey === key) return;
-
-    // SECURITY: Validate key
-    if (this.techniques[key]) {
-      this.selectedKey = key;
-      this.currentPhaseIndex = 0;
-      clearTimeout(this.timer);
-      this.runPhase();
-    }
-  }
-
-  setShape(event: any) {
-    this.selectedShape = event.target.value;
-  }
-
-  runPhase() {
-    const duration = this.currentPhase.duration;
-    this.setPhaseTone(this.currentPhase.name, duration);
-
-    this.timer = setTimeout(() => {
-      this.currentPhaseIndex = (this.currentPhaseIndex + 1) % this.currentTechnique.phases.length;
-      this.runPhase();
-    }, duration);
-  }
-
-  // Audio Logic
-  initAudio() { }
-
-  toggleMute() {
-    this.isMuted = audioController.toggleMute();
-  }
-
-  startTone() {
-    audioController.startTone();
-    this.isPlaying = audioController.isPlaying;
-  }
-
-  stopTone() {
-    audioController.stopTone();
-    this.isPlaying = audioController.isPlaying;
-  }
-
-  setPhaseTone(phaseName: string, duration: number) {
-    audioController.setPhaseTone(phaseName, duration);
-  }
-}
+for framework in ['react/BreathingVisualizer.jsx', 'vue/BreathingVisualizer.vue', 'svelte/BreathingVisualizer.svelte', 'astro/BreathingVisualizer.astro', 'angular/breathing-visualizer.component.ts']:
+    path = os.path.join(r"C:\Users\philg\OneDrive\Documents\Coding\mindfulbreathingvisualizer\mindful-breathing-visualizer\breathing-animation\frontend", framework)
+    try:
+        replace_audio_controller(path)
+        print("Replaced AudioController in", framework)
+    except Exception as e:
+        print("Failed", framework, e)

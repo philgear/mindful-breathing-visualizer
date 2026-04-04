@@ -149,6 +149,7 @@
 
   let selectedKey = 'box';
   let selectedShape = 'circle';
+  let soundscape = 'sine';
   let currentPhaseIndex = 0;
   let timer;
   let isMuted = false;
@@ -157,20 +158,27 @@
   $: currentTechnique = TECHNIQUES[selectedKey] || TECHNIQUES['box'];
   $: currentPhase = currentTechnique.phases[currentPhaseIndex];
   $: borderRadius =
-    selectedShape === 'circle'
+    ['circle', 'flower'].includes(selectedShape)
       ? '50%'
       : selectedShape === 'lotus'
         ? '40% 60% 70% 30% / 40% 50% 60% 50%'
-        : '12px';
+        : selectedShape === 'star'
+          ? '0'
+          : selectedShape === 'hexagon'
+            ? '25%'
+            : '12px';
 
   // We handle animation via CSS transitions reactively based on currentPhase
-  $: transformStyle = `scale(${currentPhase.scale}) translateX(${currentPhase.x || 0}px)`;
+  $: transformStyle = `scale(${currentPhase.scale}) translateX(${currentPhase.x || 0}px) ${selectedShape === 'star' ? 'rotate(45deg)' : ''}`;
   $: duration = currentPhase.duration;
 
   // Reactively set audio phase
   $: if (currentPhase) {
     audioController.setPhase(currentPhase.name, currentPhase.duration);
   }
+  
+  // Reactively set soundscape
+  $: audioController.setSoundscape(soundscape);
 
   function runPhase() {
     clearTimeout(timer);
@@ -217,12 +225,12 @@
   </button>
   <div
     class="visualizer"
-    style="transform: {transformStyle}; background-color: {currentPhase.color}; border-radius: {borderRadius}; transition: transform {duration}ms ease-in-out, background-color {duration}ms ease-in-out;"
+    style="transform: {transformStyle}; background-color: {selectedShape === 'turtle' ? 'transparent' : currentPhase.color}; color: {selectedShape === 'turtle' ? 'transparent' : 'white'}; font-size: {selectedShape === 'turtle' ? '80px' : 'inherit'}; box-shadow: {selectedShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)'}; border-radius: {borderRadius}; transition: transform {duration}ms ease-in-out, background-color {duration}ms ease-in-out;"
     role="status"
     aria-live="polite"
     aria-label="Current phase: {currentPhase.name}"
   >
-    {currentPhase.name}
+    {selectedShape === 'turtle' ? '🐢' : currentPhase.name}
   </div>
 
   <div class="controls">
@@ -235,6 +243,22 @@
         <option value="circle">Circle</option>
         <option value="square">Square</option>
         <option value="lotus">Lotus</option>
+        <option value="star">Star</option>
+        <option value="flower">Flower</option>
+        <option value="hexagon">Hexagon</option>
+        <option value="turtle">Turtle</option>
+      </select>
+    </label>
+    <label style="margin-left: 10px;">
+      Soundscape:
+      <select
+        bind:value={soundscape}
+        style="margin-left: 5px; padding: 5px; border-radius: 4px;"
+      >
+        <option value="sine">Pure Tone (Legacy)</option>
+        <option value="binaural">Singing Bowl (Binaural)</option>
+        <option value="ocean">Ocean Waves (Brown Noise)</option>
+        <option value="harmonic">Harmonic Swell</option>
       </select>
     </label>
   </div>

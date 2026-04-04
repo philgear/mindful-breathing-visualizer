@@ -142,7 +142,7 @@
 
             this.animationElement = document.createElement('div');
             // Safe class usage: using predefined prefix + validated/controlled input
-            const safeStyle = ['circle', 'square', 'lotus', 'sun', 'alternate-nostril'].includes(this.options.animationStyle)
+            const safeStyle = ['circle', 'square', 'lotus', 'sun', 'star', 'flower', 'hexagon', 'turtle'].includes(this.options.animationStyle)
                 ? this.options.animationStyle
                 : 'circle';
             this.animationElement.className = safeStyle + '-animation';

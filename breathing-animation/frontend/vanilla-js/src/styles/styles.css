@@ -672,3 +672,50 @@ body.dark-mode .container {
     transform: none !important;
   }
 }
+
+/* NEW SHAPES (Octagram, Flower, Hexagon, Turtle) */
+.star-animation {
+  width: 15vw;
+  height: 15vw;
+  background-color: var(--color-inhale);
+  transform: rotate(45deg);
+  transition: transform var(--transition-duration) var(--transition-easing),
+              background-color var(--transition-duration) linear,
+              filter var(--transition-duration) linear;
+  will-change: transform, background-color, filter;
+}
+
+.flower-animation {
+  width: 15vw;
+  height: 15vw;
+  border-radius: 50%;
+  background-color: var(--color-inhale);
+  transition: transform var(--transition-duration) var(--transition-easing),
+              background-color var(--transition-duration) linear,
+              filter var(--transition-duration) linear;
+  will-change: transform, background-color, filter;
+}
+
+.hexagon-animation {
+  width: 15vw;
+  height: 15vw;
+  border-radius: 25%;
+  background-color: var(--color-inhale);
+  transition: transform var(--transition-duration) var(--transition-easing),
+              background-color var(--transition-duration) linear,
+              filter var(--transition-duration) linear;
+  will-change: transform, background-color, filter;
+}
+
+.emoji-turtle {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.star-animation.inhale, .flower-animation.inhale, .hexagon-animation.inhale, .turtle-animation.inhale {
+  transform: scale(1.5) rotate(45deg);
+}
+
+.star-animation.exhale, .flower-animation.exhale, .hexagon-animation.exhale, .turtle-animation.exhale {
+  transform: scale(1.0) rotate(45deg);
+}

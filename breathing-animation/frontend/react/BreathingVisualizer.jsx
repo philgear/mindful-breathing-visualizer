@@ -129,6 +129,7 @@ const audioController = new AudioController();
 const BreathingVisualizer = () => {
     const [selectedTechnique, setSelectedTechnique] = useState('box');
     const [selectedShape, setSelectedShape] = useState('circle');
+    const [soundscape, setSoundscape] = useState('sine');
     const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
     const [isMuted, setIsMuted] = useState(false);
     const timeoutRef = useRef(null);
@@ -151,6 +152,10 @@ const BreathingVisualizer = () => {
         // Update Audio for new phase
         audioController.setPhase(phase.name, phase.duration);
     }, [phase]);
+
+    useEffect(() => {
+        audioController.setSoundscape(soundscape);
+    }, [soundscape]);
 
     useEffect(() => {
         // Clear existing timeout when technique changes
@@ -190,16 +195,17 @@ const BreathingVisualizer = () => {
         visualizer: {
             width: '100px',
             height: '100px',
-            borderRadius: selectedShape === 'circle' ? '50%' : selectedShape === 'lotus' ? '40% 60% 70% 30% / 40% 50% 60% 50%' : '12px',
+            borderRadius: ['circle', 'flower'].includes(selectedShape) ? '50%' : selectedShape === 'lotus' ? '40% 60% 70% 30% / 40% 50% 60% 50%' : selectedShape === 'star' ? '0' : selectedShape === 'hexagon' ? '25%' : '12px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'white',
+            color: selectedShape === 'turtle' ? 'transparent' : 'white',
+            fontSize: selectedShape === 'turtle' ? '80px' : 'inherit',
             fontWeight: 'bold',
             transition: `transform ${phase.duration}ms ease-in-out, background-color ${phase.duration}ms ease-in-out`,
-            transform: `scale(${phase.scale}) translateX(${phase.x}px)`,
-            backgroundColor: phase.color,
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            transform: `scale(${phase.scale}) translateX(${phase.x || 0}px) ${selectedShape === 'star' ? 'rotate(45deg)' : ''}`,
+            backgroundColor: selectedShape === 'turtle' ? 'transparent' : phase.color,
+            boxShadow: selectedShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
         },
         controls: {
             marginTop: '20px',
@@ -234,7 +240,7 @@ const BreathingVisualizer = () => {
                 aria-live="polite"
                 aria-label={`Current phase: ${phase.name}`}
             >
-                {phase.name}
+                {selectedShape === 'turtle' ? '🐢' : phase.name}
             </div>
 
             <div style={styles.controls}>
@@ -248,6 +254,23 @@ const BreathingVisualizer = () => {
                         <option value="circle">Circle</option>
                         <option value="square">Square</option>
                         <option value="lotus">Lotus</option>
+                        <option value="star">Star</option>
+                        <option value="flower">Flower</option>
+                        <option value="hexagon">Hexagon</option>
+                        <option value="turtle">Turtle</option>
+                    </select>
+                </label>
+                <label style={{ marginLeft: '10px' }}>
+                    Soundscape:
+                    <select
+                        value={soundscape}
+                        onChange={(e) => setSoundscape(e.target.value)}
+                        style={{ marginLeft: '5px', padding: '5px', borderRadius: '4px' }}
+                    >
+                        <option value="sine">Pure Tone (Legacy)</option>
+                        <option value="binaural">Singing Bowl (Binaural)</option>
+                        <option value="ocean">Ocean Waves (Brown Noise)</option>
+                        <option value="harmonic">Harmonic Swell</option>
                     </select>
                 </label>
             </div>

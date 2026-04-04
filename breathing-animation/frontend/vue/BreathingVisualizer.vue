@@ -11,15 +11,28 @@
       aria-live="polite"
       :aria-label="'Current phase: ' + currentPhase.name"
     >
-      {{ currentPhase.name }}
+      {{ selectedShape === 'turtle' ? '🐢' : currentPhase.name }}
     </div>
     <div class="controls">
        <label>
         Shape:
         <select v-model="selectedShape" style="margin-left: 10px; padding: 5px; border-radius: 4px;">
-          <option value="circle">Circle</option>
+        <option value="circle">Circle</option>
           <option value="square">Square</option>
           <option value="lotus">Lotus</option>
+          <option value="star">Star</option>
+          <option value="flower">Flower</option>
+          <option value="hexagon">Hexagon</option>
+          <option value="turtle">Turtle</option>
+        </select>
+      </label>
+      <label style="margin-left: 10px;">
+        Soundscape:
+        <select v-model="soundscape" style="margin-left: 5px; padding: 5px; border-radius: 4px;">
+          <option value="sine">Pure Tone (Legacy)</option>
+          <option value="binaural">Singing Bowl (Binaural)</option>
+          <option value="ocean">Ocean Waves (Brown Noise)</option>
+          <option value="harmonic">Harmonic Swell</option>
         </select>
       </label>
     </div>
@@ -168,6 +181,7 @@ export default {
       techniques: TECHNIQUES,
       selectedKey: 'box',
       selectedShape: 'circle',
+      soundscape: 'sine',
       currentPhaseIndex: 0,
       timer: null,
       isMuted: false
@@ -184,15 +198,22 @@ export default {
     visualizerStyle() {
       const duration = this.currentPhase.duration;
       let borderRadius = '12px';
-      if (this.selectedShape === 'circle') borderRadius = '50%';
+      if (['circle', 'flower'].includes(this.selectedShape)) { borderRadius = '50%'; }
       else if (this.selectedShape === 'lotus') borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%';
+      else if (this.selectedShape === 'star') borderRadius = '0';
+      else if (this.selectedShape === 'hexagon') borderRadius = '25%';
+      
+      let t = `scale(${this.currentPhase.scale}) translateX(${this.currentPhase.x || 0}px)`;
+      if (this.selectedShape === 'star') t += ' rotate(45deg)';
 
       return {
-        transform: `scale(${this.currentPhase.scale}) translateX(${this.currentPhase.x || 0}px)`,
-        backgroundColor: this.currentPhase.color,
+        transform: t,
+        backgroundColor: this.selectedShape === 'turtle' ? 'transparent' : this.currentPhase.color,
+        color: this.selectedShape === 'turtle' ? 'transparent' : 'white',
+        fontSize: this.selectedShape === 'turtle' ? '80px' : 'inherit',
         borderRadius: borderRadius,
         transition: `transform ${duration}ms ease-in-out, background-color ${duration}ms ease-in-out`,
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+        boxShadow: this.selectedShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
       };
     }
   },
@@ -207,6 +228,9 @@ export default {
   watch: {
     currentPhase(newPhase) {
       audioController.setPhase(newPhase.name, newPhase.duration);
+    },
+    soundscape(newVal) {
+      audioController.setSoundscape(newVal);
     }
   },
   methods: {

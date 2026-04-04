@@ -20,6 +20,19 @@
         <option value="circle">Circle</option>
         <option value="square">Square</option>
         <option value="lotus">Lotus</option>
+        <option value="star">Star</option>
+        <option value="flower">Flower</option>
+        <option value="hexagon">Hexagon</option>
+        <option value="turtle">Turtle</option>
+      </select>
+    </label>
+    <label style="margin-left: 10px;">
+      Soundscape:
+      <select id="soundscape" style="margin-left: 5px; padding: 5px; border-radius: 4px;">
+        <option value="sine">Pure Tone (Legacy)</option>
+        <option value="binaural">Singing Bowl (Binaural)</option>
+        <option value="ocean">Ocean Waves (Brown Noise)</option>
+        <option value="harmonic">Harmonic Swell</option>
       </select>
     </label>
   </div>
@@ -103,6 +116,7 @@
   });
 
   let currentTechniqueKey: string = 'box';
+  let currentShape: string = 'circle';
   let currentPhaseIndex: number = 0;
   let timeoutId: number | undefined;
 
@@ -209,9 +223,14 @@
     const phase = technique.phases[currentPhaseIndex];
 
     if (visualizer && phaseNameEl) {
-      phaseNameEl.textContent = phase.name;
-      visualizer.style.transform = `scale(${phase.scale}) translateX(${phase.x || 0}px)`;
-      visualizer.style.backgroundColor = phase.color;
+      phaseNameEl.textContent = currentShape === 'turtle' ? '🐢' : phase.name;
+      let t = `scale(${phase.scale}) translateX(${phase.x || 0}px)`;
+      if (currentShape === 'star') t += ' rotate(45deg)';
+      visualizer.style.transform = t;
+      visualizer.style.backgroundColor = currentShape === 'turtle' ? 'transparent' : phase.color;
+      visualizer.style.boxShadow = currentShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+      visualizer.style.color = currentShape === 'turtle' ? 'transparent' : 'white';
+      visualizer.style.fontSize = currentShape === 'turtle' ? '80px' : 'inherit';
       visualizer.style.transition = `transform ${phase.duration}ms ease-in-out, background-color ${phase.duration}ms ease-in-out`;
 
       // A11y Update
@@ -265,12 +284,34 @@
 
   if (shapeSelect) {
     shapeSelect.addEventListener('change', () => {
-      const shape = shapeSelect.value;
+      currentShape = shapeSelect.value;
       let borderRadius = '12px';
-      if (shape === 'circle') borderRadius = '50%';
-      else if (shape === 'lotus') borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%';
+      if (['circle', 'flower'].includes(currentShape)) borderRadius = '50%';
+      else if (currentShape === 'lotus') borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%';
+      else if (currentShape === 'star') borderRadius = '0';
+      else if (currentShape === 'hexagon') borderRadius = '25%';
 
       if (visualizer) visualizer.style.borderRadius = borderRadius;
+      
+      const technique = TECHNIQUES[currentTechniqueKey] || TECHNIQUES['box'];
+      const phase = technique.phases[currentPhaseIndex];
+      if (visualizer && phaseNameEl) {
+        phaseNameEl.textContent = currentShape === 'turtle' ? '🐢' : phase.name;
+        let t = `scale(${phase.scale}) translateX(${phase.x || 0}px)`;
+        if (currentShape === 'star') t += ' rotate(45deg)';
+        visualizer.style.transform = t;
+        visualizer.style.backgroundColor = currentShape === 'turtle' ? 'transparent' : phase.color;
+        visualizer.style.boxShadow = currentShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+        visualizer.style.color = currentShape === 'turtle' ? 'transparent' : 'white';
+        visualizer.style.fontSize = currentShape === 'turtle' ? '80px' : 'inherit';
+      }
+    });
+  }
+
+  const soundscapeSelect = document.getElementById('soundscape') as HTMLSelectElement;
+  if (soundscapeSelect) {
+    soundscapeSelect.addEventListener('change', () => {
+      audioController.setSoundscape(soundscapeSelect.value);
     });
   }
 

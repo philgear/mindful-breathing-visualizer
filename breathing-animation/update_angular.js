@@ -1,38 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// SECURITY: Configuration outside class and frozen
-const TECHNIQUES: any = Object.freeze({
-  box: Object.freeze({
-    name: 'Box Breathing',
-    phases: Object.freeze([
-      Object.freeze({ name: 'Inhale', duration: 4000, scale: 1.5, color: '#34d399', x: 0 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.5, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Exhale', duration: 4000, scale: 1.0, color: '#fb7185', x: 0 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 })
-    ])
-  }),
-  diaphragmatic: Object.freeze({
-    name: 'Diaphragmatic',
-    phases: Object.freeze([
-      Object.freeze({ name: 'Inhale', duration: 5000, scale: 1.5, color: '#34d399', x: 0 }),
-      Object.freeze({ name: 'Exhale', duration: 5000, scale: 1.0, color: '#fb7185', x: 0 })
-    ])
-  }),
-  alternate: Object.freeze({
-    name: 'Alternate Nostril',
-    phases: Object.freeze([
-      Object.freeze({ name: 'Inhale Left', duration: 4000, scale: 1.0, color: '#34d399', x: -50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Exhale Right', duration: 4000, scale: 1.0, color: '#fb7185', x: 50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Inhale Right', duration: 4000, scale: 1.0, color: '#34d399', x: 50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Exhale Left', duration: 4000, scale: 1.0, color: '#fb7185', x: -50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 })
-    ])
-  })
-});
+const angularPath = path.join(__dirname, 'frontend', 'angular', 'breathing-visualizer.component.ts');
+let content = fs.readFileSync(angularPath, 'utf8');
 
+const audio_class = `
 class AudioController {
     ctx: any = null; masterGain: any = null; nodes: any[] = [];
     isPlaying = false; isMuted = false; soundscape = 'sine';
@@ -224,30 +196,17 @@ class AudioController {
     }
 }
 const audioController = new AudioController();
+`;
 
-@Component({
-  selector: 'app-breathing-visualizer',
-  template: `
-    <div class="container">
-      <h3>{{ currentTechnique.name }}</h3>
-      <button class="mute-btn" (click)="toggleMute()">
-        {{ isMuted ? '🔇 Unmute' : '🔊 Mute' }}
-      </button>
+// Inject audioController right above @Component
+if (!content.includes('class AudioController')) {
+    content = content.replace("@Component({", audio_class + "\\n@Component({");
+}
 
-      <div 
-        class="visualizer" 
-        [style.transform]="'scale(' + currentPhase.scale + ') translateX(' + (currentPhase.x || 0) + 'px)'"
-        [style.background-color]="currentPhase.color"
-        [style.border-radius]="borderRadius"
-        [style.transition]="'transform ' + currentPhase.duration + 'ms ease-in-out, background-color ' + currentPhase.duration + 'ms ease-in-out'"
-        role="status"
-        aria-live="polite"
-        [attr.aria-label]="'Current phase: ' + currentPhase.name"
-      >
-        {{ currentPhase.name }}
-      </div>
-      <div class="controls">
-        <label>
+// Replace UI template
+content = content.replace(
+    /        <label>\s*Shape:\s*<select \(change\)="setShape\(\$event\)" style="margin-left: 10px; padding: 5px; border-radius: 4px;">\s*<option value="circle">Circle<\/option>\s*<option value="square">Square<\/option>\s*<option value="lotus">Lotus<\/option>.*?<\/select>\s*<\/label>/gs,
+    \`        <label>
             Shape: 
             <select (change)="setShape($event)" style="margin-left: 10px; padding: 5px; border-radius: 4px;">
                 <option value="circle">Circle</option>
@@ -267,151 +226,68 @@ const audioController = new AudioController();
                 <option value="ocean">Ocean Waves (Brown Noise)</option>
                 <option value="harmonic">Harmonic Swell</option>
             </select>
-        </label>
-      </div>
-      <div class="controls">
-          <button *ngFor="let key of objectKeys" (click)="selectTechnique(key)" [disabled]="selectedKey === key">
-            {{ techniques[key].name }}
-          </button>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: #f0f4f8;
-      border-radius: 12px;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      text-align: center;
-      color: #1e293b;
-    }
-    .visualizer {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      transition: transform 4s ease, background-color 4s ease;
-      margin: 20px;
-    }
-    .controls {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    button {
-      padding: 8px 16px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      background: white;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #e2e8f0;
-      cursor: default;
-    }
-    .mute-btn {
-        margin-bottom: 20px;
-    }
-  `]
-})
-export class BreathingVisualizerComponent implements OnInit, OnDestroy {
-  // Read-only reference
-  techniques: any = TECHNIQUES;
+        </label>\`
+);
 
-  selectedKey: string = 'box';
-  selectedShape: string = 'circle';
-  currentPhaseIndex: number = 0;
-  timer: any;
-  isMuted: boolean = false;
-  isPlaying: boolean = false;
+content = content.replace(
+    /<div \n        class="visualizer".*?\{\{ currentPhase\.name \}\}\n      <\/div>/gs,
+    \`<div 
+        class="visualizer" 
+        [style.transform]="transformStyle"
+        [style.background-color]="backgroundColor"
+        [style.border-radius]="borderRadius"
+        [style.box-shadow]="boxShadow"
+        [style.color]="fontColor"
+        [style.font-size]="fontSize"
+        [style.transition]="'transform ' + currentPhase.duration + 'ms ease-in-out, background-color ' + currentPhase.duration + 'ms ease-in-out'"
+        role="status"
+        aria-live="polite"
+        [attr.aria-label]="'Current phase: ' + currentPhase.name"
+      >
+        {{ selectedShape === 'turtle' ? '🐢' : currentPhase.name }}
+      </div>\`
+);
 
-  setSoundscape(event: any) { audioController.setSoundscape(event.target.value); }
-
-  get objectKeys() {
-    return Object.keys(this.techniques);
+// Add missing code inside component
+content = content.replace(
+    /export class BreathingVisualizerComponent implements OnInit, OnDestroy \{/,
+    \`export class BreathingVisualizerComponent implements OnInit, OnDestroy {
+  soundscape: string = 'sine';
+  setSoundscape(event: any) { this.soundscape = event.target.value; audioController.setSoundscape(this.soundscape); }
+  get transformStyle() {
+    let t = \`scale(\${this.currentPhase.scale}) translateX(\${this.currentPhase.x || 0}px)\`;
+    if (this.selectedShape === 'star') t += ' rotate(45deg)';
+    return t;
   }
+  
+  get backgroundColor() { return this.selectedShape === 'turtle' ? 'transparent' : this.currentPhase.color; }
+  get boxShadow() { return this.selectedShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)'; }
+  get fontColor() { return this.selectedShape === 'turtle' ? 'transparent' : 'white'; }
+  get fontSize() { return this.selectedShape === 'turtle' ? '80px' : 'inherit'; }
+\`
+);
 
-  get currentTechnique() {
-    // SECURITY: Safe fallback
-    return this.techniques[this.selectedKey] || this.techniques['box'];
-  }
-
-  get currentPhase() {
-    return this.currentTechnique.phases[this.currentPhaseIndex];
-  }
-
-  get borderRadius() {
+content = content.replace(
+    /get borderRadius\(\) \{[\s\S]*?return '12px'; \/\/ Square\/Rounded\n  \}/m,
+    \`get borderRadius() {
     if (['circle', 'flower'].includes(this.selectedShape)) return '50%';
     if (this.selectedShape === 'lotus') return '40% 60% 70% 30% / 40% 50% 60% 50%';
     if (this.selectedShape === 'star') return '0';
     if (this.selectedShape === 'hexagon') return '25%';
-    return '12px'; // Square/Rounded
-  }
+    return '12px';
+  }\`
+);
 
-  ngOnInit() {
-    this.runPhase();
-    this.startTone();
-  }
+// Proxy internal audio methods
+content = content.replace(
+    /  initAudio\(\) \{[\s\S]*?\n  \}\n\n  toggleMute\(\) \{[\s\S]*?\n  \}\n\n  startTone\(\) \{[\s\S]*?\n  \}\n\n  stopTone\(\) \{[\s\S]*?\n  \}\n\n  setPhaseTone\(phaseName: string, duration: number\) \{[\s\S]*?\n  \}/m,
+    \`  initAudio() { }
+  toggleMute() { this.isMuted = audioController.toggleMute(); }
+  startTone() { audioController.startTone(); this.isPlaying = audioController.isPlaying; }
+  stopTone() { audioController.stopTone(); this.isPlaying = audioController.isPlaying; }
+  setPhaseTone(phaseName: string, duration: number) { audioController.setPhaseTone(phaseName, duration); }\`
+);
 
-  ngOnDestroy() {
-    clearTimeout(this.timer);
-    this.stopTone();
-  }
 
-  selectTechnique(key: string) {
-    if (this.selectedKey === key) return;
-
-    // SECURITY: Validate key
-    if (this.techniques[key]) {
-      this.selectedKey = key;
-      this.currentPhaseIndex = 0;
-      clearTimeout(this.timer);
-      this.runPhase();
-    }
-  }
-
-  setShape(event: any) {
-    this.selectedShape = event.target.value;
-  }
-
-  runPhase() {
-    const duration = this.currentPhase.duration;
-    this.setPhaseTone(this.currentPhase.name, duration);
-
-    this.timer = setTimeout(() => {
-      this.currentPhaseIndex = (this.currentPhaseIndex + 1) % this.currentTechnique.phases.length;
-      this.runPhase();
-    }, duration);
-  }
-
-  // Audio Logic
-  initAudio() { }
-
-  toggleMute() {
-    this.isMuted = audioController.toggleMute();
-  }
-
-  startTone() {
-    audioController.startTone();
-    this.isPlaying = audioController.isPlaying;
-  }
-
-  stopTone() {
-    audioController.stopTone();
-    this.isPlaying = audioController.isPlaying;
-  }
-
-  setPhaseTone(phaseName: string, duration: number) {
-    audioController.setPhaseTone(phaseName, duration);
-  }
-}
+fs.writeFileSync(angularPath, content);
+console.log('Angular updated');
