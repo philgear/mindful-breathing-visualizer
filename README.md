@@ -1,10 +1,6 @@
 # Mindful Breathing Visualizer (v3.1.0)
 
 <p align="center">
-  <img src="breathing-animation/docs/videos/3.0.0/quick-demo.webp" alt="Mindful Breathing v3.1.0 Demo" width="100%">
-</p>
-
-<p align="center">
   <a href="https://github.com/philgear/mindful-breathing-visualizer/releases/tag/v3.1.0">
      <img src="https://img.shields.io/badge/Design-Less_But_Better-ea5b0c?style=for-the-badge" alt="Minimalist Design Approved">
   </a>
