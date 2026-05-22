@@ -27,6 +27,11 @@ venv/
 env/
 __pycache__/
 *.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
 *.pem
 *.key
 *.keystore
@@ -40,6 +45,8 @@ dist/
 .nuxt/
 .next/
 coverage/
+.eslintcache
+*.tsbuildinfo
 
 test-results/
 playwright-report/
@@ -53,7 +60,6 @@ bin/
 
 # Rust
 target/
-Cargo.lock
 
 # C++ / Build
 build/
@@ -81,6 +87,9 @@ local.properties
 Pods/
 DerivedData/
 .generated/
+*.xcuserstate
+xcuserdata/
+*.xcuserdatad
 
 # Misc
 .gemini/
