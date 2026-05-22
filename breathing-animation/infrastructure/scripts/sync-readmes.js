@@ -19,15 +19,15 @@ const getPreamble = (pillarName) => `<!-- PREAMBLE_START -->
 
 // 2. Recursive function to find READMEs
 function walkDir(dir, callback) {
-    fs.readdirSync(dir).forEach(f => {
-        let dirPath = path.join(dir, f);
-        let isDirectory = fs.statSync(dirPath).isDirectory();
-        if (isDirectory && f !== 'node_modules' && f !== '.git' && f !== 'dist') {
-            walkDir(dirPath, callback);
-        } else if (f === 'README.md') {
-            callback(dirPath);
-        }
-    });
+  fs.readdirSync(dir).forEach((f) => {
+    let dirPath = path.join(dir, f);
+    let isDirectory = fs.statSync(dirPath).isDirectory();
+    if (isDirectory && f !== 'node_modules' && f !== '.git' && f !== 'dist') {
+      walkDir(dirPath, callback);
+    } else if (f === 'README.md') {
+      callback(dirPath);
+    }
+  });
 }
 
 // 3. Main execution
@@ -35,37 +35,38 @@ console.log('Syncing Pillar READMEs...');
 const mainReadme = fs.readFileSync(rootReadmePath, 'utf8');
 
 walkDir(rootDir, (filePath) => {
-    // Skip the root README itself
-    if (path.resolve(filePath) === path.resolve(rootReadmePath)) return;
-    if (filePath.includes('node_modules')) return;
+  // Skip the root README itself
+  if (path.resolve(filePath) === path.resolve(rootReadmePath)) return;
+  if (filePath.includes('node_modules')) return;
 
-    // Determine Pillar Name from parent directory
-    const parentDir = path.basename(path.dirname(filePath));
-    const grandParentDir = path.basename(path.dirname(path.dirname(filePath)));
+  // Determine Pillar Name from parent directory
+  const parentDir = path.basename(path.dirname(filePath));
+  const grandParentDir = path.basename(path.dirname(path.dirname(filePath)));
 
-    // Nice formatting for pillar name (e.g., "Math / C" or "CLI / Python")
-    let pillarName = (grandParentDir === 'breathing-animation')
-        ? parentDir.charAt(0).toUpperCase() + parentDir.slice(1)
-        : `${grandParentDir.charAt(0).toUpperCase() + grandParentDir.slice(1)} / ${parentDir.charAt(0).toUpperCase() + parentDir.slice(1)}`;
+  // Nice formatting for pillar name (e.g., "Math / C" or "CLI / Python")
+  let pillarName =
+    grandParentDir === 'breathing-animation'
+      ? parentDir.charAt(0).toUpperCase() + parentDir.slice(1)
+      : `${grandParentDir.charAt(0).toUpperCase() + grandParentDir.slice(1)} / ${parentDir.charAt(0).toUpperCase() + parentDir.slice(1)}`;
 
-    let content = fs.readFileSync(filePath, 'utf8');
-    const preamble = getPreamble(pillarName);
+  let content = fs.readFileSync(filePath, 'utf8');
+  const preamble = getPreamble(pillarName);
 
-    // Regex to find existing preamble
-    const regex = /<!-- PREAMBLE_START -->[\s\S]*?<!-- PREAMBLE_END -->\n\n?/;
+  // Regex to find existing preamble
+  const regex = /<!-- PREAMBLE_START -->[\s\S]*?<!-- PREAMBLE_END -->\n\n?/;
 
-    if (regex.test(content)) {
-        // Update existing
-        const newContent = content.replace(regex, preamble);
-        if (newContent !== content) {
-            fs.writeFileSync(filePath, newContent);
-            console.log(`Updated: ${filePath}`);
-        }
-    } else {
-        // Prepend new
-        fs.writeFileSync(filePath, preamble + content);
-        console.log(`Prepended: ${filePath}`);
+  if (regex.test(content)) {
+    // Update existing
+    const newContent = content.replace(regex, preamble);
+    if (newContent !== content) {
+      fs.writeFileSync(filePath, newContent);
+      console.log(`Updated: ${filePath}`);
     }
+  } else {
+    // Prepend new
+    fs.writeFileSync(filePath, preamble + content);
+    console.log(`Prepended: ${filePath}`);
+  }
 });
 
 console.log('Done.');

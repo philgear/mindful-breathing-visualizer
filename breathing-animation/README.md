@@ -7,7 +7,9 @@ A collection of breathing exercise visualizers implemented in various languages 
 ## Project Structure
 
 ### 🎨 Frontend
+
 Web implementations of the breathing visualizer.
+
 - **Angular**: `frontend/angular`
 - **Astro**: `frontend/astro`
 - **React**: `frontend/react`
@@ -18,13 +20,17 @@ Web implementations of the breathing visualizer.
 - **Web Components**: `frontend/web-components`
 
 ### ⚙️ Backend
+
 Server-side implementations and plugins.
+
 - **Spring Boot**: `backend/spring-boot`
 - **WordPress Plugin**: `backend/wordpress`
 - **MCP Server**: `backend/mcp-server`
 
 ### 🖥️ CLI & Scripting
+
 Command-line interfaces with ANSI TrueColor and Audio support.
+
 - **Bash**: `cli/bash`
 - **C++**: `cli/cpp`
 - **Go**: `cli/go`
@@ -36,22 +42,29 @@ Command-line interfaces with ANSI TrueColor and Audio support.
 - **Rust**: `cli/rust`
 
 ### 📱 Mobile
+
 Native and Cross-Platform implementations.
+
 - **Android (Kotlin)**: `mobile/android`
 - **iOS (Swift)**: `mobile/ios`
 - **Flutter**: `mobile/flutter`
 
 ### 💻 Desktop
+
 Desktop integrations.
+
 - **Electron Tray App**: `desktop/electron`
 - **VS Code Extension**: `desktop/vscode`
 - **Obsidian**: `desktop/obsidian`
 
 ### 🌐 Browser Extensions
+
 - **Chrome Extension**: `browser/chrome`
 
 ### 📐 Math & Scientific
+
 Mathematical models and high-performance visualizations.
+
 - **Wolfram**: `math/wolfram`
 - **LaTeX**: `math/latex`
 - **JAX**: `math/jax`
@@ -60,14 +73,18 @@ Mathematical models and high-performance visualizations.
 - **Notebooks**: `notebooks/`
 
 ### ☁️ Infrastructure
+
 - **Kubernetes**: `infrastructure/kubernetes` (Deployment, Service, Dockerfile)
 - **Docker**: `infrastructure/docker`
 
 ## SWEBOK v4 Compliance
+
 As of January 2026, this project adheres to strict software engineering standards:
-*   **Visuals (KA 2.1)**: All implementations use the **Serene Palette** (Inhale: Emerald `#34d399`, Hold: Blue `#60a5fa`, Exhale: Rose `#fb7185`).
-*   **Audio (KA 2)**: All interactive implementations feature standardized 150Hz audio feedback for accessibility.
-*   **Polyglot Rigor**: 39 distinct implementations across 10+ ecosystems.
+
+- **Visuals (KA 2.1)**: All implementations use the **Serene Palette** (Inhale: Emerald `#34d399`, Hold: Blue `#60a5fa`, Exhale: Rose `#fb7185`).
+- **Audio (KA 2)**: All interactive implementations feature standardized 150Hz audio feedback for accessibility.
+- **Polyglot Rigor**: 39 distinct implementations across 10+ ecosystems.
 
 ## License
+
 MIT

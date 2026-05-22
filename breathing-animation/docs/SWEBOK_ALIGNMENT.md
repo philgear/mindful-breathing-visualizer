@@ -3,69 +3,82 @@
 This document serves as the central engineering constitution for the project, aligning development practices with the SWEBOK v4 Knowledge Areas (KA) to ensure rigor, resilience, and ethical construction.
 
 ## KA 1: Software Requirements
+
 **Core Domain**: Digital therapeutics for mindfulness and anxiety reduction.
+
 - **Functional Requirements**:
-    - **Breathing Techniques**: System must support standard patterns (Box 4-4-4-4, Diaphragmatic 5-5, Alternate Nostril 4-4-4-4-4-4-4-4).
-    - **Visual Feedback**: visual indicators (expanding/contracting shapes) must synchronize perfectly with timer phases (Inhale/Hold/Exhale).
-    - **Audio Feedback**: Binaural or monaural tone generation synchronized with breathing phases.
+  - **Breathing Techniques**: System must support standard patterns (Box 4-4-4-4, Diaphragmatic 5-5, Alternate Nostril 4-4-4-4-4-4-4-4).
+  - **Visual Feedback**: visual indicators (expanding/contracting shapes) must synchronize perfectly with timer phases (Inhale/Hold/Exhale).
+  - **Audio Feedback**: Binaural or monaural tone generation synchronized with breathing phases.
 
 ## KA 2: Software Design
+
 **Architectural Style**: Polyglot Monorepo with Pillar Isolation.
 
 ### 2.1 Design System ("The Serene Palette")
+
 Visuals must induce calm. High-contrast or "alert" colors are strictly prohibited.
+
 - **Primary (Inhale)**: `#34d399` (Emerald) - Growth/Air.
 - **Secondary (Hold)**: `#60a5fa` (Blue) - Stasis/Calm.
 - **Accent (Exhale)**: `#fb7185` (Rose) - Release/Warmth.
 - **Typography**: `Inter`, system-ui, sans-serif (Clean, readable).
 - **Shape Logic**:
-    - **Circle**: `border-radius: 50%` (Softness).
-    - **Square**: `border-radius: 12px` (Structure).
-    - **Lotus**: `border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%` (Organic).
+  - **Circle**: `border-radius: 50%` (Softness).
+  - **Square**: `border-radius: 12px` (Structure).
+  - **Lotus**: `border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%` (Organic).
 
 ### 2.2 Audio Design Standards
+
 - **Waveform**: Sine wave (`oscillator.type = 'sine'`) for pure, non-abrasive tone.
-- **Frequency Modulation**: 
-    - Base: 150 Hz (Start of Inhale / End of Exhale).
-    - Peak: 200 Hz (End of Inhale / Start of Exhale).
+- **Frequency Modulation**:
+  - Base: 150 Hz (Start of Inhale / End of Exhale).
+  - Peak: 200 Hz (End of Inhale / Start of Exhale).
 - **Gain Structure**: Linear ramps (0.1 Base to 0.2 Peak) over phase duration to prevent audio clicking.
 
 ## KA 3: Software Construction
+
 **Standards for Implementation & Verification.**
 
 ### 3.1 Architecture & Component Isolation
-- **Pillar Isolation**: Each implementation pillar (`frontend/react`, `mobile/flutter`, `cli/rust`, `cli/cpp`) is a self-contained bounded context. 
-    - **Constraint**: Relative imports must NOT cross pillar boundaries.
+
+- **Pillar Isolation**: Each implementation pillar (`frontend/react`, `mobile/flutter`, `cli/rust`, `cli/cpp`) is a self-contained bounded context.
+  - **Constraint**: Relative imports must NOT cross pillar boundaries.
 - **Immutability**: Configuration objects (e.g., Breathing Pattern Definitions) must be `Object.freeze()` or `const` to prevent runtime mutation.
 
 ### 3.2 Input Handling
+
 - **Strict Validation**: All user inputs (Phase durations, Custom timings) must be validated against safe ranges (e.g., 1s < t < 60s) before execution.
 
 ## KA 4: Software Testing
+
 - **CLI Verification**: All CLI implementations (Rust, C++, Ruby) must function in headless environments (TTY-aware).
 - **Timing Accuracy**: Animation loops must prioritize timing accuracy over frame rate (delta-time correction).
 
 ## KA 10: Software Quality (Accessibility)
+
 **Principle**: Mindfulness is for everyone.
+
 - **ARIA Roles**: `role="status"` on visualizer containers.
 - **Live Regions**: `aria-live="polite"` to announce phase changes without interrupting screen readers aggressively.
 - **Labels**: `aria-label="Current phase: Inhale/Exhale/Hold"` is mandatory for visual-only elements.
 - **Control Interface**: All interactive elements must have accessible names.
 
 ## KA 11: Professional Practice (Security & Ethics)
+
 - **Secret Hygiene**: Zero-tolerance for committed secrets. `.gitignore` must explicitly exclude `*.pem`, `*.key`, `.env`.
 - **User Safety**: Default settings must be conservative (e.g., shorter breath holds) to prevent user discomfort.
 
 ## Compliance Matrix (Jan 2026 Audit)
 
-| Pillar | Visuals (Serene Palette) | Audio (150Hz/Beep) | Accessibility | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **Frontend** | ✅ Compliant | ✅ Compliant | ✅ Aria-Live | 🟢 **PASS** |
-| **Rust CLI** | ✅ Compliant | ✅ System Beep | N/A | 🟢 **PASS** |
-| **Python CLI** | ✅ Compliant | ✅ System Beep | N/A | 🟢 **PASS** |
-| **C++ CLI** | ✅ Compliant | ✅ System Beep | N/A | 🟢 **PASS** |
-| **Ruby CLI** | ✅ Compliant | ✅ System Beep | N/A | 🟢 **PASS** |
-| **Chrome Ext** | ✅ Compliant | ✅ AudioContext | N/A | 🟢 **PASS** |
-| **Electron** | ✅ Compliant | ✅ AudioContext | N/A | 🟢 **PASS** |
-| **Obsidian** | ✅ Compliant | ✅ AudioContext | N/A | 🟢 **PASS** |
-| **Backend** | ✅ API Source | N/A | N/A | 🟢 **PASS** |
+| Pillar         | Visuals (Serene Palette) | Audio (150Hz/Beep) | Accessibility | Status      |
+| :------------- | :----------------------- | :----------------- | :------------ | :---------- |
+| **Frontend**   | ✅ Compliant             | ✅ Compliant       | ✅ Aria-Live  | 🟢 **PASS** |
+| **Rust CLI**   | ✅ Compliant             | ✅ System Beep     | N/A           | 🟢 **PASS** |
+| **Python CLI** | ✅ Compliant             | ✅ System Beep     | N/A           | 🟢 **PASS** |
+| **C++ CLI**    | ✅ Compliant             | ✅ System Beep     | N/A           | 🟢 **PASS** |
+| **Ruby CLI**   | ✅ Compliant             | ✅ System Beep     | N/A           | 🟢 **PASS** |
+| **Chrome Ext** | ✅ Compliant             | ✅ AudioContext    | N/A           | 🟢 **PASS** |
+| **Electron**   | ✅ Compliant             | ✅ AudioContext    | N/A           | 🟢 **PASS** |
+| **Obsidian**   | ✅ Compliant             | ✅ AudioContext    | N/A           | 🟢 **PASS** |
+| **Backend**    | ✅ API Source            | N/A                | N/A           | 🟢 **PASS** |

@@ -8,15 +8,15 @@ const TECHNIQUES: any = Object.freeze({
       Object.freeze({ name: 'Inhale', duration: 4000, scale: 1.5, color: '#34d399', x: 0 }),
       Object.freeze({ name: 'Hold', duration: 4000, scale: 1.5, color: '#60a5fa', x: 0 }),
       Object.freeze({ name: 'Exhale', duration: 4000, scale: 1.0, color: '#fb7185', x: 0 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 })
-    ])
+      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+    ]),
   }),
   diaphragmatic: Object.freeze({
     name: 'Diaphragmatic',
     phases: Object.freeze([
       Object.freeze({ name: 'Inhale', duration: 5000, scale: 1.5, color: '#34d399', x: 0 }),
-      Object.freeze({ name: 'Exhale', duration: 5000, scale: 1.0, color: '#fb7185', x: 0 })
-    ])
+      Object.freeze({ name: 'Exhale', duration: 5000, scale: 1.0, color: '#fb7185', x: 0 }),
+    ]),
   }),
   alternate: Object.freeze({
     name: 'Alternate Nostril',
@@ -28,9 +28,9 @@ const TECHNIQUES: any = Object.freeze({
       Object.freeze({ name: 'Inhale Right', duration: 4000, scale: 1.0, color: '#34d399', x: 50 }),
       Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
       Object.freeze({ name: 'Exhale Left', duration: 4000, scale: 1.0, color: '#fb7185', x: -50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 })
-    ])
-  })
+      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+    ]),
+  }),
 });
 
 @Component({
@@ -42,12 +42,14 @@ const TECHNIQUES: any = Object.freeze({
         {{ isMuted ? '🔇 Unmute' : '🔊 Mute' }}
       </button>
 
-      <div 
-        class="visualizer" 
-        [style.transform]="'scale(' + currentPhase.scale + ') translateX(' + (currentPhase.x || 0) + 'px)'"
+      <div
+        class="visualizer"
+        [style.transform]="
+          'scale(' + currentPhase.scale + ') translateX(' + (currentPhase.x || 0) + 'px)'
+        "
         [style.background-color]="currentPhase.color"
         [style.border-radius]="borderRadius"
-        [style.transition]="'transform ' + currentPhase.duration + 'ms ease-in-out, background-color ' + currentPhase.duration + 'ms ease-in-out'"
+        [style.transition]="transitionStyle"
         role="status"
         aria-live="polite"
         [attr.aria-label]="'Current phase: ' + currentPhase.name"
@@ -56,68 +58,83 @@ const TECHNIQUES: any = Object.freeze({
       </div>
       <div class="controls">
         <label>
-            Shape: 
-            <select (change)="setShape($event)" style="margin-left: 10px; padding: 5px; border-radius: 4px;">
-                <option value="circle">Circle</option>
-                <option value="square">Square</option>
-                <option value="lotus">Lotus</option>
-            </select>
+          Shape:
+          <select
+            (change)="setShape($event)"
+            style="margin-left: 10px; padding: 5px; border-radius: 4px;"
+          >
+            <option value="circle">Circle</option>
+            <option value="square">Square</option>
+            <option value="lotus">Lotus</option>
+          </select>
         </label>
       </div>
       <div class="controls">
-          <button *ngFor="let key of objectKeys" (click)="selectTechnique(key)" [disabled]="selectedKey === key">
-            {{ techniques[key].name }}
-          </button>
+        <button
+          *ngFor="let key of objectKeys"
+          (click)="selectTechnique(key)"
+          [disabled]="selectedKey === key"
+        >
+          {{ techniques[key].name }}
+        </button>
       </div>
     </div>
   `,
-  styles: [`
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: #f0f4f8;
-      border-radius: 12px;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      text-align: center;
-      color: #1e293b;
-    }
-    .visualizer {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      transition: transform 4s ease, background-color 4s ease;
-      margin: 20px;
-    }
-    .controls {
+  styles: [
+    `
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: #f0f4f8;
+        border-radius: 12px;
+        font-family:
+          'Inter',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        text-align: center;
+        color: #1e293b;
+      }
+      .visualizer {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        transition:
+          transform 4s cubic-bezier(0.37, 0, 0.63, 1),
+          background-color 4s cubic-bezier(0.37, 0, 0.63, 1);
+        margin: 20px;
+      }
+      .controls {
         display: flex;
         gap: 10px;
         margin-top: 20px;
         justify-content: center;
         flex-wrap: wrap;
-    }
-    button {
-      padding: 8px 16px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      background: white;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #e2e8f0;
-      cursor: default;
-    }
-    .mute-btn {
+      }
+      button {
+        padding: 8px 16px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+      }
+      button:disabled {
+        background: #e2e8f0;
+        cursor: default;
+      }
+      .mute-btn {
         margin-bottom: 20px;
-    }
-  `]
+      }
+    `,
+  ],
 })
 export class BreathingVisualizerComponent implements OnInit, OnDestroy {
   // Read-only reference
@@ -152,6 +169,14 @@ export class BreathingVisualizerComponent implements OnInit, OnDestroy {
     if (this.selectedShape === 'circle') return '50%';
     if (this.selectedShape === 'lotus') return '40% 60% 70% 30% / 40% 50% 60% 50%';
     return '12px'; // Square/Rounded
+  }
+
+  get transitionStyle() {
+    const duration = this.currentPhase.duration;
+    if (this.currentPhase.name.toLowerCase().includes('hold')) {
+      return `background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+    }
+    return `transform ${duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
   }
 
   ngOnInit() {

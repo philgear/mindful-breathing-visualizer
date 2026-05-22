@@ -1,22 +1,22 @@
 class BreathingVisualizer extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.currentPhase = 'inhale';
-        this.phaseDurations = {
-            inhale: 4000,
-            hold: 4000,
-            exhale: 4000
-        };
-    }
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.currentPhase = 'inhale';
+    this.phaseDurations = {
+      inhale: 4000,
+      hold: 4000,
+      exhale: 4000,
+    };
+  }
 
-    connectedCallback() {
-        this.render();
-        this.startAnimation();
-    }
+  connectedCallback() {
+    this.render();
+    this.startAnimation();
+  }
 
-    render() {
-        const style = `
+  render() {
+    const style = `
             :host {
                 display: block;
                 font-family: 'Arial', sans-serif;
@@ -51,7 +51,7 @@ class BreathingVisualizer extends HTMLElement {
             .hold-empty { transform: scale(1); background-color: #60a5fa; }
         `;
 
-        this.shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = `
             <style>${style}</style>
             <div class="container">
                 <h3>Breathing Visualizer (Web Component)</h3>
@@ -59,36 +59,36 @@ class BreathingVisualizer extends HTMLElement {
                 <div id="status">Inhale...</div>
             </div>
         `;
-    }
+  }
 
-    startAnimation() {
-        this.visualizer = this.shadowRoot.getElementById('visualizer');
-        this.status = this.shadowRoot.getElementById('status');
-        this.animate();
-    }
+  startAnimation() {
+    this.visualizer = this.shadowRoot.getElementById('visualizer');
+    this.status = this.shadowRoot.getElementById('status');
+    this.animate();
+  }
 
-    animate() {
-        // Simple Box Breathing loop
-        this.setPhase('inhale', 'Inhale', 4000, () => {
-            this.setPhase('hold', 'Hold', 4000, () => {
-                this.setPhase('exhale', 'Exhale', 4000, () => {
-                    this.setPhase('hold-empty', 'Hold', 4000, () => {
-                        this.animate();
-                    });
-                });
-            });
+  animate() {
+    // Simple Box Breathing loop
+    this.setPhase('inhale', 'Inhale', 4000, () => {
+      this.setPhase('hold', 'Hold', 4000, () => {
+        this.setPhase('exhale', 'Exhale', 4000, () => {
+          this.setPhase('hold-empty', 'Hold', 4000, () => {
+            this.animate();
+          });
         });
-    }
+      });
+    });
+  }
 
-    setPhase(phaseClass, text, duration, nextCallback) {
-        this.visualizer.className = `visualizer ${phaseClass}`;
-        this.visualizer.textContent = text;
-        this.status.textContent = text;
+  setPhase(phaseClass, text, duration, nextCallback) {
+    this.visualizer.className = `visualizer ${phaseClass}`;
+    this.visualizer.textContent = text;
+    this.status.textContent = text;
 
-        // Dynamic transition adjustment if needed, currently CSS is fixed 4s
+    // Dynamic transition adjustment if needed, currently CSS is fixed 4s
 
-        setTimeout(nextCallback, duration);
-    }
+    setTimeout(nextCallback, duration);
+  }
 }
 
 customElements.define('breathing-visualizer', BreathingVisualizer);

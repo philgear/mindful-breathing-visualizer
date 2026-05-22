@@ -1,25 +1,25 @@
 {
-    "meta": {
-        "language": "Français",
-        "iso_639_1": "fr"
+  "meta": {
+    "language": "Français",
+    "iso_639_1": "fr"
+  },
+  "phases": {
+    "inhale": {
+      "label": "Inspirez...",
+      "emoji": "🌿"
     },
-    "phases": {
-        "inhale": {
-            "label": "Inspirez...",
-            "emoji": "🌿"
-        },
-        "hold": {
-            "label": "Retenez...",
-            "emoji": "☁️"
-        },
-        "exhale": {
-            "label": "Expirez...",
-            "emoji": "🌸"
-        }
+    "hold": {
+      "label": "Retenez...",
+      "emoji": "☁️"
     },
-    "ui": {
-        "title": "Respiration Consciente",
-        "start": "Commencer",
-        "stop": "Arrêter"
+    "exhale": {
+      "label": "Expirez...",
+      "emoji": "🌸"
     }
+  },
+  "ui": {
+    "title": "Respiration Consciente",
+    "start": "Commencer",
+    "stop": "Arrêter"
+  }
 }

@@ -1,134 +1,153 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';">
+    
     <!-- Metadata for the document -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Title of the page, displayed in the browser tab -->
     <title>Mindful Breathing Visualizer</title>
     <!-- Links to the CSS styling sheet -->
-    <link rel="stylesheet" href="../src/styles/styles.css">
-    <link rel="manifest" href="manifest.json">
-    <link id="dynamic-favicon" rel="icon" type="image/png" href="assets/favicons/favicon-default.png">
+    <link rel="stylesheet" href="../src/styles/styles.css" />
+    <link rel="manifest" href="manifest.json" />
+    <link
+      id="dynamic-favicon"
+      rel="icon"
+      type="image/png"
+      href="assets/favicons/favicon-default.png"
+    />
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('../sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    }, err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('../sw.js').then(
+            (registration) => {
+              console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            },
+            (err) => {
+              console.log('ServiceWorker registration failed: ', err);
+            }
+          );
+        });
+      }
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- Main container for the page content -->
     <div class="container">
-        <!-- Header section with the main heading and tagline -->
-        <header>
-            <h1 data-i18n="ui.title">Mindful Breathing</h1>
-            <p id="tagline">Find your calm, one breath at a time.</p>
-        </header>
+      <!-- Header section with the main heading and tagline -->
+      <header>
+        <h1 data-i18n="ui.title">Mindful Breathing</h1>
+        <p id="tagline">Find your calm, one breath at a time.</p>
+      </header>
 
-        <!-- Main section where the animation will be rendered -->
-        <main id="animation-wrapper">
-            <!-- Timer Display -->
-            <div id="timerDisplay"></div>
+      <!-- Main section where the animation will be rendered -->
+      <main id="animation-wrapper">
+        <!-- Timer Display -->
+        <div id="timerDisplay"></div>
 
-            <!-- Div to display the current phase of the animation -->
-            <div id="animation-container" aria-live="polite">
-                <!-- Animation element injected here -->
-            </div>
-        </main>
+        <!-- Div to display the current phase of the animation -->
+        <div id="animation-container" aria-live="polite">
+          <!-- Animation element injected here -->
+        </div>
+      </main>
 
-        <!-- Settings Panel -->
-        <section class="settings-panel" aria-label="Settings">
-            <div class="settings-group">
-                <div class="input-group">
-                    <label for="exerciseSelect">Exercise</label>
-                    <select id="exerciseSelect" aria-label="Choose Breathing Exercise">
-                        <option value="boxBreathing">Box Breathing</option>
-                        <option value="fourSevenEight">4-7-8 Relaxing Breath</option>
-                        <option value="diaphragmaticBreathing">Diaphragmatic Breathing</option>
-                        <option value="alternateNostrilBreathing">Alternate Nostril</option>
-                    </select>
-                </div>
+      <!-- Settings Panel -->
+      <section class="settings-panel" aria-label="Settings">
+        <div class="settings-group">
+          <div class="input-group">
+            <label for="exerciseSelect">Exercise</label>
+            <select id="exerciseSelect" aria-label="Choose Breathing Exercise">
+              <option value="boxBreathing">Box Breathing</option>
+              <option value="fourSevenEight">4-7-8 Relaxing Breath</option>
+              <option value="diaphragmaticBreathing">Diaphragmatic Breathing</option>
+              <option value="alternateNostrilBreathing">Alternate Nostril</option>
+            </select>
+          </div>
 
-                <div class="input-group">
-                    <label for="animationStyle">Style</label>
-                    <select id="animationStyle" aria-label="Choose Animation Style">
-                        <option value="circle">Circle</option>
-                        <option value="square">Square</option>
-                        <option value="lotus">Lotus (Geometric)</option>
-                        <option value="sun">Sun (Nature)</option>
-                    </select>
-                </div>
-            </div>
+          <div class="input-group">
+            <label for="animationStyle">Style</label>
+            <select id="animationStyle" aria-label="Choose Animation Style">
+              <option value="circle">Circle</option>
+              <option value="square">Square</option>
+              <option value="lotus">Lotus (Geometric)</option>
+              <option value="sun">Sun (Nature)</option>
+            </select>
+          </div>
+        </div>
 
-            <!-- Controls (inhale, hold, exhale, session) -->
-            <div class="settings-group controls">
-                <div class="input-group">
-                    <label for="inhaleTime">Inhale (s)</label>
-                    <select id="inhaleTime" aria-label="Inhale Time">
-                        <!-- Options will be dynamically inserted by JavaScript -->
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="holdTime">Hold (s)</label>
-                    <select id="holdTime" aria-label="Hold Time">
-                        <!-- Options will be dynamically inserted by JavaScript -->
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="exhaleTime">Exhale (s)</label>
-                    <select id="exhaleTime" aria-label="Exhale Time">
-                        <!-- Options will be dynamically inserted by JavaScript -->
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="sessionDuration">Duration (m)</label>
-                    <select id="sessionDuration" aria-label="Session Duration">
-                        <!-- Options will be dynamically inserted by JavaScript -->
-                    </select>
-                </div>
-            </div>
+        <!-- Controls (inhale, hold, exhale, session) -->
+        <div class="settings-group controls">
+          <div class="input-group">
+            <label for="inhaleTime">Inhale (s)</label>
+            <select id="inhaleTime" aria-label="Inhale Time">
+              <!-- Options will be dynamically inserted by JavaScript -->
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="holdTime">Hold (s)</label>
+            <select id="holdTime" aria-label="Hold Time">
+              <!-- Options will be dynamically inserted by JavaScript -->
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="exhaleTime">Exhale (s)</label>
+            <select id="exhaleTime" aria-label="Exhale Time">
+              <!-- Options will be dynamically inserted by JavaScript -->
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="sessionDuration">Duration (m)</label>
+            <select id="sessionDuration" aria-label="Session Duration">
+              <!-- Options will be dynamically inserted by JavaScript -->
+            </select>
+          </div>
+        </div>
 
-            <div class="action-buttons">
-                <button id="startButton" aria-label="Start Breathing Exercise" data-i18n="ui.start">Start
-                    Practice</button>
-                <button id="stopButton" class="hidden" data-i18n="ui.stop">Stop Session</button>
-                <button id="muteButton" class="outline">🔊 Sound On</button>
-                <button id="darkModeButton" class="outline">🌙 Dark Mode</button>
-            </div>
-            <div style="margin-top: 20px;">
-                <a href="../../../../index.html"
-                    style="color: var(--primary-color); text-decoration: none; font-weight: bold;">← Back to Home</a>
-            </div>
-        </section>
+        <div class="action-buttons">
+          <button id="startButton" aria-label="Start Breathing Exercise" data-i18n="ui.start">
+            Start Practice
+          </button>
+          <button id="stopButton" class="hidden" data-i18n="ui.stop">Stop Session</button>
+          <button id="muteButton" class="outline">🔊 Sound On</button>
+          <button id="darkModeButton" class="outline">🌙 Dark Mode</button>
+        </div>
+        <div style="margin-top: 20px">
+          <a
+            href="../../../../index.html"
+            style="color: var(--primary-color); text-decoration: none; font-weight: bold"
+            >← Back to Home</a
+          >
+        </div>
+      </section>
 
-        <!-- Section for instructions -->
-        <!-- Accessibility: Live Region for Screen Readers -->
-        <div id="a11y-announcer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+      <!-- Section for instructions -->
+      <!-- Accessibility: Live Region for Screen Readers -->
+      <div id="a11y-announcer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
 
-        <button class="instructions-toggle" id="instructionsToggle" aria-expanded="false"
-            aria-controls="instructions-container"
-            onclick="const content = document.getElementById('instructions-container'); content.classList.toggle('hidden'); this.setAttribute('aria-expanded', !content.classList.contains('hidden'));">
-            Instructions (Click to expand)
-        </button>
-        <section id="instructions-container" aria-labelledby="instructions-heading" class="hidden">
-            <h2 id="instructions-heading" class="sr-only">Instructions</h2>
-            <!-- Instructions for the selected exercise will be displayed here -->
-        </section>
+      <button
+        class="instructions-toggle"
+        id="instructionsToggle"
+        aria-expanded="false"
+        aria-controls="instructions-container"
+        onclick="
+          const content = document.getElementById('instructions-container');
+          content.classList.toggle('hidden');
+          this.setAttribute('aria-expanded', !content.classList.contains('hidden'));
+        "
+      >
+        Instructions (Click to expand)
+      </button>
+      <section id="instructions-container" aria-labelledby="instructions-heading" class="hidden">
+        <h2 id="instructions-heading" class="sr-only">Instructions</h2>
+        <!-- Instructions for the selected exercise will be displayed here -->
+      </section>
     </div>
 
     <!-- Link to the JavaScript file -->
     <!-- Link to the JavaScript file -->
     <script src="../js/src/i18n.js"></script>
     <script src="../js/src/breathing.js"></script>
-</body>
-
+  </body>
 </html>

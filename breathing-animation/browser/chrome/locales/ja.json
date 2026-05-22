@@ -1,25 +1,25 @@
 {
-    "meta": {
-        "language": "日本語",
-        "iso_639_1": "ja"
+  "meta": {
+    "language": "日本語",
+    "iso_639_1": "ja"
+  },
+  "phases": {
+    "inhale": {
+      "label": "吸って...",
+      "emoji": "🌿"
     },
-    "phases": {
-        "inhale": {
-            "label": "吸って...",
-            "emoji": "🌿"
-        },
-        "hold": {
-            "label": "止めて...",
-            "emoji": "☁️"
-        },
-        "exhale": {
-            "label": "吐いて...",
-            "emoji": "🌸"
-        }
+    "hold": {
+      "label": "止めて...",
+      "emoji": "☁️"
     },
-    "ui": {
-        "title": "マインドフル・ブリージング",
-        "start": "セッション開始",
-        "stop": "セッション終了"
+    "exhale": {
+      "label": "吐いて...",
+      "emoji": "🌸"
     }
+  },
+  "ui": {
+    "title": "マインドフル・ブリージング",
+    "start": "セッション開始",
+    "stop": "セッション終了"
+  }
 }

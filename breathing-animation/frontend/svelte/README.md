@@ -1,11 +1,14 @@
 <!-- PREAMBLE_START -->
+
 > 🌿 **Frontend / Svelte Pillar**
 > This is a component of the [Mindful Breathing Visualizer](https://github.com/philgear/mindful-breathing-visualizer) ecosystem (v3.0.0).
 >
 > **Core Features**:
-> *   **Serene Palette™**: Standardized Emerald/Blue/Rose colors.
-> *   **Smart Logic**: Supports 4-7-8, Box, and Diaphragmatic patterns.
-> *   **SWEBOK v4 Alignment**: Engineering rigor meets clinical science.
+>
+> - **Serene Palette™**: Standardized Emerald/Blue/Rose colors.
+> - **Smart Logic**: Supports 4-7-8, Box, and Diaphragmatic patterns.
+> - **SWEBOK v4 Alignment**: Engineering rigor meets clinical science.
+
 <!-- PREAMBLE_END -->
 
 # Svelte Breathing Visualizer
@@ -14,10 +17,10 @@ This project is a Svelte component that visualizes mindful breathing techniques 
 
 ## Features
 
--   **Three Shapes**: Circle, Square, Lotus.
--   **Audio Support**: Native Web Audio API integration.
--   **Accessibility**: Polished ARIA live regions for screen readers.
--   **Security**: Immutable configuration patterns (`Object.freeze`).
+- **Three Shapes**: Circle, Square, Lotus.
+- **Audio Support**: Native Web Audio API integration.
+- **Accessibility**: Polished ARIA live regions for screen readers.
+- **Security**: Immutable configuration patterns (`Object.freeze`).
 
 ## Usage
 

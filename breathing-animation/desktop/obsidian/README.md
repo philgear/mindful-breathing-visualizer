@@ -1,11 +1,14 @@
 <!-- PREAMBLE_START -->
+
 > 🌿 **Desktop / Obsidian Pillar**
 > This is a component of the [Mindful Breathing Visualizer](https://github.com/philgear/mindful-breathing-visualizer) ecosystem (v3.0.0).
 >
 > **Core Features**:
-> *   **Serene Palette™**: Standardized Emerald/Blue/Rose colors.
-> *   **Smart Logic**: Supports 4-7-8, Box, and Diaphragmatic patterns.
-> *   **SWEBOK v4 Alignment**: Engineering rigor meets clinical science.
+>
+> - **Serene Palette™**: Standardized Emerald/Blue/Rose colors.
+> - **Smart Logic**: Supports 4-7-8, Box, and Diaphragmatic patterns.
+> - **SWEBOK v4 Alignment**: Engineering rigor meets clinical science.
+
 <!-- PREAMBLE_END -->
 
 # Obsidian Breathing Plugin
@@ -14,13 +17,13 @@ This directory contains an Obsidian plugin that embeds the breathing visualizer 
 
 ## Features
 
--   **Seamless Integration**: Runs as a view within Obsidian.
--   **Audio Support**: Background-capable audio for meditation sessions while writing.
--   **Shape Customization**: Configurable visual styles via plugin settings or UI.
--   **Security**:
-    -   No external network requests.
-    -   Safe DOM manipulation.
-    -   Frozen configuration objects.
+- **Seamless Integration**: Runs as a view within Obsidian.
+- **Audio Support**: Background-capable audio for meditation sessions while writing.
+- **Shape Customization**: Configurable visual styles via plugin settings or UI.
+- **Security**:
+  - No external network requests.
+  - Safe DOM manipulation.
+  - Frozen configuration objects.
 
 ## Usage
 

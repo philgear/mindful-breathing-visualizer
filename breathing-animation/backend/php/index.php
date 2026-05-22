@@ -62,7 +62,7 @@ if ($hour < 12) {
             font-size: 1.2rem;
             will-change: transform, background-color, border-radius;
             /* Transition handled by JS/CSS updates */
-            transition: transform 4s ease-in-out, background-color 4s ease-in-out;
+            transition: transform 4s cubic-bezier(0.37, 0, 0.63, 1), background-color 4s cubic-bezier(0.37, 0, 0.63, 1);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
@@ -264,7 +264,11 @@ function renderPhase() {
     // Update Visuals
     shapeEl.innerText = phase.name;
     shapeEl.style.backgroundColor = phase.color;
-    shapeEl.style.transition = `transform ${phase.duration}ms ease-in-out, background-color ${phase.duration}ms ease-in-out`;
+    if (phase.name.toLowerCase().includes('hold')) {
+        shapeEl.style.transition = `background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+    } else {
+        shapeEl.style.transition = `transform ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+    }
     
     const scale = phase.scale;
     const x = phase.x || 0;

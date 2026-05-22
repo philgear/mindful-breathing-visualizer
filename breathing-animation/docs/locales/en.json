@@ -1,22 +1,22 @@
 {
-    "meta": {
-        "language": "English",
-        "iso_639_1": "en"
+  "meta": {
+    "language": "English",
+    "iso_639_1": "en"
+  },
+  "phases": {
+    "inhale": {
+      "label": "Inhale"
     },
-    "phases": {
-        "inhale": {
-            "label": "Inhale"
-        },
-        "hold": {
-            "label": "Hold"
-        },
-        "exhale": {
-            "label": "Exhale"
-        }
+    "hold": {
+      "label": "Hold"
     },
-    "ui": {
-        "title": "Mindful Breathing",
-        "start": "Start Session",
-        "stop": "Stop Session"
+    "exhale": {
+      "label": "Exhale"
     }
+  },
+  "ui": {
+    "title": "Mindful Breathing",
+    "start": "Start Session",
+    "stop": "Stop Session"
+  }
 }

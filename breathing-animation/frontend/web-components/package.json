@@ -1,5 +1,5 @@
 {
-    "name": "breathing-visualizer-wc",
-    "version": "1.0.0",
-    "main": "breathing-component.js"
+  "name": "breathing-visualizer-wc",
+  "version": "1.0.0",
+  "main": "breathing-component.js"
 }

@@ -48,8 +48,9 @@ struct BreathingWidgetEntryView : View {
             
             Circle()
                 .fill(colorForPhase(entry.phase))
+                .animation(.timingCurve(0.37, 0.0, 0.63, 1.0, duration: 4), value: entry.phase)
                 .scaleEffect(entry.phase == "Inhale" || entry.phase == "Hold" ? 1.0 : 0.5)
-                .animation(.easeInOut(duration: 4), value: entry.phase)
+                .animation(entry.phase.lowercased().contains("hold") ? nil : .timingCurve(0.37, 0.0, 0.63, 1.0, duration: 4), value: entry.phase)
                 .frame(width: 60, height: 60)
         }
     }

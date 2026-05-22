@@ -143,9 +143,16 @@ struct BreathingView: View {
                 if Task.isCancelled { break }
                 
                 // Update State
-                withAnimation(.easeInOut(duration: phase.duration)) {
+                if phase.name.lowercased().contains("hold") {
+                    withAnimation(.timingCurve(0.37, 0.0, 0.63, 1.0, duration: phase.duration)) {
+                        color = phase.color
+                    }
                     scale = phase.scale
-                    color = phase.color
+                } else {
+                    withAnimation(.timingCurve(0.37, 0.0, 0.63, 1.0, duration: phase.duration)) {
+                        scale = phase.scale
+                        color = phase.color
+                    }
                 }
                 phaseText = phase.name
                 

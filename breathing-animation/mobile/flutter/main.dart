@@ -281,7 +281,7 @@ class _BreathingPageState extends State<BreathingPage> with SingleTickerProvider
             const SizedBox(height: 40),
             AnimatedContainer(
               duration: currentDuration,
-              curve: Curves.easeInOut,
+              curve: const Cubic(0.37, 0.0, 0.63, 1.0),
               width: 200 * scale,
               height: 200 * scale,
               decoration: _getShapeDecoration(),

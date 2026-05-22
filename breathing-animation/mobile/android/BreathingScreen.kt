@@ -1,3 +1,4 @@
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -33,7 +34,18 @@ fun BreathingScreen() {
     // Animation states
     val scale by animateFloatAsState(
         targetValue = scaleTarget,
-        animationSpec = tween(durationMillis = currentDuration, easing = LinearEasing)
+        animationSpec = tween(
+            durationMillis = currentDuration,
+            easing = CubicBezierEasing(0.37f, 0.0f, 0.63f, 1.0f)
+        )
+    )
+
+    val animatedColor by animateColorAsState(
+        targetValue = colorTarget,
+        animationSpec = tween(
+            durationMillis = currentDuration,
+            easing = CubicBezierEasing(0.37f, 0.0f, 0.63f, 1.0f)
+        )
     )
 
     // Techniques Data
@@ -145,7 +157,7 @@ fun BreathingScreen() {
                     .size(200.dp)
                     .scale(scale)
                     .background(
-                        color = colorTarget, 
+                        color = animatedColor, 
                         shape = when (selectedShape) {
                             "Square" -> androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
                             "Lotus" -> androidx.compose.foundation.shape.RoundedCornerShape(

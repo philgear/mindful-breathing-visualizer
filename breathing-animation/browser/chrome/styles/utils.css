@@ -12,7 +12,7 @@
   height: var(--circle-size);
   border-radius: 50%;
   border: var(--circle-border-width) solid var(--circle-border-color);
-  animation: breathing var(--animation-duration) ease-in-out infinite;
+  animation: breathing var(--animation-duration) cubic-bezier(0.37, 0, 0.63, 1) infinite;
   animation-delay: var(--animation-delay);
 }
 

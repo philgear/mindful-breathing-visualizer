@@ -184,7 +184,7 @@ button:active {
 
 #timerDisplay {
   font-family: 'Inter', sans-serif;
-  font-feature-settings: "tnum";
+  font-feature-settings: 'tnum';
   font-size: 3rem;
   font-weight: 400;
   color: var(--text-main);
@@ -210,7 +210,7 @@ button:active {
   height: 100px;
   background-color: var(--border-color);
   /* Inactive State: Gray */
-  transition: all var(--current-duration) ease-in-out;
+  transition: all var(--current-duration) cubic-bezier(0.37, 0, 0.63, 1);
 }
 
 /* Alternate Nostril - Stereo Balance Indicator */
@@ -237,15 +237,15 @@ button:active {
   border-radius: 50%;
   background-color: var(--border-color);
   /* Inactive Gray */
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
 }
 
 /* Left Active State */
 /* Logic: When 'left' class is present AND 'inhale' or 'exhale' is present...
    Wait, the JS adds 'inhale' + 'left'.
 */
-
-
 
 /* Inhale Left */
 .alternate-nostril-animation.inhale.left::before {
@@ -333,12 +333,17 @@ button:active {
 .circle-animation.hold,
 .square-animation.hold,
 .sun-animation.hold,
-.lotus-animation.hold,
-.circle-animation.holdAfterExhale,
-.square-animation.holdAfterExhale {
-  /* Hold state maintains scale from previous state usually, or sets a specific static state */
+.lotus-animation.hold {
+  transform: scale(1.5);
   background-color: var(--text-main);
-  /* Hold: Black/Solid */
+}
+
+.circle-animation.holdAfterExhale,
+.square-animation.holdAfterExhale,
+.sun-animation.holdAfterExhale,
+.lotus-animation.holdAfterExhale {
+  transform: scale(0.8);
+  background-color: var(--text-main);
 }
 
 /* Remove decorative glow/shadows */

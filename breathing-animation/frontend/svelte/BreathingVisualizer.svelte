@@ -166,6 +166,9 @@
   // We handle animation via CSS transitions reactively based on currentPhase
   $: transformStyle = `scale(${currentPhase.scale}) translateX(${currentPhase.x || 0}px)`;
   $: duration = currentPhase.duration;
+  $: transitionStyle = currentPhase.name.toLowerCase().includes('hold')
+    ? `background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`
+    : `transform ${duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
 
   // Reactively set audio phase
   $: if (currentPhase) {
@@ -217,7 +220,7 @@
   </button>
   <div
     class="visualizer"
-    style="transform: {transformStyle}; background-color: {currentPhase.color}; border-radius: {borderRadius}; transition: transform {duration}ms ease-in-out, background-color {duration}ms ease-in-out;"
+    style="transform: {transformStyle}; background-color: {currentPhase.color}; border-radius: {borderRadius}; transition: {transitionStyle};"
     role="status"
     aria-live="polite"
     aria-label="Current phase: {currentPhase.name}"

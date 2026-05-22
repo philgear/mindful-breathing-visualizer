@@ -2,10 +2,10 @@
   <div class="container">
     <h3>{{ currentTechnique.name }}</h3>
     <button class="mute-btn" @click="toggleMute">
-        {{ isMuted ? '🔇 Unmute' : '🔊 Mute' }}
+      {{ isMuted ? '🔇 Unmute' : '🔊 Mute' }}
     </button>
-    <div 
-      class="visualizer" 
+    <div
+      class="visualizer"
       :style="visualizerStyle"
       role="status"
       aria-live="polite"
@@ -14,9 +14,9 @@
       {{ currentPhase.name }}
     </div>
     <div class="controls">
-       <label>
+      <label>
         Shape:
-        <select v-model="selectedShape" style="margin-left: 10px; padding: 5px; border-radius: 4px;">
+        <select v-model="selectedShape" style="margin-left: 10px; padding: 5px; border-radius: 4px">
           <option value="circle">Circle</option>
           <option value="square">Square</option>
           <option value="lotus">Lotus</option>
@@ -24,8 +24,8 @@
       </label>
     </div>
     <div class="controls">
-      <button 
-        v-for="(tech, key) in techniques" 
+      <button
+        v-for="(tech, key) in techniques"
         :key="key"
         @click="selectTechnique(key)"
         :disabled="selectedKey === key"
@@ -46,29 +46,29 @@ const TECHNIQUES = Object.freeze({
       Object.freeze({ name: 'Inhale', duration: 4000, scale: 1.5, color: '#34d399', x: 0 }),
       Object.freeze({ name: 'Hold', duration: 4000, scale: 1.5, color: '#60a5fa', x: 0 }),
       Object.freeze({ name: 'Exhale', duration: 4000, scale: 1.0, color: '#fb7185', x: 0 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 })
-    ])
+      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+    ]),
   }),
   diaphragmatic: Object.freeze({
     name: 'Diaphragmatic',
     phases: Object.freeze([
-        Object.freeze({ name: 'Inhale', duration: 5000, scale: 1.5, color: '#34d399', x: 0 }),
-        Object.freeze({ name: 'Exhale', duration: 5000, scale: 1.0, color: '#fb7185', x: 0 })
-    ])
+      Object.freeze({ name: 'Inhale', duration: 5000, scale: 1.5, color: '#34d399', x: 0 }),
+      Object.freeze({ name: 'Exhale', duration: 5000, scale: 1.0, color: '#fb7185', x: 0 }),
+    ]),
   }),
   alternate: Object.freeze({
     name: 'Alternate Nostril',
     phases: Object.freeze([
-        Object.freeze({ name: 'Inhale Left', duration: 4000, scale: 1.0, color: '#34d399', x: -50 }),
-        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-        Object.freeze({ name: 'Exhale Right', duration: 4000, scale: 1.0, color: '#fb7185', x: 50 }),
-        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-        Object.freeze({ name: 'Inhale Right', duration: 4000, scale: 1.0, color: '#34d399', x: 50 }),
-        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-        Object.freeze({ name: 'Exhale Left', duration: 4000, scale: 1.0, color: '#fb7185', x: -50 }),
-        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 })
-    ])
-  })
+      Object.freeze({ name: 'Inhale Left', duration: 4000, scale: 1.0, color: '#34d399', x: -50 }),
+      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+      Object.freeze({ name: 'Exhale Right', duration: 4000, scale: 1.0, color: '#fb7185', x: 50 }),
+      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+      Object.freeze({ name: 'Inhale Right', duration: 4000, scale: 1.0, color: '#34d399', x: 50 }),
+      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+      Object.freeze({ name: 'Exhale Left', duration: 4000, scale: 1.0, color: '#fb7185', x: -50 }),
+      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+    ]),
+  }),
 });
 
 // Audio Controller Logic
@@ -116,18 +116,18 @@ const audioController = {
 
   stopTone() {
     if (this.oscillator && this.isPlaying) {
-       const now = this.ctx.currentTime;
-       this.gainNode.gain.cancelScheduledValues(now);
-       this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
-       this.gainNode.gain.linearRampToValueAtTime(0, now + 1);
-       
-        setTimeout(() => {
-            if (this.oscillator) {
-                this.oscillator.stop();
-                this.oscillator = null;
-            }
-        }, 1000);
-        this.isPlaying = false;
+      const now = this.ctx.currentTime;
+      this.gainNode.gain.cancelScheduledValues(now);
+      this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
+      this.gainNode.gain.linearRampToValueAtTime(0, now + 1);
+
+      setTimeout(() => {
+        if (this.oscillator) {
+          this.oscillator.stop();
+          this.oscillator = null;
+        }
+      }, 1000);
+      this.isPlaying = false;
     }
   },
 
@@ -143,20 +143,20 @@ const audioController = {
     const isExhale = phaseName.toLowerCase().includes('exhale');
 
     if (isInhale) {
-        this.oscillator.frequency.setValueAtTime(150, now);
-        this.oscillator.frequency.linearRampToValueAtTime(200, now + rampTime);
-        this.gainNode.gain.setValueAtTime(0.1, now);
-        this.gainNode.gain.linearRampToValueAtTime(0.2, now + rampTime);
+      this.oscillator.frequency.setValueAtTime(150, now);
+      this.oscillator.frequency.linearRampToValueAtTime(200, now + rampTime);
+      this.gainNode.gain.setValueAtTime(0.1, now);
+      this.gainNode.gain.linearRampToValueAtTime(0.2, now + rampTime);
     } else if (isExhale) {
-        this.oscillator.frequency.setValueAtTime(200, now);
-        this.oscillator.frequency.linearRampToValueAtTime(150, now + rampTime);
-        this.gainNode.gain.setValueAtTime(0.2, now);
-        this.gainNode.gain.linearRampToValueAtTime(0.1, now + rampTime);
+      this.oscillator.frequency.setValueAtTime(200, now);
+      this.oscillator.frequency.linearRampToValueAtTime(150, now + rampTime);
+      this.gainNode.gain.setValueAtTime(0.2, now);
+      this.gainNode.gain.linearRampToValueAtTime(0.1, now + rampTime);
     } else {
-        this.oscillator.frequency.setValueAtTime(this.oscillator.frequency.value, now);
-        this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
+      this.oscillator.frequency.setValueAtTime(this.oscillator.frequency.value, now);
+      this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
     }
-  }
+  },
 };
 
 export default {
@@ -170,8 +170,8 @@ export default {
       selectedShape: 'circle',
       currentPhaseIndex: 0,
       timer: null,
-      isMuted: false
-    }
+      isMuted: false,
+    };
   },
   computed: {
     currentTechnique() {
@@ -191,10 +191,12 @@ export default {
         transform: `scale(${this.currentPhase.scale}) translateX(${this.currentPhase.x || 0}px)`,
         backgroundColor: this.currentPhase.color,
         borderRadius: borderRadius,
-        transition: `transform ${duration}ms ease-in-out, background-color ${duration}ms ease-in-out`,
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+        transition: this.currentPhase.name.toLowerCase().includes('hold')
+          ? `background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`
+          : `transform ${duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`,
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
       };
-    }
+    },
   },
   mounted() {
     this.runPhase();
@@ -207,12 +209,12 @@ export default {
   watch: {
     currentPhase(newPhase) {
       audioController.setPhase(newPhase.name, newPhase.duration);
-    }
+    },
   },
   methods: {
     selectTechnique(key) {
       if (this.selectedKey === key) return;
-      
+
       // SECURITY: Validate key existence
       if (this.techniques[key]) {
         this.selectedKey = key;
@@ -235,10 +237,10 @@ export default {
       }, duration);
     },
     toggleMute() {
-       this.isMuted = audioController.toggleMute();
-    }
-  }
-}
+      this.isMuted = audioController.toggleMute();
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -250,7 +252,11 @@ export default {
   padding: 20px;
   background: #f0f4f8;
   border-radius: 12px;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
   color: #1e293b;
   text-align: center;
 }
@@ -288,6 +294,6 @@ button:disabled {
 }
 
 .mute-btn {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 </style>

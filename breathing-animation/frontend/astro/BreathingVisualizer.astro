@@ -212,7 +212,11 @@
       phaseNameEl.textContent = phase.name;
       visualizer.style.transform = `scale(${phase.scale}) translateX(${phase.x || 0}px)`;
       visualizer.style.backgroundColor = phase.color;
-      visualizer.style.transition = `transform ${phase.duration}ms ease-in-out, background-color ${phase.duration}ms ease-in-out`;
+      if (phase.name.toLowerCase().includes('hold')) {
+        visualizer.style.transition = `background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+      } else {
+        visualizer.style.transition = `transform ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+      }
 
       // A11y Update
       visualizer.setAttribute('aria-label', `Current phase: ${phase.name}`);

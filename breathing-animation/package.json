@@ -10,21 +10,29 @@
     "frontend/typescript",
     "frontend/web-components",
     "frontend/svelte",
-    "backend/mcp-server"
+    "backend/mcp-server",
+    "packages/*"
   ],
   "main": "index.js",
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "svelte": "5.55.9"
   },
   "devDependencies": {
+    "@cyclonedx/cyclonedx-npm": "^4.2.1",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.40.0",
     "@types/node": "^24.12.0",
+    "@typescript-eslint/eslint-plugin": "^8.59.4",
+    "@typescript-eslint/parser": "^8.59.4",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-react": "^7.33.0",
+    "eslint-plugin-security": "^4.0.0",
     "husky": "^8.0.0",
     "lint-staged": "^15.0.0",
     "prettier": "^3.0.0",
@@ -37,7 +45,9 @@
     "test:e2e": "playwright test",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "generate-sbom": "cyclonedx-npm --output-file bom.json",
+    "lhci": "lhci autorun"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,css,md}": "prettier --write",

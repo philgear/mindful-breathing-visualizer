@@ -1,25 +1,25 @@
 {
-    "meta": {
-        "language": "Español",
-        "iso_639_1": "es"
+  "meta": {
+    "language": "Español",
+    "iso_639_1": "es"
+  },
+  "phases": {
+    "inhale": {
+      "label": "Inhala...",
+      "emoji": "🌿"
     },
-    "phases": {
-        "inhale": {
-            "label": "Inhala...",
-            "emoji": "🌿"
-        },
-        "hold": {
-            "label": "Mantén...",
-            "emoji": "☁️"
-        },
-        "exhale": {
-            "label": "Exhala...",
-            "emoji": "🌸"
-        }
+    "hold": {
+      "label": "Mantén...",
+      "emoji": "☁️"
     },
-    "ui": {
-        "title": "Respiración Consciente",
-        "start": "Iniciar Sesión",
-        "stop": "Detener Sesión"
+    "exhale": {
+      "label": "Exhala...",
+      "emoji": "🌸"
     }
+  },
+  "ui": {
+    "title": "Respiración Consciente",
+    "start": "Iniciar Sesión",
+    "stop": "Detener Sesión"
+  }
 }
