@@ -2,6 +2,19 @@
 
 All notable changes to the **Mindful Breathing Visualizer** project will be documented in this file.
 
+## [3.2.0] - 2026-05-21 - DOI Breathing Animation Alignment & Compliance Audit
+
+### Added
+- **Licensing Compliance Audit**: Scanned the entire project and removed all GPL-licensed dependencies/libraries, securing a fully permissive (MIT/CC-BY-4.0) ecosystem.
+- **Playwright Configuration**: Added root configuration for Playwright E2E testing to prevent path overlaps and resolve unit test execution collision issues.
+- **Security Workflow & SBOM**: Implemented CI validation workflows and automatic Software Bill of Materials (SBOM) generation via CycloneDX.
+
+### Changed
+- **Scientific Animation Standards**: Aligned breathing scale animation timing curves with the piecewise cosine respiratory function $f(t) = 0.5 - 0.5 \cos(\frac{\pi t}{\text{duration}})$ from the Bentley et al. (2023) guidelines.
+  - Implemented exact `cubic-bezier(0.37, 0, 0.63, 1)` easing transitions (equivalent to `easeInOutSine`) across CSS, frameworks (React, Vue, Svelte, Angular, Astro), and native mobile/desktop platforms (Compose, SwiftUI, Flutter, Electron, Obsidian).
+- **Scale-Preserved Hold States**: Ensured breath hold states completely freeze the lung scale transition (holding the scale static and transitioning only background colors).
+- **Extended Defaults**: Adjusted default session durations to a minimum of 5 minutes across visualizer applications.
+
 ## [3.0.0] - 2026-01-11 - SWEBOK v4 Compliance Upgrade
 
 ### Added

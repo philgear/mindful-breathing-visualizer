@@ -1,4 +1,4 @@
-# Mindful Breathing Visualizer (v3.0.0)
+# Mindful Breathing Visualizer (v3.2.0)
 
 <p align="center">
   <img src="breathing-animation/docs/videos/3.0.0/quick-demo.webp" alt="Mindful Breathing v3.0.0 Demo" width="100%">

@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026-05-21] - DOI Breathing Animation Alignment & Compliance Audit
+
+### Added
+- **Licensing Compliance Audit**: Formally scanned and removed all GPL-licensed libraries/packages from the project dependencies, ensuring a fully permissive ecosystem (MIT/CC-BY-4.0).
+- **Playwright Configuration**: Added root configuration for Playwright E2E testing to isolate test runs and resolve unit test overlaps.
+- **Security scan workflows & SBOM**: Added GitHub Actions CI workflows, ESLint security plugin, and automatic Software Bill of Materials (SBOM) generation via CycloneDX.
+
+### Changed
+- **Scientific Animation Standards**: Aligned breathing scale animation timing curves with the piecewise cosine respiratory function $f(t) = 0.5 - 0.5 \cos(\frac{\pi t}{\text{duration}})$ from the Bentley et al. (2023) guidelines.
+  - Implemented exact `cubic-bezier(0.37, 0, 0.63, 1)` easing transitions (equivalent to `easeInOutSine`) across CSS, JS/TS frameworks, and native mobile/desktop platforms.
+- **Scale-Preserved Hold States**: Ensured breath hold states completely freeze the lung scale transition (scale static, transitioning only background colors).
+- **Extended Defaults**: Shifted default session duration lengths to a minimum of 5 minutes across visualizer applications.
+
 ## [2026-01-11] - SWEBOK v4 Compliance Upgrade
 
 ### Added
