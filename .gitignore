@@ -118,3 +118,16 @@ pkg/
 # Perl
 *.tdy
 *.swp
+
+# JS Framework Caches
+.angular/
+.astro/
+.svelte-kit/
+.eslintcache
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / Java Out
+*.iml
+out/
