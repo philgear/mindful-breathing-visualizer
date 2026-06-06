@@ -274,23 +274,97 @@
   // SECURITY: Fallback to safe default
   $: currentTechnique = TECHNIQUES[selectedKey] || TECHNIQUES['box'];
   $: currentPhase = currentTechnique.phases[currentPhaseIndex];
-  $: borderRadius =
-    ['circle', 'flower'].includes(selectedShape)
-      ? '50%'
-      : selectedShape === 'lotus'
-        ? '40% 60% 70% 30% / 40% 50% 60% 50%'
-        : selectedShape === 'star'
-          ? '0'
-          : selectedShape === 'hexagon'
-            ? '25%'
-            : '12px';
 
-  // We handle animation via CSS transitions reactively based on currentPhase
-  $: transformStyle = `scale(${currentPhase.scale}) translateX(${currentPhase.x || 0}px) ${selectedShape === 'star' ? 'rotate(45deg)' : ''}`;
+  $: isHold = currentPhase.name.toLowerCase().includes('hold');
+  $: isExhale = currentPhase.name.toLowerCase().includes('exhale');
+  $: isInhale = currentPhase.name.toLowerCase().includes('inhale');
+
+  $: borderRadius =
+    selectedShape === 'square'
+      ? '36px'
+      : selectedShape === 'lotus'
+        ? '50% 0 50% 0'
+        : ['star', 'hexagon', 'sun'].includes(selectedShape)
+          ? '0'
+          : '50%';
+
+  $: clipPath =
+    selectedShape === 'star'
+      ? 'polygon(50% 0%, 58% 31%, 85% 15%, 69% 42%, 100% 50%, 69% 58%, 85% 85%, 58% 69%, 50% 100%, 42% 69%, 15% 85%, 31% 58%, 0% 50%, 31% 42%, 15% 15%, 42% 31%)'
+      : selectedShape === 'flower'
+        ? 'polygon(50% 0%, 62% 12%, 78% 7%, 82% 22%, 96% 26%, 91% 41%, 100% 50%, 91% 59%, 96% 74%, 82% 78%, 78% 93%, 62% 88%, 50% 100%, 38% 88%, 22% 93%, 18% 78%, 4% 74%, 9% 59%, 0% 50%, 9% 41%, 4% 26%, 18% 22%, 22% 7%, 38% 12%)'
+        : selectedShape === 'hexagon'
+          ? 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'
+          : selectedShape === 'sun'
+            ? 'polygon(50% 0%, 54% 12%, 67% 6%, 67% 20%, 80% 20%, 76% 33%, 90% 37%, 82% 48%, 90% 63%, 76% 67%, 80% 80%, 67% 80%, 67% 94%, 54% 88%, 50% 100%, 46% 88%, 33% 94%, 33% 80%, 20% 80%, 24% 67%, 10% 63%, 18% 48%, 10% 37%, 24% 33%, 20% 20%, 33% 20%, 33% 6%, 46% 12%)'
+            : 'none';
+
+  $: rotate =
+    selectedShape === 'lotus'
+      ? '45deg'
+      : selectedShape === 'star'
+        ? '45deg'
+        : selectedShape === 'sun' && isInhale
+          ? '15deg'
+          : selectedShape === 'flower' && isInhale
+            ? '30deg'
+            : selectedShape === 'hexagon' && isInhale
+              ? '60deg'
+              : '0deg';
+
+  $: background =
+    selectedShape === 'turtle'
+      ? 'transparent'
+      : isHold
+        ? (selectedShape === 'sun'
+            ? 'radial-gradient(circle, #cbd5e1 0%, #475569 100%)'
+            : 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)')
+        : (selectedShape === 'sun'
+            ? 'radial-gradient(circle, #fef08a 0%, #f97316 60%, #ea5b0c 100%)'
+            : selectedShape === 'flower'
+              ? 'radial-gradient(circle, #fcd34d 0%, #ea5b0c 100%)'
+              : selectedShape === 'hexagon'
+                ? 'linear-gradient(135deg, #ea5b0c 0%, #b45309 100%)'
+                : 'linear-gradient(135deg, #ea5b0c 0%, #ff7e47 100%)');
+
+  $: filter =
+    selectedShape === 'turtle'
+      ? 'none'
+      : isHold
+        ? (selectedShape === 'sun'
+            ? 'drop-shadow(0 0 20px rgba(148, 163, 184, 0.4))'
+            : 'drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15))')
+        : (selectedShape === 'sun'
+            ? (isExhale
+                ? 'drop-shadow(0 0 12px rgba(251, 191, 36, 0.3))'
+                : 'drop-shadow(0 0 25px rgba(251, 191, 36, 0.6))')
+            : (isExhale
+                ? 'drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15))'
+                : 'drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25))'));
+
+  $: transformStyle = `scale(${currentPhase.scale}) translateX(${currentPhase.x || 0}px) rotate(${rotate})`;
   $: duration = currentPhase.duration;
-  $: transitionStyle = currentPhase.name.toLowerCase().includes('hold')
+  $: transitionStyle = isHold
     ? `background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`
     : `transform ${duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+
+  // Target Guide details
+  $: guideBorder =
+    selectedShape === 'turtle'
+      ? '1.5px dashed rgba(52, 211, 153, 0.4)'
+      : clipPath !== 'none'
+        ? 'none'
+        : '1.5px dashed rgba(234, 91, 12, 0.2)';
+
+  $: guideBg =
+    selectedShape === 'turtle'
+      ? 'rgba(52, 211, 153, 0.03)'
+      : clipPath !== 'none'
+        ? 'rgba(234, 91, 12, 0.05)'
+        : 'transparent';
+
+  $: guideBorderRadius = selectedShape === 'turtle' ? '0' : borderRadius;
+  $: guideClipPath = selectedShape === 'turtle' ? 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)' : clipPath;
 
   // Reactively set audio phase
   $: if (currentPhase) {
@@ -343,14 +417,17 @@
   <button class="mute-btn" on:click={toggleMute}>
     {isMuted ? '🔇 Unmute' : '🔊 Mute'}
   </button>
-  <div
-    class="visualizer"
-    style="transform: {transformStyle}; background-color: {selectedShape === 'turtle' ? 'transparent' : currentPhase.color}; color: {selectedShape === 'turtle' ? 'transparent' : 'white'}; font-size: {selectedShape === 'turtle' ? '80px' : 'inherit'}; box-shadow: {selectedShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)'}; border-radius: {borderRadius}; transition: {transitionStyle};"
-    role="status"
-    aria-live="polite"
-    aria-label="Current phase: {currentPhase.name}"
-  >
-    {selectedShape === 'turtle' ? '🐢' : currentPhase.name}
+  <div class="animation-container">
+    <div class="target-guide" style="border: {guideBorder}; background-color: {guideBg}; border-radius: {guideBorderRadius}; clip-path: {guideClipPath}; transform: rotate({rotate});"></div>
+    <div
+      class="visualizer"
+      style="transform: {transformStyle}; background: {background}; color: {selectedShape === 'turtle' ? 'transparent' : 'white'}; font-size: {selectedShape === 'turtle' ? '80px' : 'inherit'}; border-radius: {borderRadius}; clip-path: {clipPath}; transition: {transitionStyle}; filter: {filter};"
+      role="status"
+      aria-live="polite"
+      aria-label="Current phase: {currentPhase.name}"
+    >
+      {selectedShape === 'turtle' ? '🐢' : currentPhase.name}
+    </div>
   </div>
 
   <div class="controls">
@@ -367,6 +444,7 @@
         <option value="flower">Flower</option>
         <option value="hexagon">Hexagon</option>
         <option value="turtle">Turtle</option>
+        <option value="sun">Sun (Nature)</option>
       </select>
     </label>
     <label style="margin-left: 10px;">
@@ -415,17 +493,35 @@
     margin-bottom: 20px;
   }
 
+  .animation-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+  }
+
+  .target-guide {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.8;
+    transition: all 0.5s ease;
+  }
+
   .visualizer {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: bold;
-    margin: 20px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    /* transition handled inline */
+    z-index: 1;
   }
 
   .controls {

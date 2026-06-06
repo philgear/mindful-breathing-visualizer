@@ -16,6 +16,11 @@
   /* Animation States (Functional Only) */
   --active-color: #ea5b0c;
   --inactive-color: #dcdcdc;
+
+  /* Premium Visual Gradients */
+  --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #ff7e47 100%);
+  --hold-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --inactive-gradient: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
 }
 
 /* Reset & Base */
@@ -200,32 +205,93 @@ button:active {
   align-items: center;
 }
 
+/* Gestalt Target Boundary (Closure / Figure-ground) */
+#animation-container::before {
+  content: '';
+  position: absolute;
+  width: 180px; /* Base size 120px * 1.5 = 180px */
+  height: 180px;
+  border: 1.5px dashed rgba(234, 91, 12, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1);
+  transition: all 0.5s cubic-bezier(0.37, 0, 0.63, 1);
+  box-sizing: border-box;
+  z-index: 0;
+}
+
+/* Make it visible when breathing is active */
+#animation-container:has(.inhale)::before,
+#animation-container:has(.exhale)::before,
+#animation-container:has(.hold)::before,
+#animation-container:has(.holdAfterExhale)::before {
+  opacity: 1;
+}
+
+/* Shape-specific target boundaries */
+#animation-container:has(.circle-animation)::before {
+  border-radius: 50%;
+}
+#animation-container:has(.square-animation)::before {
+  border-radius: 36px;
+}
+#animation-container:has(.lotus-animation)::before {
+  border-radius: 50% 0 50% 0;
+  transform: rotate(45deg);
+  border-style: solid;
+}
+#animation-container:has(.star-animation)::before {
+  border: none;
+  background-color: rgba(234, 91, 12, 0.05);
+  clip-path: polygon(50% 0%, 58% 31%, 85% 15%, 69% 42%, 100% 50%, 69% 58%, 85% 85%, 58% 69%, 50% 100%, 42% 69%, 15% 85%, 31% 58%, 0% 50%, 31% 42%, 15% 15%, 42% 31%);
+}
+#animation-container:has(.flower-animation)::before {
+  border: none;
+  background-color: rgba(234, 91, 12, 0.05);
+  clip-path: polygon(50% 0%, 62% 12%, 78% 7%, 82% 22%, 96% 26%, 91% 41%, 100% 50%, 91% 59%, 96% 74%, 82% 78%, 78% 93%, 62% 88%, 50% 100%, 38% 88%, 22% 93%, 18% 78%, 4% 74%, 9% 59%, 0% 50%, 9% 41%, 4% 26%, 18% 22%, 22% 7%, 38% 12%);
+}
+#animation-container:has(.hexagon-animation)::before {
+  border: none;
+  background-color: rgba(234, 91, 12, 0.05);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+#animation-container:has(.turtle-animation)::before {
+  border: 1.5px dashed rgba(52, 211, 153, 0.4);
+  background-color: rgba(52, 211, 153, 0.03);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+#animation-container:has(.sun-animation)::before {
+  border: none;
+  background-color: rgba(251, 191, 36, 0.08);
+  clip-path: polygon(50% 0%, 54% 12%, 67% 6%, 67% 20%, 80% 20%, 76% 33%, 90% 37%, 82% 48%, 90% 63%, 76% 67%, 80% 80%, 67% 80%, 67% 94%, 54% 88%, 50% 100%, 46% 88%, 33% 94%, 33% 80%, 20% 80%, 24% 67%, 10% 63%, 18% 48%, 10% 37%, 24% 33%, 20% 20%, 33% 20%, 33% 6%, 46% 12%);
+}
+
 /* Geometric Forms */
 /* All animations share a common neutral state */
 .circle-animation,
 .square-animation,
 .lotus-animation,
 .sun-animation {
-  width: 100px;
-  height: 100px;
-  background-color: var(--border-color);
-  /* Inactive State: Gray */
+  width: 120px;
+  height: 120px;
+  background: var(--inactive-gradient);
+  /* Inactive State: Gray Gradient */
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.04));
   transition: all var(--current-duration) cubic-bezier(0.37, 0, 0.63, 1);
 }
 
 /* Alternate Nostril - Stereo Balance Indicator */
 .alternate-nostril-animation {
   width: 150px;
-  /* Fixed width to contain two points */
   height: 60px;
-  background: transparent;
+  background: linear-gradient(to right, transparent 30px, var(--border-color) 30px, var(--border-color) calc(100% - 30px), transparent calc(100% - 30px)) no-repeat center / 100% 2px;
   box-shadow: none;
   border-radius: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  /* L / R Labels */
 }
 
 /* The two channels (Left and Right) */
@@ -235,67 +301,80 @@ button:active {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--border-color);
-  /* Inactive Gray */
-  transition: background-color var(--current-duration) ease, transform var(--current-duration) ease;
+  background: var(--inactive-gradient);
+  border: 1.5px solid var(--border-color);
+  transition: all var(--current-duration) cubic-bezier(0.37, 0, 0.63, 1);
+  box-sizing: border-box;
 }
-
-/* Left Active State */
-/* Logic: When 'left' class is present AND 'inhale' or 'exhale' is present...
-   Wait, the JS adds 'inhale' + 'left'.
-*/
 
 /* Inhale Left */
 .alternate-nostril-animation.inhale.left::before {
-  background-color: var(--active-color);
-  transform: scale(1.2);
+  background: var(--active-gradient);
+  border-color: transparent;
+  transform: scale(1.3);
+  filter: drop-shadow(0 4px 12px rgba(234, 91, 12, 0.35));
 }
 
 /* Exhale Right */
 .alternate-nostril-animation.exhale.right::after {
-  background-color: var(--active-color);
-  transform: scale(1.2);
+  background: var(--active-gradient);
+  border-color: transparent;
+  transform: scale(1.1);
+  filter: drop-shadow(0 3px 8px rgba(234, 91, 12, 0.25));
 }
 
 /* Inhale Right (Cycle 2) */
 .alternate-nostril-animation.inhale.right::after {
-  background-color: var(--active-color);
-  transform: scale(1.2);
+  background: var(--active-gradient);
+  border-color: transparent;
+  transform: scale(1.3);
+  filter: drop-shadow(0 4px 12px rgba(234, 91, 12, 0.35));
 }
 
 /* Exhale Left (Cycle 2) */
 .alternate-nostril-animation.exhale.left::before {
-  background-color: var(--active-color);
-  transform: scale(1.2);
+  background: var(--active-gradient);
+  border-color: transparent;
+  transform: scale(1.1);
+  filter: drop-shadow(0 3px 8px rgba(234, 91, 12, 0.25));
 }
 
-/* Hold States - Both Quiet or specific? Plan said "Both Gray" */
+/* Hold States */
 .alternate-nostril-animation.hold::before,
-.alternate-nostril-animation.hold::after,
+.alternate-nostril-animation.hold::after {
+  background: var(--hold-gradient);
+  border-color: transparent;
+  transform: scale(1.2);
+  filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.15));
+}
 .alternate-nostril-animation.holdAfterExhale::before,
 .alternate-nostril-animation.holdAfterExhale::after {
-  background-color: var(--border-color);
-  transform: scale(1);
+  background: var(--hold-gradient);
+  border-color: transparent;
+  transform: scale(0.9);
+  filter: drop-shadow(0 3px 6px rgba(15, 23, 42, 0.15));
 }
 
-/* Reset generic overrides from above */
+/* Reset generic overrides */
 .alternate-nostril-animation.left,
 .alternate-nostril-animation.right {
   transform: none;
-  /* Disable the old movement */
 }
 
 .circle-animation,
-.sun-animation,
 .lotus-animation {
   border-radius: 50%;
 }
 
-.square-animation {
-  border-radius: 0;
+.sun-animation {
+  border-radius: 0 !important;
+  clip-path: polygon(50% 0%, 54% 12%, 67% 6%, 67% 20%, 80% 20%, 76% 33%, 90% 37%, 82% 48%, 90% 63%, 76% 67%, 80% 80%, 67% 80%, 67% 94%, 54% 88%, 50% 100%, 46% 88%, 33% 94%, 33% 80%, 20% 80%, 24% 67%, 10% 63%, 18% 48%, 10% 37%, 24% 33%, 20% 20%, 33% 20%, 33% 6%, 46% 12%);
 }
 
-/* Functional Active States - Size Changes Only,*/
+.square-animation {
+  border-radius: 36px; /* Premium Squircle */
+}
+
 /* Move Left/Right - Generic Support for All Shapes */
 .circle-animation.left,
 .square-animation.left,
@@ -313,38 +392,62 @@ button:active {
 
 .circle-animation.inhale,
 .square-animation.inhale,
-.sun-animation.inhale,
 .lotus-animation.inhale {
   transform: scale(1.5);
-  background-color: var(--active-color);
+  background: var(--active-gradient);
+  filter: drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25));
 }
 
 .circle-animation.exhale,
 .square-animation.exhale,
-.sun-animation.exhale,
 .lotus-animation.exhale {
   transform: scale(0.8);
-  /* Contract */
-  background-color: var(--active-color);
+  background: var(--active-gradient);
+  filter: drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15));
 }
 
 .circle-animation.hold,
 .square-animation.hold,
-.sun-animation.hold,
 .lotus-animation.hold {
   transform: scale(1.5);
-  background-color: var(--text-main);
+  background: var(--hold-gradient);
+  filter: drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15));
 }
 
 .circle-animation.holdAfterExhale,
 .square-animation.holdAfterExhale,
-.sun-animation.holdAfterExhale,
 .lotus-animation.holdAfterExhale {
   transform: scale(0.8);
-  background-color: var(--text-main);
+  background: var(--hold-gradient);
+  filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.15));
 }
 
-/* Remove decorative glow/shadows */
+/* Specific animated Sun states */
+.sun-animation.inhale {
+  transform: scale(1.5) rotate(15deg);
+  background: radial-gradient(circle, #fef08a 0%, #f97316 60%, #ea5b0c 100%);
+  filter: drop-shadow(0 0 25px rgba(251, 191, 36, 0.6));
+}
+
+.sun-animation.exhale {
+  transform: scale(0.8) rotate(0deg);
+  background: radial-gradient(circle, #fef08a 0%, #f97316 80%, #ea5b0c 100%);
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.3));
+}
+
+.sun-animation.hold {
+  transform: scale(1.5) rotate(15deg);
+  background: radial-gradient(circle, #cbd5e1 0%, #475569 100%);
+  filter: drop-shadow(0 0 20px rgba(148, 163, 184, 0.4));
+}
+
+.sun-animation.holdAfterExhale {
+  transform: scale(0.8) rotate(0deg);
+  background: radial-gradient(circle, #94a3b8 0%, #1e293b 100%);
+  filter: drop-shadow(0 0 10px rgba(148, 163, 184, 0.2));
+}
+
+/* Remove decorative overrides */
 .circle-animation,
 .square-animation {
   box-shadow: none !important;
@@ -508,6 +611,8 @@ button:active {
 /* Dark Mode */
 /* Minimalist designs were usually white/gray. 
    Simple inversion for dark mode. */
+/* Minimalist designs were usually white/gray. 
+   Simple inversion for dark mode. */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-color: #111111;
@@ -516,12 +621,51 @@ button:active {
     --text-muted: #666666;
     --border-color: #333333;
     /* --accent-color stays orange */
+    --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #f97316 100%);
+    --hold-gradient: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+    --inactive-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  }
+
+  .lotus-animation::before,
+  .lotus-animation::after {
+    mix-blend-mode: screen !important;
+  }
+
+  #animation-container::before {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  #animation-container:has(.star-animation)::before,
+  #animation-container:has(.flower-animation)::before,
+  #animation-container:has(.hexagon-animation)::before {
+    background-color: rgba(255, 255, 255, 0.03);
   }
 }
 
 body.dark-mode {
   background-color: #111111;
   color: #eeeeee;
+  --bg-color: #111111;
+  --surface-color: #1a1a1a;
+  --text-main: #eeeeee;
+  --text-muted: #666666;
+  --border-color: #333333;
+  --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #f97316 100%);
+  --hold-gradient: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+  --inactive-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+body.dark-mode .lotus-animation::before,
+body.dark-mode .lotus-animation::after {
+  mix-blend-mode: screen !important;
+}
+
+body.dark-mode #animation-container::before {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+body.dark-mode #animation-container:has(.star-animation)::before,
+body.dark-mode #animation-container:has(.flower-animation)::before,
+body.dark-mode #animation-container:has(.hexagon-animation)::before {
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 body.dark-mode .container {
@@ -712,73 +856,118 @@ body.dark-mode .container {
 .flower-animation,
 .hexagon-animation,
 .turtle-animation {
-  width: 100px;
-  height: 100px;
-  background-color: var(--border-color);
+  width: 120px;
+  height: 120px;
+  background: var(--inactive-gradient);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.04));
   transition: all var(--current-duration) cubic-bezier(0.37, 0, 0.63, 1);
 }
 
 .star-animation {
-  transform: rotate(45deg);
+  clip-path: polygon(50% 0%, 58% 31%, 85% 15%, 69% 42%, 100% 50%, 69% 58%, 85% 85%, 58% 69%, 50% 100%, 42% 69%, 15% 85%, 31% 58%, 0% 50%, 31% 42%, 15% 15%, 42% 31%);
 }
 
 .flower-animation {
-  border-radius: 50%;
+  clip-path: polygon(50% 0%, 62% 12%, 78% 7%, 82% 22%, 96% 26%, 91% 41%, 100% 50%, 91% 59%, 96% 74%, 82% 78%, 78% 93%, 62% 88%, 50% 100%, 38% 88%, 22% 93%, 18% 78%, 4% 74%, 9% 59%, 0% 50%, 9% 41%, 4% 26%, 18% 22%, 22% 7%, 38% 12%);
 }
 
 .hexagon-animation {
-  border-radius: 25%;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
 }
 
 .turtle-animation {
-  background-color: transparent !important;
+  background: transparent !important;
   box-shadow: none !important;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .star-animation.inhale {
   transform: scale(1.5) rotate(45deg);
-  background-color: var(--active-color);
+  background: var(--active-gradient);
+  filter: drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25));
 }
 
-.flower-animation.inhale,
-.hexagon-animation.inhale,
+.flower-animation.inhale {
+  transform: scale(1.5) rotate(30deg);
+  background: radial-gradient(circle, #fcd34d 0%, #ea5b0c 100%);
+  filter: drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25));
+}
+
+.hexagon-animation.inhale {
+  transform: scale(1.5) rotate(60deg);
+  background: linear-gradient(135deg, #ea5b0c 0%, #b45309 100%);
+  filter: drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25));
+}
+
 .turtle-animation.inhale {
   transform: scale(1.5);
-  background-color: var(--active-color);
 }
 
 .star-animation.exhale {
   transform: scale(0.8) rotate(45deg);
-  background-color: var(--active-color);
+  background: var(--active-gradient);
+  filter: drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15));
 }
 
-.flower-animation.exhale,
-.hexagon-animation.exhale,
+.flower-animation.exhale {
+  transform: scale(0.8) rotate(0deg);
+  background: radial-gradient(circle, #fcd34d 0%, #ea5b0c 100%);
+  filter: drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15));
+}
+
+.hexagon-animation.exhale {
+  transform: scale(0.8) rotate(0deg);
+  background: linear-gradient(135deg, #ea5b0c 0%, #b45309 100%);
+  filter: drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15));
+}
+
 .turtle-animation.exhale {
   transform: scale(0.8);
-  background-color: var(--active-color);
 }
 
 .star-animation.hold {
   transform: scale(1.5) rotate(45deg);
-  background-color: var(--text-main);
+  background: var(--hold-gradient);
+  filter: drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15));
 }
 
-.flower-animation.hold,
-.hexagon-animation.hold,
+.flower-animation.hold {
+  transform: scale(1.5) rotate(30deg);
+  background: radial-gradient(circle, #cbd5e1 0%, #1e293b 100%);
+  filter: drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15));
+}
+
+.hexagon-animation.hold {
+  transform: scale(1.5) rotate(60deg);
+  background: var(--hold-gradient);
+  filter: drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15));
+}
+
 .turtle-animation.hold {
   transform: scale(1.5);
-  background-color: var(--text-main);
 }
 
 .star-animation.holdAfterExhale {
   transform: scale(0.8) rotate(45deg);
-  background-color: var(--text-main);
+  background: var(--hold-gradient);
+  filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.15));
 }
 
-.flower-animation.holdAfterExhale,
-.hexagon-animation.holdAfterExhale,
+.flower-animation.holdAfterExhale {
+  transform: scale(0.8) rotate(0deg);
+  background: radial-gradient(circle, #cbd5e1 0%, #1e293b 100%);
+  filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.15));
+}
+
+.hexagon-animation.holdAfterExhale {
+  transform: scale(0.8) rotate(0deg);
+  background: var(--hold-gradient);
+  filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.15));
+}
+
 .turtle-animation.holdAfterExhale {
   transform: scale(0.8);
-  background-color: var(--text-main);
 }

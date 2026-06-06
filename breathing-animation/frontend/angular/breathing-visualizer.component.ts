@@ -234,20 +234,30 @@ const audioController = new AudioController();
         {{ isMuted ? '🔇 Unmute' : '🔊 Mute' }}
       </button>
 
-      <div
-        class="visualizer"
-        [style.transform]="transformStyle"
-        [style.background-color]="backgroundColor"
-        [style.color]="fontColor"
-        [style.font-size]="fontSize"
-        [style.box-shadow]="boxShadow"
-        [style.border-radius]="borderRadius"
-        [style.transition]="transitionStyle"
-        role="status"
-        aria-live="polite"
-        [attr.aria-label]="'Current phase: ' + currentPhase.name"
-      >
-        {{ selectedShape === 'turtle' ? '🐢' : currentPhase.name }}
+      <div class="animation-container">
+        <div class="target-guide"
+          [style.border]="guideBorder"
+          [style.background-color]="guideBg"
+          [style.border-radius]="guideBorderRadius"
+          [style.clip-path]="guideClipPath"
+          [style.transform]="guideTransformStyle"
+        ></div>
+        <div
+          class="visualizer"
+          [style.transform]="transformStyle"
+          [style.background]="backgroundStyle"
+          [style.filter]="filterStyle"
+          [style.clip-path]="clipPath"
+          [style.color]="fontColor"
+          [style.font-size]="fontSize"
+          [style.border-radius]="borderRadius"
+          [style.transition]="transitionStyle"
+          role="status"
+          aria-live="polite"
+          [attr.aria-label]="'Current phase: ' + currentPhase.name"
+        >
+          {{ selectedShape === 'turtle' ? '🐢' : currentPhase.name }}
+        </div>
       </div>
       <div class="controls">
         <label>
@@ -260,6 +270,7 @@ const audioController = new AudioController();
             <option value="flower">Flower</option>
             <option value="hexagon">Hexagon</option>
             <option value="turtle">Turtle</option>
+            <option value="sun">Sun (Nature)</option>
           </select>
         </label>
         <label style="margin-left: 10px;">
@@ -301,19 +312,33 @@ const audioController = new AudioController();
         text-align: center;
         color: #1e293b;
       }
+      .animation-container {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px;
+      }
+      .target-guide {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.8;
+        transition: all 0.5s ease;
+      }
       .visualizer {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
+        width: 120px;
+        height: 120px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-weight: bold;
-        transition:
-          transform 4s cubic-bezier(0.37, 0, 0.63, 1),
-          background-color 4s cubic-bezier(0.37, 0, 0.63, 1);
-        margin: 20px;
+        z-index: 1;
       }
       .controls {
         display: flex;
@@ -330,8 +355,11 @@ const audioController = new AudioController();
         cursor: pointer;
       }
       button:disabled {
-        background: #e2e8f0;
+        background: #e5e7eb;
         cursor: default;
+      }
+      button:hover:not(:disabled) {
+        background: #f3f4f6;
       }
       .mute-btn {
         margin-bottom: 20px;
@@ -340,8 +368,37 @@ const audioController = new AudioController();
   ],
 })
 export class BreathingVisualizerComponent implements OnInit, OnDestroy {
-  // Read-only reference
-  techniques: any = TECHNIQUES;
+  techniques: any = Object.freeze({
+    box: Object.freeze({
+      name: 'Box Breathing',
+      phases: Object.freeze([
+        Object.freeze({ name: 'Inhale', duration: 4000, scale: 1.5, color: '#34d399', x: 0 }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.5, color: '#60a5fa', x: 0 }),
+        Object.freeze({ name: 'Exhale', duration: 4000, scale: 1.0, color: '#fb7185', x: 0 }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+      ]),
+    }),
+    diaphragmatic: Object.freeze({
+      name: 'Diaphragmatic',
+      phases: Object.freeze([
+        Object.freeze({ name: 'Inhale', duration: 5000, scale: 1.5, color: '#34d399', x: 0 }),
+        Object.freeze({ name: 'Exhale', duration: 5000, scale: 1.0, color: '#fb7185', x: 0 }),
+      ]),
+    }),
+    alternate: Object.freeze({
+      name: 'Alternate Nostril',
+      phases: Object.freeze([
+        Object.freeze({ name: 'Inhale Left', duration: 4000, scale: 1.0, color: '#34d399', x: -50 }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+        Object.freeze({ name: 'Exhale Right', duration: 4000, scale: 1.0, color: '#fb7185', x: 50 }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+        Object.freeze({ name: 'Inhale Right', duration: 4000, scale: 1.0, color: '#34d399', x: 50 }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+        Object.freeze({ name: 'Exhale Left', duration: 4000, scale: 1.0, color: '#fb7185', x: -50 }),
+        Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+      ]),
+    }),
+  });
 
   selectedKey: string = 'box';
   selectedShape: string = 'circle';
@@ -361,7 +418,6 @@ export class BreathingVisualizerComponent implements OnInit, OnDestroy {
   }
 
   get currentTechnique() {
-    // SECURITY: Safe fallback
     return this.techniques[this.selectedKey] || this.techniques['box'];
   }
 
@@ -369,16 +425,67 @@ export class BreathingVisualizerComponent implements OnInit, OnDestroy {
     return this.currentTechnique.phases[this.currentPhaseIndex];
   }
 
-  get transformStyle() {
-    let t = `scale(${this.currentPhase.scale}) translateX(${this.currentPhase.x || 0}px)`;
-    if (this.selectedShape === 'star') {
-      t += ' rotate(45deg)';
-    }
-    return t;
+  get isHold() {
+    return this.currentPhase.name.toLowerCase().includes('hold');
   }
 
-  get backgroundColor() {
-    return this.selectedShape === 'turtle' ? 'transparent' : this.currentPhase.color;
+  get isExhale() {
+    return this.currentPhase.name.toLowerCase().includes('exhale');
+  }
+
+  get isInhale() {
+    return this.currentPhase.name.toLowerCase().includes('inhale');
+  }
+
+  get rotateAngle() {
+    if (this.selectedShape === 'lotus') return '45deg';
+    if (this.selectedShape === 'star') return '45deg';
+    if (this.selectedShape === 'sun' && this.isInhale) return '15deg';
+    if (this.selectedShape === 'flower' && this.isInhale) return '30deg';
+    if (this.selectedShape === 'hexagon' && this.isInhale) return '60deg';
+    return '0deg';
+  }
+
+  get transformStyle() {
+    return `scale(${this.currentPhase.scale}) translateX(${this.currentPhase.x || 0}px) rotate(${this.rotateAngle})`;
+  }
+
+  get backgroundStyle() {
+    if (this.selectedShape === 'turtle') return 'transparent';
+    if (this.isHold) {
+      if (this.selectedShape === 'sun') return 'radial-gradient(circle, #cbd5e1 0%, #475569 100%)';
+      return 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
+    } else {
+      if (this.selectedShape === 'sun') return 'radial-gradient(circle, #fef08a 0%, #f97316 60%, #ea5b0c 100%)';
+      if (this.selectedShape === 'flower') return 'radial-gradient(circle, #fcd34d 0%, #ea5b0c 100%)';
+      if (this.selectedShape === 'hexagon') return 'linear-gradient(135deg, #ea5b0c 0%, #b45309 100%)';
+      return 'linear-gradient(135deg, #ea5b0c 0%, #ff7e47 100%)';
+    }
+  }
+
+  get filterStyle() {
+    if (this.selectedShape === 'turtle') return 'none';
+    if (this.isHold) {
+      if (this.selectedShape === 'sun') return 'drop-shadow(0 0 20px rgba(148, 163, 184, 0.4))';
+      return 'drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15))';
+    } else {
+      if (this.selectedShape === 'sun') {
+        return this.isExhale
+          ? 'drop-shadow(0 0 12px rgba(251, 191, 36, 0.3))'
+          : 'drop-shadow(0 0 25px rgba(251, 191, 36, 0.6))';
+      }
+      return this.isExhale
+        ? 'drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15))'
+        : 'drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25))';
+    }
+  }
+
+  get clipPath() {
+    if (this.selectedShape === 'star') return 'polygon(50% 0%, 58% 31%, 85% 15%, 69% 42%, 100% 50%, 69% 58%, 85% 85%, 58% 69%, 50% 100%, 42% 69%, 15% 85%, 31% 58%, 0% 50%, 31% 42%, 15% 15%, 42% 31%)';
+    if (this.selectedShape === 'flower') return 'polygon(50% 0%, 62% 12%, 78% 7%, 82% 22%, 96% 26%, 91% 41%, 100% 50%, 91% 59%, 96% 74%, 82% 78%, 78% 93%, 62% 88%, 50% 100%, 38% 88%, 22% 93%, 18% 78%, 4% 74%, 9% 59%, 0% 50%, 9% 41%, 4% 26%, 18% 22%, 22% 7%, 38% 12%)';
+    if (this.selectedShape === 'hexagon') return 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+    if (this.selectedShape === 'sun') return 'polygon(50% 0%, 54% 12%, 67% 6%, 67% 20%, 80% 20%, 76% 33%, 90% 37%, 82% 48%, 90% 63%, 76% 67%, 80% 80%, 67% 80%, 67% 94%, 54% 88%, 50% 100%, 46% 88%, 33% 94%, 33% 80%, 20% 80%, 24% 67%, 10% 63%, 18% 48%, 10% 37%, 24% 33%, 20% 20%, 33% 20%, 33% 6%, 46% 12%)';
+    return 'none';
   }
 
   get fontColor() {
@@ -389,24 +496,41 @@ export class BreathingVisualizerComponent implements OnInit, OnDestroy {
     return this.selectedShape === 'turtle' ? '80px' : 'inherit';
   }
 
-  get boxShadow() {
-    return this.selectedShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
-  }
-
   get borderRadius() {
-    if (['circle', 'flower'].includes(this.selectedShape)) return '50%';
-    if (this.selectedShape === 'lotus') return '40% 60% 70% 30% / 40% 50% 60% 50%';
-    if (this.selectedShape === 'star') return '0';
-    if (this.selectedShape === 'hexagon') return '25%';
-    return '12px'; // Square/Rounded
+    if (this.selectedShape === 'square') return '36px';
+    if (this.selectedShape === 'lotus') return '50% 0 50% 0';
+    if (['star', 'hexagon', 'sun'].includes(this.selectedShape)) return '0';
+    return '50%';
   }
 
   get transitionStyle() {
     const duration = this.currentPhase.duration;
-    if (this.currentPhase.name.toLowerCase().includes('hold')) {
+    if (this.isHold) {
       return `background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
     }
     return `transform ${duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+  }
+
+  get guideBorder() {
+    if (this.selectedShape === 'turtle') return '1.5px dashed rgba(52, 211, 153, 0.4)';
+    return this.clipPath !== 'none' ? 'none' : '1.5px dashed rgba(234, 91, 12, 0.2)';
+  }
+
+  get guideBg() {
+    if (this.selectedShape === 'turtle') return 'rgba(52, 211, 153, 0.03)';
+    return this.clipPath !== 'none' ? 'rgba(234, 91, 12, 0.05)' : 'transparent';
+  }
+
+  get guideBorderRadius() {
+    return this.selectedShape === 'turtle' ? '0' : this.borderRadius;
+  }
+
+  get guideClipPath() {
+    return this.selectedShape === 'turtle' ? 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)' : this.clipPath;
+  }
+
+  get guideTransformStyle() {
+    return `rotate(${this.rotateAngle})`;
   }
 
   ngOnInit() {

@@ -1,3 +1,37 @@
+:root {
+  --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #ff7e47 100%);
+  --hold-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --inactive-gradient: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #f97316 100%);
+    --hold-gradient: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+    --inactive-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  }
+  body {
+    color: #eeeeee !important;
+    background: #111111 !important;
+    border-color: #333333 !important;
+  }
+  h3 {
+    color: #eeeeee !important;
+  }
+  button {
+    background: #1a1a1a !important;
+    color: #eeeeee !important;
+    border-color: #333333 !important;
+  }
+  button:disabled {
+    background: #2a2a2a !important;
+    color: #555555 !important;
+  }
+  button:hover:not(:disabled) {
+    background: #2a2a2a !important;
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -38,18 +72,37 @@ h3 {
   text-align: center;
 }
 
+.animation-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.target-guide {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.8;
+  transition: all 0.5s cubic-bezier(0.37, 0, 0.63, 1);
+  box-sizing: border-box;
+}
+
 .visualizer {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: bold;
-  transition:
-    transform 0.5s,
-    background-color 0.5s;
+  transition: transform 0.5s cubic-bezier(0.37, 0, 0.63, 1), background-color 0.5s cubic-bezier(0.37, 0, 0.63, 1);
+  z-index: 1;
 }
 
 .controls {

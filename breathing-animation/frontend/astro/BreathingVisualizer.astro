@@ -9,8 +9,11 @@
     style="margin-bottom: 20px; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; cursor: pointer;"
     >🔊 Mute</button
   >
-  <div id="visualizer" class="visualizer" role="status" aria-live="polite">
-    <span id="phase-name">Inhale</span>
+  <div class="animation-container">
+    <div id="target-guide" class="target-guide"></div>
+    <div id="visualizer" class="visualizer" role="status" aria-live="polite">
+      <span id="phase-name">Inhale</span>
+    </div>
   </div>
 
   <div class="controls">
@@ -24,6 +27,7 @@
         <option value="flower">Flower</option>
         <option value="hexagon">Hexagon</option>
         <option value="turtle">Turtle</option>
+        <option value="sun">Sun (Nature)</option>
       </select>
     </label>
     <label style="margin-left: 10px;">
@@ -356,6 +360,113 @@
 
   const audioController = new AudioController();
 
+  function updateVisuals() {
+    if (!visualizer) return;
+    const technique = TECHNIQUES[currentTechniqueKey] || TECHNIQUES['box'];
+    const phase = technique.phases[currentPhaseIndex];
+    const isHold = phase.name.toLowerCase().includes('hold');
+    const isExhale = phase.name.toLowerCase().includes('exhale');
+    const isInhale = phase.name.toLowerCase().includes('inhale');
+
+    // Determine shape properties
+    let borderRadius = '50%';
+    let clipPath = 'none';
+    let background = 'linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%)';
+    let filter = 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.04))';
+    let rotate = '0deg';
+
+    if (currentShape === 'square') {
+      borderRadius = '36px'; // Squircle
+    } else if (currentShape === 'lotus') {
+      borderRadius = '50% 0 50% 0';
+      rotate = '45deg';
+    } else if (currentShape === 'star') {
+      borderRadius = '0';
+      clipPath = 'polygon(50% 0%, 58% 31%, 85% 15%, 69% 42%, 100% 50%, 69% 58%, 85% 85%, 58% 69%, 50% 100%, 42% 69%, 15% 85%, 31% 58%, 0% 50%, 31% 42%, 15% 15%, 42% 31%)';
+    } else if (currentShape === 'flower') {
+      borderRadius = '50%';
+      clipPath = 'polygon(50% 0%, 62% 12%, 78% 7%, 82% 22%, 96% 26%, 91% 41%, 100% 50%, 91% 59%, 96% 74%, 82% 78%, 78% 93%, 62% 88%, 50% 100%, 38% 88%, 22% 93%, 18% 78%, 4% 74%, 9% 59%, 0% 50%, 9% 41%, 4% 26%, 18% 22%, 22% 7%, 38% 12%)';
+    } else if (currentShape === 'hexagon') {
+      borderRadius = '0';
+      clipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+    } else if (currentShape === 'sun') {
+      borderRadius = '0';
+      clipPath = 'polygon(50% 0%, 54% 12%, 67% 6%, 67% 20%, 80% 20%, 76% 33%, 90% 37%, 82% 48%, 90% 63%, 76% 67%, 80% 80%, 67% 80%, 67% 94%, 54% 88%, 50% 100%, 46% 88%, 33% 94%, 33% 80%, 20% 80%, 24% 67%, 10% 63%, 18% 48%, 10% 37%, 24% 33%, 20% 20%, 33% 20%, 33% 6%, 46% 12%)';
+    }
+
+    if (currentShape !== 'turtle') {
+      if (isHold) {
+        background = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
+        filter = 'drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15))';
+        if (currentShape === 'sun') {
+          background = 'radial-gradient(circle, #cbd5e1 0%, #475569 100%)';
+          filter = 'drop-shadow(0 0 20px rgba(148, 163, 184, 0.4))';
+        }
+      } else {
+        background = 'linear-gradient(135deg, #ea5b0c 0%, #ff7e47 100%)';
+        filter = isExhale
+          ? 'drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15))'
+          : 'drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25))';
+        if (currentShape === 'sun') {
+          background = 'radial-gradient(circle, #fef08a 0%, #f97316 60%, #ea5b0c 100%)';
+          filter = isExhale
+            ? 'drop-shadow(0 0 12px rgba(251, 191, 36, 0.3))'
+            : 'drop-shadow(0 0 25px rgba(251, 191, 36, 0.6))';
+          if (isInhale) rotate = '15deg';
+        } else if (currentShape === 'flower') {
+          background = 'radial-gradient(circle, #fcd34d 0%, #ea5b0c 100%)';
+          if (isInhale) rotate = '30deg';
+        } else if (currentShape === 'hexagon') {
+          background = 'linear-gradient(135deg, #ea5b0c 0%, #b45309 100%)';
+          if (isInhale) rotate = '60deg';
+        } else if (currentShape === 'star') {
+          rotate = '45deg';
+        }
+      }
+    }
+
+    const t = `scale(${phase.scale}) translateX(${phase.x || 0}px) rotate(${rotate})`;
+    visualizer.style.transform = t;
+    visualizer.style.borderRadius = borderRadius;
+    visualizer.style.clipPath = clipPath;
+    visualizer.style.background = currentShape === 'turtle' ? 'transparent' : background;
+    visualizer.style.filter = currentShape === 'turtle' ? 'none' : filter;
+    visualizer.style.color = currentShape === 'turtle' ? 'transparent' : 'white';
+    visualizer.style.fontSize = currentShape === 'turtle' ? '80px' : 'inherit';
+
+    if (isHold) {
+      visualizer.style.transition = `background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+    } else {
+      visualizer.style.transition = `transform ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+    }
+
+    // Target guide styling
+    const targetGuide = document.getElementById('target-guide');
+    if (targetGuide) {
+      let guideBorder = '1.5px dashed rgba(234, 91, 12, 0.2)';
+      let guideBg = 'transparent';
+      let guideBorderRadius = borderRadius;
+      let guideClipPath = clipPath;
+
+      if (clipPath !== 'none') {
+        guideBorder = 'none';
+        guideBg = 'rgba(234, 91, 12, 0.05)';
+      }
+      if (currentShape === 'turtle') {
+        guideBorder = '1.5px dashed rgba(52, 211, 153, 0.4)';
+        guideBg = 'rgba(52, 211, 153, 0.03)';
+        guideBorderRadius = '0';
+        guideClipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+      }
+
+      targetGuide.style.border = guideBorder;
+      targetGuide.style.backgroundColor = guideBg;
+      targetGuide.style.borderRadius = guideBorderRadius;
+      targetGuide.style.clipPath = guideClipPath;
+      targetGuide.style.transform = `rotate(${rotate})`;
+    }
+  }
+
   function updatePhase() {
     // SECURITY: Safe lookup with fallback
     const technique = TECHNIQUES[currentTechniqueKey] || TECHNIQUES['box'];
@@ -363,18 +474,7 @@
 
     if (visualizer && phaseNameEl) {
       phaseNameEl.textContent = currentShape === 'turtle' ? '🐢' : phase.name;
-      let t = `scale(${phase.scale}) translateX(${phase.x || 0}px)`;
-      if (currentShape === 'star') t += ' rotate(45deg)';
-      visualizer.style.transform = t;
-      visualizer.style.backgroundColor = currentShape === 'turtle' ? 'transparent' : phase.color;
-      visualizer.style.boxShadow = currentShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
-      visualizer.style.color = currentShape === 'turtle' ? 'transparent' : 'white';
-      visualizer.style.fontSize = currentShape === 'turtle' ? '80px' : 'inherit';
-      if (phase.name.toLowerCase().includes('hold')) {
-        visualizer.style.transition = `background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
-      } else {
-        visualizer.style.transition = `transform ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
-      }
+      updateVisuals();
 
       // A11y Update
       visualizer.setAttribute('aria-label', `Current phase: ${phase.name}`);
@@ -393,7 +493,7 @@
     // SECURITY: Validate key
     if (!TECHNIQUES[key]) return;
 
-    if (timeoutId) clearTimeout(timeoutId);
+    if (timeoutId) window.clearTimeout(timeoutId);
 
     currentTechniqueKey = key;
     currentPhaseIndex = 0;
@@ -428,26 +528,7 @@
   if (shapeSelect) {
     shapeSelect.addEventListener('change', () => {
       currentShape = shapeSelect.value;
-      let borderRadius = '12px';
-      if (['circle', 'flower'].includes(currentShape)) borderRadius = '50%';
-      else if (currentShape === 'lotus') borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%';
-      else if (currentShape === 'star') borderRadius = '0';
-      else if (currentShape === 'hexagon') borderRadius = '25%';
-
-      if (visualizer) visualizer.style.borderRadius = borderRadius;
-      
-      const technique = TECHNIQUES[currentTechniqueKey] || TECHNIQUES['box'];
-      const phase = technique.phases[currentPhaseIndex];
-      if (visualizer && phaseNameEl) {
-        phaseNameEl.textContent = currentShape === 'turtle' ? '🐢' : phase.name;
-        let t = `scale(${phase.scale}) translateX(${phase.x || 0}px)`;
-        if (currentShape === 'star') t += ' rotate(45deg)';
-        visualizer.style.transform = t;
-        visualizer.style.backgroundColor = currentShape === 'turtle' ? 'transparent' : phase.color;
-        visualizer.style.boxShadow = currentShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
-        visualizer.style.color = currentShape === 'turtle' ? 'transparent' : 'white';
-        visualizer.style.fontSize = currentShape === 'turtle' ? '80px' : 'inherit';
-      }
+      updateVisuals();
     });
   }
 
@@ -494,18 +575,36 @@
     color: #333;
   }
 
+  .animation-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+  }
+
+  .target-guide {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.8;
+    transition: all 0.5s ease;
+  }
+
   .visualizer {
-    width: 100px;
-    height: 100px;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%; /* Default, overridden by JS */
+    width: 120px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: bold;
-    /* Transitions handled in JS for dynamic durations, but base styles here */
+    z-index: 1;
+    /* Overridden by JS */
   }
 
   .controls {

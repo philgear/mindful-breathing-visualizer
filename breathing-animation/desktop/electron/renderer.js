@@ -33,6 +33,7 @@ const TECHNIQUES = {
 let currentTechniqueKey = 'box';
 let currentPhaseIndex = 0;
 let timeoutId = null;
+let currentShape = 'circle';
 
 const visualizer = document.getElementById('visualizer');
 const phaseNameEl = document.getElementById('phase-name');
@@ -137,13 +138,138 @@ function updatePhase() {
   const phase = technique.phases[currentPhaseIndex];
 
   if (visualizer && phaseNameEl) {
-    phaseNameEl.textContent = phase.name;
-    visualizer.style.transform = `scale(${phase.scale}) translateX(${phase.x || 0}px)`;
-    visualizer.style.backgroundColor = phase.color;
-    if (phase.name.toLowerCase().includes('hold')) {
+    const phaseNameLower = phase.name.toLowerCase();
+    const isInhale = phaseNameLower.includes('inhale');
+    const isExhale = phaseNameLower.includes('exhale');
+    const isHold = phaseNameLower.includes('hold');
+
+    // Determine shape styling
+    let borderRadius = '50%';
+    let clipPath = 'none';
+    let background = 'var(--inactive-gradient)';
+    let filter = 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.04))';
+    let rotate = '0deg';
+
+    if (currentShape === 'square') {
+      borderRadius = '36px'; // Squircle
+    } else if (currentShape === 'lotus') {
+      borderRadius = '50% 0 50% 0';
+      rotate = '45deg';
+    } else if (currentShape === 'star') {
+      borderRadius = '0';
+      clipPath = 'polygon(50% 0%, 58% 31%, 85% 15%, 69% 42%, 100% 50%, 69% 58%, 85% 85%, 58% 69%, 50% 100%, 42% 69%, 15% 85%, 31% 58%, 0% 50%, 31% 42%, 15% 15%, 42% 31%)';
+    } else if (currentShape === 'flower') {
+      borderRadius = '50%';
+      clipPath = 'polygon(50% 0%, 62% 12%, 78% 7%, 82% 22%, 96% 26%, 91% 41%, 100% 50%, 91% 59%, 96% 74%, 82% 78%, 78% 93%, 62% 88%, 50% 100%, 38% 88%, 22% 93%, 18% 78%, 4% 74%, 9% 59%, 0% 50%, 9% 41%, 4% 26%, 18% 22%, 22% 7%, 38% 12%)';
+    } else if (currentShape === 'hexagon') {
+      borderRadius = '0';
+      clipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+    } else if (currentShape === 'sun') {
+      borderRadius = '0';
+      clipPath = 'polygon(50% 0%, 54% 12%, 67% 6%, 67% 20%, 80% 20%, 76% 33%, 90% 37%, 82% 48%, 90% 63%, 76% 67%, 80% 80%, 67% 80%, 67% 94%, 54% 88%, 50% 100%, 46% 88%, 33% 94%, 33% 80%, 20% 80%, 24% 67%, 10% 63%, 18% 48%, 10% 37%, 24% 33%, 20% 20%, 33% 20%, 33% 6%, 46% 12%)';
+    }
+
+    if (currentShape !== 'turtle') {
+      if (isHold) {
+        background = 'var(--hold-gradient)';
+        filter = 'drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15))';
+        if (currentShape === 'sun') {
+          background = 'radial-gradient(circle, #cbd5e1 0%, #475569 100%)';
+          filter = 'drop-shadow(0 0 20px rgba(148, 163, 184, 0.4))';
+        } else if (currentShape === 'flower') {
+          background = 'radial-gradient(circle, #cbd5e1 0%, #1e293b 100%)';
+        }
+      } else {
+        background = 'var(--active-gradient)';
+        filter = isExhale
+          ? 'drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15))'
+          : 'drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25))';
+        if (currentShape === 'sun') {
+          background = 'radial-gradient(circle, #fef08a 0%, #f97316 60%, #ea5b0c 100%)';
+          filter = isExhale
+            ? 'drop-shadow(0 0 12px rgba(251, 191, 36, 0.3))'
+            : 'drop-shadow(0 0 25px rgba(251, 191, 36, 0.6))';
+          if (isInhale) rotate = '15deg';
+        } else if (currentShape === 'flower') {
+          background = 'radial-gradient(circle, #fcd34d 0%, #ea5b0c 100%)';
+          if (isInhale) rotate = '30deg';
+        } else if (currentShape === 'hexagon') {
+          background = 'linear-gradient(135deg, #ea5b0c 0%, #b45309 100%)';
+          if (isInhale) rotate = '60deg';
+        } else if (currentShape === 'star') {
+          rotate = '45deg';
+        }
+      }
+    }
+
+    // Set content (Turtle or text)
+    if (currentShape === 'turtle') {
+      phaseNameEl.textContent = '🐢';
+      phaseNameEl.style.fontSize = '80px';
+      phaseNameEl.style.display = 'block';
+      phaseNameEl.style.color = 'initial';
+      phaseNameEl.style.textShadow = 'none';
+      visualizer.style.background = 'transparent';
+      visualizer.style.filter = 'none';
+      visualizer.style.borderRadius = '0';
+      visualizer.style.clipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'; // Faint shell shape
+    } else {
+      phaseNameEl.textContent = phase.name;
+      phaseNameEl.style.fontSize = '14px';
+      phaseNameEl.style.color = 'white';
+      phaseNameEl.style.textShadow = 'none';
+      visualizer.style.background = background;
+      visualizer.style.filter = filter;
+      visualizer.style.borderRadius = borderRadius;
+      visualizer.style.clipPath = clipPath;
+    }
+
+    // Dynamic scale and translate transforms
+    let currentScale = phase.scale;
+    if (isExhale) {
+      currentScale = 0.8;
+    } else if (isHold && phase.scale === 1.0) {
+      // Hold after exhale
+      currentScale = 0.8;
+    }
+    visualizer.style.transform = `scale(${currentScale}) translateX(${phase.x || 0}px) rotate(${rotate})`;
+
+    if (isHold) {
       visualizer.style.transition = `background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
     } else {
       visualizer.style.transition = `transform ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`;
+    }
+
+    // Update Target Guide Styles
+    const targetGuide = document.getElementById('target-guide');
+    if (targetGuide) {
+      let guideBorder = '1.5px dashed rgba(234, 91, 12, 0.2)';
+      let guideBg = 'transparent';
+      let guideClipPath = clipPath;
+      let guideBorderRadius = borderRadius;
+      let guideRotate = rotate;
+
+      if (clipPath !== 'none') {
+        guideBorder = 'none';
+        guideBg = 'rgba(234, 91, 12, 0.05)';
+      }
+      if (currentShape === 'sun') {
+        guideBg = 'rgba(251, 191, 36, 0.08)';
+      }
+
+      if (currentShape === 'turtle') {
+        guideBorder = '1.5px dashed rgba(52, 211, 153, 0.4)';
+        guideBg = 'rgba(52, 211, 153, 0.03)';
+        guideBorderRadius = '0';
+        guideClipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+        guideRotate = '0deg';
+      }
+
+      targetGuide.style.border = guideBorder;
+      targetGuide.style.backgroundColor = guideBg;
+      targetGuide.style.borderRadius = guideBorderRadius;
+      targetGuide.style.clipPath = guideClipPath;
+      targetGuide.style.transform = `rotate(${guideRotate})`;
     }
 
     // A11y
@@ -192,12 +318,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const shapeSelect = document.getElementById('shape-select');
   if (shapeSelect) {
     shapeSelect.addEventListener('change', (e) => {
-      const shape = e.target.value;
-      let borderRadius = '12px';
-      if (shape === 'circle') borderRadius = '50%';
-      else if (shape === 'lotus') borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%';
-
-      if (visualizer) visualizer.style.borderRadius = borderRadius;
+      currentShape = e.target.value;
+      // Immediately refresh styles
+      if (timeoutId) clearTimeout(timeoutId);
+      updatePhase();
     });
   }
 

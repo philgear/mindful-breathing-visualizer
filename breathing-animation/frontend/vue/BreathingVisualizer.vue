@@ -75,16 +75,9 @@ const TECHNIQUES = Object.freeze({
       Object.freeze({ name: 'Inhale Left', duration: 4000, scale: 1.0, color: '#34d399', x: -50 }),
       Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
       Object.freeze({ name: 'Exhale Right', duration: 4000, scale: 1.0, color: '#fb7185', x: 50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Inhale Right', duration: 4000, scale: 1.0, color: '#34d399', x: 50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-      Object.freeze({ name: 'Exhale Left', duration: 4000, scale: 1.0, color: '#fb7185', x: -50 }),
-      Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
-    ]),
-  }),
-});
-
+// ===================================
 // Audio Controller Class
+// ===================================
 class AudioController {
   constructor() {
     this.ctx = null; this.masterGain = null; this.nodes = [];
@@ -121,7 +114,7 @@ class AudioController {
 
   cleanupNodes() {
     this.nodes.forEach(n => {
-      if (n.node.stop) { try { n.node.stop(); } catch(e){} }
+      if (n.node.stop) { try { n.node.stop(); } catch { /* ignore */ } }
       n.node.disconnect();
     });
     this.nodes = [];
@@ -291,11 +284,40 @@ const audioController = new AudioController();
 
 export default {
   name: 'BreathingVisualizer',
-  // SECURITY: Explicitly define no props to prevent attribute fallthrough abuse
   props: {},
   data() {
     return {
-      techniques: TECHNIQUES,
+      techniques: Object.freeze({
+        box: Object.freeze({
+          name: 'Box Breathing',
+          phases: Object.freeze([
+            Object.freeze({ name: 'Inhale', duration: 4000, scale: 1.5, color: '#34d399', x: 0 }),
+            Object.freeze({ name: 'Hold', duration: 4000, scale: 1.5, color: '#60a5fa', x: 0 }),
+            Object.freeze({ name: 'Exhale', duration: 4000, scale: 1.0, color: '#fb7185', x: 0 }),
+            Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+          ]),
+        }),
+        diaphragmatic: Object.freeze({
+          name: 'Diaphragmatic',
+          phases: Object.freeze([
+            Object.freeze({ name: 'Inhale', duration: 5000, scale: 1.5, color: '#34d399', x: 0 }),
+            Object.freeze({ name: 'Exhale', duration: 5000, scale: 1.0, color: '#fb7185', x: 0 }),
+          ]),
+        }),
+        alternate: Object.freeze({
+          name: 'Alternate Nostril',
+          phases: Object.freeze([
+            Object.freeze({ name: 'Inhale Left', duration: 4000, scale: 1.0, color: '#34d399', x: -50 }),
+            Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+            Object.freeze({ name: 'Exhale Right', duration: 4000, scale: 1.0, color: '#fb7185', x: 50 }),
+            Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+            Object.freeze({ name: 'Inhale Right', duration: 4000, scale: 1.0, color: '#34d399', x: 50 }),
+            Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+            Object.freeze({ name: 'Exhale Left', duration: 4000, scale: 1.0, color: '#fb7185', x: -50 }),
+            Object.freeze({ name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }),
+          ]),
+        }),
+      }),
       selectedKey: 'box',
       selectedShape: 'circle',
       soundscape: 'sine',
@@ -306,7 +328,6 @@ export default {
   },
   computed: {
     currentTechnique() {
-      // SECURITY: Fallback to safe default if key is invalid
       return this.techniques[this.selectedKey] || this.techniques['box'];
     },
     currentPhase() {
@@ -314,25 +335,129 @@ export default {
     },
     visualizerStyle() {
       const duration = this.currentPhase.duration;
-      let borderRadius = '12px';
-      if (['circle', 'flower'].includes(this.selectedShape)) { borderRadius = '50%'; }
-      else if (this.selectedShape === 'lotus') borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%';
-      else if (this.selectedShape === 'star') borderRadius = '0';
-      else if (this.selectedShape === 'hexagon') borderRadius = '25%';
-      
-      let t = `scale(${this.currentPhase.scale}) translateX(${this.currentPhase.x || 0}px)`;
-      if (this.selectedShape === 'star') t += ' rotate(45deg)';
+      const isHold = this.currentPhase.name.toLowerCase().includes('hold');
+      const isExhale = this.currentPhase.name.toLowerCase().includes('exhale');
+      const isInhale = this.currentPhase.name.toLowerCase().includes('inhale');
+
+      let borderRadius = '50%';
+      let clipPath = 'none';
+      let background = 'linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%)';
+      let filter = 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.04))';
+      let rotate = '0deg';
+
+      if (this.selectedShape === 'square') {
+        borderRadius = '36px'; // Squircle
+      } else if (this.selectedShape === 'lotus') {
+        borderRadius = '50% 0 50% 0';
+        rotate = '45deg';
+      } else if (this.selectedShape === 'star') {
+        borderRadius = '0';
+        clipPath = 'polygon(50% 0%, 58% 31%, 85% 15%, 69% 42%, 100% 50%, 69% 58%, 85% 85%, 58% 69%, 50% 100%, 42% 69%, 15% 85%, 31% 58%, 0% 50%, 31% 42%, 15% 15%, 42% 31%)';
+      } else if (this.selectedShape === 'flower') {
+        borderRadius = '50%';
+        clipPath = 'polygon(50% 0%, 62% 12%, 78% 7%, 82% 22%, 96% 26%, 91% 41%, 100% 50%, 91% 59%, 96% 74%, 82% 78%, 78% 93%, 62% 88%, 50% 100%, 38% 88%, 22% 93%, 18% 78%, 4% 74%, 9% 59%, 0% 50%, 9% 41%, 4% 26%, 18% 22%, 22% 7%, 38% 12%)';
+      } else if (this.selectedShape === 'hexagon') {
+        borderRadius = '0';
+        clipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+      } else if (this.selectedShape === 'sun') {
+        borderRadius = '0';
+        clipPath = 'polygon(50% 0%, 54% 12%, 67% 6%, 67% 20%, 80% 20%, 76% 33%, 90% 37%, 82% 48%, 90% 63%, 76% 67%, 80% 80%, 67% 80%, 67% 94%, 54% 88%, 50% 100%, 46% 88%, 33% 94%, 33% 80%, 20% 80%, 24% 67%, 10% 63%, 18% 48%, 10% 37%, 24% 33%, 20% 20%, 33% 20%, 33% 6%, 46% 12%)';
+      }
+
+      if (this.selectedShape !== 'turtle') {
+        if (isHold) {
+          background = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
+          filter = 'drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15))';
+          if (this.selectedShape === 'sun') {
+            background = 'radial-gradient(circle, #cbd5e1 0%, #475569 100%)';
+            filter = 'drop-shadow(0 0 20px rgba(148, 163, 184, 0.4))';
+          }
+        } else {
+          background = 'linear-gradient(135deg, #ea5b0c 0%, #ff7e47 100%)';
+          filter = isExhale
+            ? 'drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15))'
+            : 'drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25))';
+          if (this.selectedShape === 'sun') {
+            background = 'radial-gradient(circle, #fef08a 0%, #f97316 60%, #ea5b0c 100%)';
+            filter = isExhale
+              ? 'drop-shadow(0 0 12px rgba(251, 191, 36, 0.3))'
+              : 'drop-shadow(0 0 25px rgba(251, 191, 36, 0.6))';
+            if (isInhale) rotate = '15deg';
+          } else if (this.selectedShape === 'flower') {
+            background = 'radial-gradient(circle, #fcd34d 0%, #ea5b0c 100%)';
+            if (isInhale) rotate = '30deg';
+          } else if (this.selectedShape === 'hexagon') {
+            background = 'linear-gradient(135deg, #ea5b0c 0%, #b45309 100%)';
+            if (isInhale) rotate = '60deg';
+          } else if (this.selectedShape === 'star') {
+            rotate = '45deg';
+          }
+        }
+      }
+
+      let transform = `scale(${this.currentPhase.scale}) translateX(${this.currentPhase.x || 0}px) rotate(${rotate})`;
 
       return {
-        transform: t,
-        backgroundColor: this.selectedShape === 'turtle' ? 'transparent' : this.currentPhase.color,
+        transform: transform,
+        background: this.selectedShape === 'turtle' ? 'transparent' : background,
         color: this.selectedShape === 'turtle' ? 'transparent' : 'white',
         fontSize: this.selectedShape === 'turtle' ? '80px' : 'inherit',
         borderRadius: borderRadius,
-        transition: this.currentPhase.name.toLowerCase().includes('hold')
+        clipPath: clipPath,
+        transition: isHold
           ? `background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`
           : `transform ${duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${duration}ms cubic-bezier(0.37, 0, 0.63, 1)`,
-        boxShadow: this.selectedShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+        filter: this.selectedShape === 'turtle' ? 'none' : filter,
+        width: '120px',
+        height: '120px',
+        zIndex: 1
+      };
+    },
+    targetGuideStyle() {
+      let borderRadius = '50%';
+      let clipPath = 'none';
+      let rotate = '0deg';
+
+      if (this.selectedShape === 'square') {
+        borderRadius = '36px';
+      } else if (this.selectedShape === 'lotus') {
+        borderRadius = '50% 0 50% 0';
+        rotate = '45deg';
+      } else if (this.selectedShape === 'star') {
+        borderRadius = '0';
+        clipPath = 'polygon(50% 0%, 58% 31%, 85% 15%, 69% 42%, 100% 50%, 69% 58%, 85% 85%, 58% 69%, 50% 100%, 42% 69%, 15% 85%, 31% 58%, 0% 50%, 31% 42%, 15% 15%, 42% 31%)';
+      } else if (this.selectedShape === 'flower') {
+        borderRadius = '50%';
+        clipPath = 'polygon(50% 0%, 62% 12%, 78% 7%, 82% 22%, 96% 26%, 91% 41%, 100% 50%, 91% 59%, 96% 74%, 82% 78%, 78% 93%, 62% 88%, 50% 100%, 38% 88%, 22% 93%, 18% 78%, 4% 74%, 9% 59%, 0% 50%, 9% 41%, 4% 26%, 18% 22%, 22% 7%, 38% 12%)';
+      } else if (this.selectedShape === 'hexagon') {
+        borderRadius = '0';
+        clipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+      } else if (this.selectedShape === 'sun') {
+        borderRadius = '0';
+        clipPath = 'polygon(50% 0%, 54% 12%, 67% 6%, 67% 20%, 80% 20%, 76% 33%, 90% 37%, 82% 48%, 90% 63%, 76% 67%, 80% 80%, 67% 80%, 67% 94%, 54% 88%, 50% 100%, 46% 88%, 33% 94%, 33% 80%, 20% 80%, 24% 67%, 10% 63%, 18% 48%, 10% 37%, 24% 33%, 20% 20%, 33% 20%, 33% 6%, 46% 12%)';
+      }
+
+      let guideBorder = '1.5px dashed rgba(234, 91, 12, 0.2)';
+      let guideBg = 'transparent';
+      if (clipPath !== 'none') {
+        guideBorder = 'none';
+        guideBg = 'rgba(234, 91, 12, 0.05)';
+      }
+      if (this.selectedShape === 'turtle') {
+        guideBorder = '1.5px dashed rgba(52, 211, 153, 0.4)';
+        guideBg = 'rgba(52, 211, 153, 0.03)';
+        borderRadius = '0';
+        clipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+      }
+
+      return {
+        border: guideBorder,
+        backgroundColor: guideBg,
+        borderRadius: borderRadius,
+        clipPath: clipPath,
+        transform: `rotate(${rotate})`,
+        width: '180px',
+        height: '180px'
       };
     }
   },
@@ -402,15 +527,34 @@ export default {
   text-align: center;
 }
 
+.animation-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+}
+
+.target-guide {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.8;
+  transition: all 0.5s ease;
+}
+
 .visualizer {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: bold;
-  margin: 20px;
 }
 
 .controls {

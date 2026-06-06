@@ -293,6 +293,79 @@ const BreathingVisualizer = () => {
     setIsMuted(muted);
   };
 
+  const isHold = phase.name.toLowerCase().includes('hold');
+  const isExhale = phase.name.toLowerCase().includes('exhale');
+  const isInhale = phase.name.toLowerCase().includes('inhale');
+
+  // Computed Shape Properties
+  let borderRadius = '50%';
+  let clipPath = 'none';
+  let background = 'linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%)';
+  let filter = 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.04))';
+  let rotate = '0deg';
+
+  if (selectedShape === 'square') {
+    borderRadius = '36px'; // Squircle
+  } else if (selectedShape === 'lotus') {
+    borderRadius = '50% 0 50% 0';
+    rotate = '45deg';
+  } else if (selectedShape === 'star') {
+    borderRadius = '0';
+    clipPath = 'polygon(50% 0%, 58% 31%, 85% 15%, 69% 42%, 100% 50%, 69% 58%, 85% 85%, 58% 69%, 50% 100%, 42% 69%, 15% 85%, 31% 58%, 0% 50%, 31% 42%, 15% 15%, 42% 31%)';
+  } else if (selectedShape === 'flower') {
+    borderRadius = '50%';
+    clipPath = 'polygon(50% 0%, 62% 12%, 78% 7%, 82% 22%, 96% 26%, 91% 41%, 100% 50%, 91% 59%, 96% 74%, 82% 78%, 78% 93%, 62% 88%, 50% 100%, 38% 88%, 22% 93%, 18% 78%, 4% 74%, 9% 59%, 0% 50%, 9% 41%, 4% 26%, 18% 22%, 22% 7%, 38% 12%)';
+  } else if (selectedShape === 'hexagon') {
+    borderRadius = '0';
+    clipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+  } else if (selectedShape === 'sun') {
+    borderRadius = '0';
+    clipPath = 'polygon(50% 0%, 54% 12%, 67% 6%, 67% 20%, 80% 20%, 76% 33%, 90% 37%, 82% 48%, 90% 63%, 76% 67%, 80% 80%, 67% 80%, 67% 94%, 54% 88%, 50% 100%, 46% 88%, 33% 94%, 33% 80%, 20% 80%, 24% 67%, 10% 63%, 18% 48%, 10% 37%, 24% 33%, 20% 20%, 33% 20%, 33% 6%, 46% 12%)';
+  }
+
+  if (selectedShape !== 'turtle') {
+    if (isHold) {
+      background = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
+      filter = 'drop-shadow(0 10px 20px rgba(15, 23, 42, 0.15))';
+      if (selectedShape === 'sun') {
+        background = 'radial-gradient(circle, #cbd5e1 0%, #475569 100%)';
+        filter = 'drop-shadow(0 0 20px rgba(148, 163, 184, 0.4))';
+      }
+    } else {
+      background = 'linear-gradient(135deg, #ea5b0c 0%, #ff7e47 100%)';
+      filter = isExhale
+        ? 'drop-shadow(0 4px 10px rgba(234, 91, 12, 0.15))'
+        : 'drop-shadow(0 10px 20px rgba(234, 91, 12, 0.25))';
+      if (selectedShape === 'sun') {
+        background = 'radial-gradient(circle, #fef08a 0%, #f97316 60%, #ea5b0c 100%)';
+        filter = isExhale
+          ? 'drop-shadow(0 0 12px rgba(251, 191, 36, 0.3))'
+          : 'drop-shadow(0 0 25px rgba(251, 191, 36, 0.6))';
+        if (isInhale) rotate = '15deg';
+      } else if (selectedShape === 'flower') {
+        background = 'radial-gradient(circle, #fcd34d 0%, #ea5b0c 100%)';
+        if (isInhale) rotate = '30deg';
+      } else if (selectedShape === 'hexagon') {
+        background = 'linear-gradient(135deg, #ea5b0c 0%, #b45309 100%)';
+        if (isInhale) rotate = '60deg';
+      } else if (selectedShape === 'star') {
+        rotate = '45deg';
+      }
+    }
+  }
+
+  // Target Guide details
+  let guideBorder = '1.5px dashed rgba(234, 91, 12, 0.2)';
+  let guideBg = 'transparent';
+  if (clipPath !== 'none') {
+    guideBorder = 'none';
+    guideBg = 'rgba(234, 91, 12, 0.05)';
+  }
+  if (selectedShape === 'turtle') {
+    guideBorder = '1.5px dashed rgba(52, 211, 153, 0.4)';
+    guideBg = 'rgba(52, 211, 153, 0.03)';
+  }
+
   const styles = {
     container: {
       display: 'flex',
@@ -305,22 +378,46 @@ const BreathingVisualizer = () => {
       fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
       color: '#1e293b'
     },
+    animationContainer: {
+      position: 'relative',
+      width: '200px',
+      height: '200px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    targetGuide: {
+      position: 'absolute',
+      width: '180px',
+      height: '180px',
+      border: guideBorder,
+      backgroundColor: guideBg,
+      borderRadius: selectedShape === 'turtle' ? '0' : borderRadius,
+      clipPath: selectedShape === 'turtle' ? 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)' : clipPath,
+      transform: `rotate(${rotate})`,
+      pointerEvents: 'none',
+      zIndex: 0,
+      opacity: 0.8,
+      transition: 'all 0.5s ease'
+    },
     visualizer: {
-      width: '100px',
-      height: '100px',
-      borderRadius: ['circle', 'flower'].includes(selectedShape) ? '50%' : selectedShape === 'lotus' ? '40% 60% 70% 30% / 40% 50% 60% 50%' : selectedShape === 'star' ? '0' : selectedShape === 'hexagon' ? '25%' : '12px',
+      width: '120px',
+      height: '120px',
+      borderRadius: borderRadius,
+      clipPath: clipPath,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       color: selectedShape === 'turtle' ? 'transparent' : 'white',
       fontSize: selectedShape === 'turtle' ? '80px' : 'inherit',
       fontWeight: 'bold',
-      transition: phase.name.toLowerCase().includes('hold')
+      transition: isHold
         ? `background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`
         : `transform ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1), background-color ${phase.duration}ms cubic-bezier(0.37, 0, 0.63, 1)`,
-      transform: `scale(${phase.scale}) translateX(${phase.x || 0}px) ${selectedShape === 'star' ? 'rotate(45deg)' : ''}`,
-      backgroundColor: selectedShape === 'turtle' ? 'transparent' : phase.color,
-      boxShadow: selectedShape === 'turtle' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+      transform: `scale(${phase.scale}) translateX(${phase.x || 0}px) rotate(${rotate})`,
+      background: selectedShape === 'turtle' ? 'transparent' : background,
+      filter: selectedShape === 'turtle' ? 'none' : filter,
+      zIndex: 1
     },
     controls: {
       marginTop: '20px',
@@ -349,13 +446,16 @@ const BreathingVisualizer = () => {
         {isMuted ? '🔇 Unmute' : '🔊 Mute'}
       </button>
 
-      <div
-        style={styles.visualizer}
-        role="status"
-        aria-live="polite"
-        aria-label={`Current phase: ${phase.name}`}
-      >
-        {selectedShape === 'turtle' ? '🐢' : phase.name}
+      <div style={styles.animationContainer}>
+        <div style={styles.targetGuide} />
+        <div
+          style={styles.visualizer}
+          role="status"
+          aria-live="polite"
+          aria-label={`Current phase: ${phase.name}`}
+        >
+          {selectedShape === 'turtle' ? '🐢' : phase.name}
+        </div>
       </div>
 
       <div style={styles.controls}>
@@ -373,6 +473,7 @@ const BreathingVisualizer = () => {
             <option value="flower">Flower</option>
             <option value="hexagon">Hexagon</option>
             <option value="turtle">Turtle</option>
+            <option value="sun">Sun (Nature)</option>
           </select>
         </label>
         <label style={{ marginLeft: '10px' }}>
