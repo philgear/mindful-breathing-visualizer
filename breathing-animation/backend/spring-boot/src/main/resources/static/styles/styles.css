@@ -18,15 +18,16 @@
 }
 
 :root {
-  /* Minimalist / Neutral Color Palette */
+  /* Minimalist / Neutral Color Palette (WCAG AA 4.5:1+ compliant) */
   --bg-color: #f4f4f4;
   --surface-color: #ffffff;
   --text-main: #111111;
-  --text-muted: #888888;
+  --text-muted: #595959;
   --border-color: #dcdcdc;
 
   /* Interaction Points Only */
   --accent-color: #ea5b0c;
+  --accent-button-bg: #c2410c;
   /* International Orange */
 
   /* Animation States (Functional Only) */
@@ -173,13 +174,14 @@ button:active {
 
 /* Primary Action Button ("Switch") */
 #startButton {
-  background-color: var(--accent-color);
-  border-color: var(--accent-color);
+  background-color: var(--accent-button-bg, #c2410c);
+  border-color: var(--accent-button-bg, #c2410c);
   color: white;
 }
 
 #startButton:hover {
-  background-color: #d14f0a;
+  background-color: #9a3412;
+  border-color: #9a3412;
 }
 
 #stopButton {
@@ -649,8 +651,9 @@ button:active {
     --bg-color: #111111;
     --surface-color: #1a1a1a;
     --text-main: #eeeeee;
-    --text-muted: #666666;
+    --text-muted: #a3a3a3;
     --border-color: #333333;
+    --accent-button-bg: #c2410c;
     /* --accent-color stays orange */
     --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #f97316 100%);
     --hold-gradient: linear-gradient(135deg, #334155 0%, #1e293b 100%);
@@ -678,8 +681,9 @@ body.dark-mode {
   --bg-color: #111111;
   --surface-color: #1a1a1a;
   --text-main: #eeeeee;
-  --text-muted: #666666;
+  --text-muted: #a3a3a3;
   --border-color: #333333;
+  --accent-button-bg: #c2410c;
   --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #f97316 100%);
   --hold-gradient: linear-gradient(135deg, #334155 0%, #1e293b 100%);
   --inactive-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
