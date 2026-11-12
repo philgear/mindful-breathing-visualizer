@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     
     defaults:
       run:
@@ -37,7 +37,7 @@ jobs:
         run: npm run generate-sbom
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
       - name: Run E2E Tests
         run: npm run test:e2e
