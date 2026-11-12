@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint .",
     "audit": "lighthouse public/index.html --output html --output-path ./lighthouse-report.html --chrome-flags=\"--headless\"",
-    "build:docs": "mkdir -p ../../docs/js ../../docs/styles ../../docs/locales ../../docs/assets && cp js/src/*.js ../../docs/js/ && cp src/styles/*.css ../../docs/styles/ && cp sw.js ../../docs/ && cp -r public/locales/* ../../docs/locales/ && cp -r public/assets/* ../../docs/assets/"
+    "build:docs": "mkdir -p ../../docs/js ../../docs/styles ../../docs/locales ../../docs/assets/fonts && cp js/src/*.js ../../docs/js/ && cp src/styles/*.css ../../docs/styles/ && cp sw.js ../../docs/ && cp -r public/locales/* ../../docs/locales/ && cp -r public/assets/* ../../docs/assets/"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.1",

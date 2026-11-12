@@ -120,7 +120,11 @@
     }
     
     doHaptic(phaseName, duration) {
-      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      if (
+        typeof navigator !== 'undefined' &&
+        navigator.vibrate &&
+        (!navigator.userActivation || navigator.userActivation.hasBeenActive)
+      ) {
         const p = phaseName.toLowerCase();
         if (p.includes('inhale') || p.includes('exhale')) {
           const pattern = [];
@@ -223,10 +227,26 @@
       this.timerId = null;
       this.phaseDurations = null;
       this.currentPhase = null;
+      this.phaseDeadline = null;
+      this.isRunning = false;
       this.promptContainer = null;
       this.promptElement = null;
       this.rafId = null;
       this.announcerElement = null;
+    }
+
+    scheduleNextPhase(durationMs, nextPhaseFn) {
+      const now = performance.now();
+      if (this.phaseDeadline === null) {
+        this.phaseDeadline = now + durationMs;
+      } else {
+        this.phaseDeadline += durationMs;
+      }
+      const delay = Math.max(0, this.phaseDeadline - now);
+      this.timerId = setTimeout(() => {
+        if (!this.isRunning) return;
+        nextPhaseFn();
+      }, delay);
     }
 
     setupAnimation() {
@@ -275,7 +295,18 @@
     }
 
     stop() {
+      const wasRunning = this.isRunning;
+      this.isRunning = false;
+      this.phaseDeadline = null;
       clearTimeout(this.timerId);
+      if (
+        wasRunning &&
+        typeof navigator !== 'undefined' &&
+        navigator.vibrate &&
+        (!navigator.userActivation || navigator.userActivation.hasBeenActive)
+      ) {
+        navigator.vibrate(0);
+      }
       if (this.animationElement) {
         this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
         // Remove custom properties
@@ -293,10 +324,13 @@
     }
 
     getPhaseDurations(inhaleTime, holdTime, exhaleTime) {
-      // Ensure inputs are valid numbers
-      const i = Math.max(1, Math.min(60, Number(inhaleTime) || 4));
-      const h = Math.max(0, Math.min(60, Number(holdTime) || 4));
-      const e = Math.max(1, Math.min(60, Number(exhaleTime) || 4));
+      // Ensure inputs are valid numbers (preserve explicit holdTime = 0)
+      const parsedInhale = Number(inhaleTime);
+      const parsedHold = Number(holdTime);
+      const parsedExhale = Number(exhaleTime);
+      const i = Math.max(1, Math.min(60, Number.isFinite(parsedInhale) && inhaleTime !== '' ? parsedInhale : 4));
+      const h = Math.max(0, Math.min(60, Number.isFinite(parsedHold) && holdTime !== '' ? parsedHold : 4));
+      const e = Math.max(1, Math.min(60, Number.isFinite(parsedExhale) && exhaleTime !== '' ? parsedExhale : 4));
       return {
         inhaleDuration: i * 1000,
         holdDuration: h * 1000,
@@ -325,6 +359,8 @@
     start(inhaleTime, holdTime, exhaleTime) {
       this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
       this.currentPhase = 'inhale';
+      this.phaseDeadline = null;
+      this.isRunning = true;
       audioController.startTone();
       this.animate();
     }
@@ -335,6 +371,7 @@
     }
 
     animate() {
+      if (!this.isRunning) return;
       // Reset classes
       this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
       this.progressBar.className = 'progress-bar';
@@ -356,14 +393,10 @@
         this.announce(text.label);
         audioController.setPhase('inhale', inhaleDuration);
 
-        // Note: Transforms are now handled effectively via CSS using the state classes,
-        // but if specific scale values are needed, they can be set via CSS vars too.
-        // Assuming CSS handles the scale(1.5) on .inhale class.
-
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'hold';
+        this.scheduleNextPhase(inhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'hold' : 'exhale';
           this.animate();
-        }, inhaleDuration);
+        });
       } else if (this.currentPhase === 'hold') {
         this.setTransitionDuration(holdDuration);
         this.animationElement.classList.add('hold');
@@ -375,10 +408,10 @@
         this.announce(text.label);
         audioController.setPhase('hold', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'exhale';
           this.animate();
-        }, holdDuration);
+        });
       } else if (this.currentPhase === 'exhale') {
         this.setTransitionDuration(exhaleDuration);
         this.animationElement.classList.add('exhale');
@@ -390,10 +423,10 @@
         this.announce(text.label);
         audioController.setPhase('exhale', exhaleDuration);
 
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'holdAfterExhale';
+        this.scheduleNextPhase(exhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'holdAfterExhale' : 'inhale';
           this.animate();
-        }, exhaleDuration);
+        });
       } else if (this.currentPhase === 'holdAfterExhale') {
         this.setTransitionDuration(holdDuration);
         this.animationElement.classList.add('holdAfterExhale');
@@ -405,10 +438,10 @@
         this.announce(text.label);
         audioController.setPhase('holdAfterExhale', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'inhale';
           this.animate();
-        }, holdDuration);
+        });
       }
     }
   }
@@ -425,6 +458,8 @@
     start(inhaleTime, holdTime, exhaleTime) {
       this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
       this.currentPhase = 'inhale';
+      this.phaseDeadline = null;
+      this.isRunning = true;
       audioController.startTone();
       this.animate();
     }
@@ -435,13 +470,14 @@
     }
 
     animate() {
-      this.animationElement.classList.remove('inhale', 'exhale');
+      if (!this.isRunning) return;
+      this.animationElement.classList.remove('inhale', 'exhale', 'hold');
       this.progressBar.className = 'progress-bar';
 
       // UX: Force reflow
       void this.progressFill.offsetWidth;
 
-      const { inhaleDuration, exhaleDuration } = this.phaseDurations;
+      const { inhaleDuration, holdDuration, exhaleDuration } = this.phaseDurations;
 
       if (this.currentPhase === 'inhale') {
         this.setTransitionDuration(inhaleDuration);
@@ -451,12 +487,28 @@
           typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '' };
         this.promptElement.textContent = text.label;
         document.title = `${text.label}`;
+        this.announce(text.label);
         audioController.setPhase('inhale', inhaleDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(inhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'hold' : 'exhale';
+          this.animate();
+        });
+      } else if (this.currentPhase === 'hold') {
+        this.setTransitionDuration(holdDuration);
+        this.animationElement.classList.add('hold');
+        this.progressBar.classList.add('hold');
+        const text =
+          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
+        this.promptElement.textContent = text.label;
+        document.title = `${text.label}`;
+        this.announce(text.label);
+        audioController.setPhase('hold', holdDuration);
+
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'exhale';
           this.animate();
-        }, inhaleDuration);
+        });
       } else if (this.currentPhase === 'exhale') {
         this.setTransitionDuration(exhaleDuration);
         this.animationElement.classList.add('exhale');
@@ -465,12 +517,13 @@
           typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '' };
         this.promptElement.textContent = text.label;
         document.title = `${text.label}`;
+        this.announce(text.label);
         audioController.setPhase('exhale', exhaleDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(exhaleDuration, () => {
           this.currentPhase = 'inhale';
           this.animate();
-        }, exhaleDuration);
+        });
       }
     }
   }
@@ -490,6 +543,8 @@
     start(inhaleTime, holdTime, exhaleTime) {
       this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
       this.currentPhase = 'inhale';
+      this.phaseDeadline = null;
+      this.isRunning = true;
       audioController.startTone();
       this.animate();
     }
@@ -500,6 +555,7 @@
     }
 
     animate() {
+      if (!this.isRunning) return;
       this.animationElement.classList.remove(
         'inhale',
         'exhale',
@@ -533,14 +589,16 @@
               ? 'Left'
               : 'Right';
 
-        this.promptElement.textContent = `${text.label} (${sideText})`;
-        document.title = `${text.label} (${sideText})`;
+        const promptLabel = `${text.label} (${sideText})`;
+        this.promptElement.textContent = promptLabel;
+        document.title = promptLabel;
+        this.announce(promptLabel);
         audioController.setPhase('inhale', inhaleDuration);
 
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'hold';
+        this.scheduleNextPhase(inhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'hold' : 'exhale';
           this.animate();
-        }, inhaleDuration);
+        });
       } else if (this.currentPhase === 'hold') {
         this.setTransitionDuration(holdDuration);
         // Move Inside: Animate from startSide to endSide
@@ -554,10 +612,10 @@
         this.announce(text.label);
         audioController.setPhase('hold', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'exhale';
           this.animate();
-        }, holdDuration);
+        });
       } else if (this.currentPhase === 'exhale') {
         this.setTransitionDuration(exhaleDuration);
         this.animationElement.classList.add('exhale', endSide);
@@ -572,14 +630,21 @@
               ? 'Left'
               : 'Right';
 
-        this.promptElement.textContent = `${text.label} (${sideText})`;
-        document.title = `${text.label} (${sideText})`;
+        const promptLabel = `${text.label} (${sideText})`;
+        this.promptElement.textContent = promptLabel;
+        document.title = promptLabel;
+        this.announce(promptLabel);
         audioController.setPhase('exhale', exhaleDuration);
 
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'holdAfterExhale';
+        this.scheduleNextPhase(exhaleDuration, () => {
+          if (holdDuration > 0) {
+            this.currentPhase = 'holdAfterExhale';
+          } else {
+            this.currentPhase = 'inhale';
+            this.side = endSide;
+          }
           this.animate();
-        }, exhaleDuration);
+        });
       } else if (this.currentPhase === 'holdAfterExhale') {
         this.setTransitionDuration(holdDuration);
         // Stay on endSide
@@ -592,12 +657,12 @@
         this.announce(text.label);
         audioController.setPhase('holdAfterExhale', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'inhale';
           // Swap side for next inhale logic to pick up
           this.side = endSide;
           this.animate();
-        }, holdDuration);
+        });
       }
     }
   }
@@ -614,6 +679,8 @@
     start(inhaleTime, holdTime, exhaleTime) {
       this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
       this.currentPhase = 'inhale';
+      this.phaseDeadline = null;
+      this.isRunning = true;
       audioController.startTone();
       this.animate();
     }
@@ -624,6 +691,7 @@
     }
 
     animate() {
+      if (!this.isRunning) return;
       this.animationElement.classList.remove('inhale', 'exhale', 'hold');
       this.progressBar.className = 'progress-bar';
 
@@ -643,10 +711,10 @@
         this.announce(text.label);
         audioController.setPhase('inhale', inhaleDuration);
 
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'hold';
+        this.scheduleNextPhase(inhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'hold' : 'exhale';
           this.animate();
-        }, inhaleDuration);
+        });
       } else if (this.currentPhase === 'hold') {
         this.setTransitionDuration(holdDuration);
         this.animationElement.classList.add('hold');
@@ -658,10 +726,10 @@
         this.announce(text.label);
         audioController.setPhase('hold', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'exhale';
           this.animate();
-        }, holdDuration);
+        });
       } else if (this.currentPhase === 'exhale') {
         this.setTransitionDuration(exhaleDuration);
         this.animationElement.classList.add('exhale');
@@ -673,11 +741,11 @@
         this.announce(text.label);
         audioController.setPhase('exhale', exhaleDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(exhaleDuration, () => {
           // 4-7-8 loops directly back to Inhale (no hold empty)
           this.currentPhase = 'inhale';
           this.animate();
-        }, exhaleDuration);
+        });
       }
     }
   }
@@ -686,12 +754,36 @@
   // DOM Manipulation and Logic
   // ===================================
 
-  function populateSelectOptions(selectElement, maxValue) {
+  function registerOfflineServiceWorker() {
+    if (
+      typeof navigator !== 'undefined' &&
+      'serviceWorker' in navigator &&
+      (window.location.protocol === 'https:' || window.location.protocol === 'http:')
+    ) {
+      const register = () => {
+        const swMeta = document.querySelector('meta[name="sw-path"]');
+        const swPath = swMeta && swMeta.content ? swMeta.content : 'sw.js';
+        navigator.serviceWorker.register(swPath).catch((err) => {
+          console.warn('ServiceWorker registration failed:', err);
+        });
+      };
+      if (document.readyState === 'complete') {
+        register();
+      } else {
+        window.addEventListener('load', register, { once: true });
+      }
+    }
+  }
+
+  registerOfflineServiceWorker();
+
+  function populateSelectOptions(selectElement, maxValue, minValue = 1) {
+    if (!selectElement) return;
     selectElement.textContent = '';
-    for (let i = 1; i <= maxValue; i++) {
+    for (let i = minValue; i <= maxValue; i++) {
       const option = document.createElement('option');
-      option.value = i;
-      option.text = i;
+      option.value = String(i);
+      option.text = String(i);
       selectElement.appendChild(option);
     }
   }
@@ -730,6 +822,7 @@
     const exhaleTimeSelect = document.getElementById('exhaleTime');
     const sessionDurationSelect = document.getElementById('sessionDuration');
     const animationStyleSelect = document.getElementById('animationStyle');
+    const instructionsToggle = document.getElementById('instructionsToggle');
     const instructionsContainer = document.getElementById('instructions-container');
     const timerDisplay = document.getElementById('timerDisplay');
     const muteBtn = document.getElementById('muteButton');
@@ -737,11 +830,11 @@
     let currentExercise = null;
     let sessionTimer = null;
 
-    // Populate selects
-    populateSelectOptions(inhaleTimeSelect, 10);
-    populateSelectOptions(holdTimeSelect, 10);
-    populateSelectOptions(exhaleTimeSelect, 10);
-    populateSelectOptions(sessionDurationSelect, 60);
+    // Populate selects (Hold supports 0s for Diaphragmatic Breathing)
+    populateSelectOptions(inhaleTimeSelect, 10, 1);
+    populateSelectOptions(holdTimeSelect, 10, 0);
+    populateSelectOptions(exhaleTimeSelect, 10, 1);
+    populateSelectOptions(sessionDurationSelect, 60, 1);
 
     // Exercise Definitions
     const exerciseClasses = Object.freeze({
@@ -844,11 +937,22 @@
       }
 
       instructionsContainer.innerHTML = instructions[safeKey] || '';
-      instructionsContainer.classList.remove('hidden');
+      if (instructionsToggle) {
+        const isExpanded = !instructionsContainer.classList.contains('hidden');
+        instructionsToggle.setAttribute('aria-expanded', String(isExpanded));
+      }
     }
 
     // Initial setup
     initExercise(); // No event, keeps initial defaults
+
+    if (instructionsToggle && instructionsContainer) {
+      instructionsToggle.addEventListener('click', () => {
+        instructionsContainer.classList.toggle('hidden');
+        const isExpanded = !instructionsContainer.classList.contains('hidden');
+        instructionsToggle.setAttribute('aria-expanded', String(isExpanded));
+      });
+    }
 
     // Listeners
     exerciseSelect.addEventListener('change', initExercise);
@@ -909,13 +1013,6 @@
         darkModeBtn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
       });
     }
-    // Haptic Feedback Helper
-    function pulseHaptics(pattern) {
-      if (navigator.vibrate) {
-        navigator.vibrate(pattern);
-      }
-    }
-
     // Dynamic Favicon Helper
     function updateFavicon(phase) {
       const faviconLink = document.getElementById('dynamic-favicon');
@@ -929,20 +1026,11 @@
       faviconLink.href = `assets/favicons/${iconName}`;
     }
 
-    // Override animate methods to include haptics and visuals
+    // Sync Dynamic Favicon on phase transitions (haptics handled inside AudioController.doHaptic)
     const originalSetPhase = audioController.setPhase.bind(audioController);
     audioController.setPhase = function (phase, duration) {
       originalSetPhase(phase, duration);
-
-      // Visuals: Dynamic Favicon
       updateFavicon(phase);
-
-      // Haptics Logic
-      if (phase === 'inhale') {
-        pulseHaptics(200); // 200ms vibe on Inhale
-      } else if (phase === 'exhale') {
-        pulseHaptics(100); // 100ms vibe on Exhale
-      }
     };
 
     function stopSession() {
@@ -951,6 +1039,7 @@
       }
       updateFavicon('default');
       clearInterval(sessionTimer);
+      sessionTimer = null;
 
       // UX: Disable Focus Mode
       document.body.classList.remove('focus-mode');
@@ -966,21 +1055,23 @@
     }
 
     function startSessionTimer(durationMinutes) {
-      let secondsLeft = durationMinutes * 60;
+      clearInterval(sessionTimer);
+      const endTime = performance.now() + durationMinutes * 60 * 1000;
 
       const updateTimer = () => {
+        const remainingMs = Math.max(0, endTime - performance.now());
+        const secondsLeft = Math.ceil(remainingMs / 1000);
         const m = Math.floor(secondsLeft / 60);
         const s = secondsLeft % 60;
         timerDisplay.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 
-        if (secondsLeft <= 0) {
+        if (remainingMs <= 0) {
           stopSession();
         }
-        secondsLeft--;
       };
 
       updateTimer();
-      sessionTimer = setInterval(updateTimer, 1000);
+      sessionTimer = setInterval(updateTimer, 250);
     }
   });
 })();

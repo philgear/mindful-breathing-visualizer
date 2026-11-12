@@ -7,107 +7,209 @@
   // ===================================
   class AudioController {
     constructor() {
-      this.ctx = null;
-      this.oscillator = null;
-      this.gainNode = null;
-      this.isPlaying = false;
-      this.isMuted = false;
+      this.ctx = null; this.masterGain = null; this.nodes = [];
+      this.isPlaying = false; this.isMuted = false; this.soundscape = 'sine';
+    }
+
+    setSoundscape(type) {
+      if (this.soundscape === type) return;
+      this.soundscape = type;
+      if (this.isPlaying) {
+        this.stopTone();
+        setTimeout(() => this.startTone(), 50);
+      }
     }
 
     init() {
       if (!this.ctx) {
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        this.gainNode = this.ctx.createGain();
-        this.gainNode.connect(this.ctx.destination);
-        this.gainNode.gain.value = 0;
-      }
-    }
-
-    startTone() {
-      if (this.isMuted) return;
-      this.init();
-      if (this.ctx.state === 'suspended') {
-        this.ctx.resume();
-      }
-
-      if (this.oscillator) {
-        this.oscillator.stop();
-      }
-
-      this.oscillator = this.ctx.createOscillator();
-      this.oscillator.type = 'sine';
-      this.oscillator.frequency.value = 150; // Base frequency
-      this.oscillator.connect(this.gainNode);
-      this.oscillator.start();
-      this.isPlaying = true;
-
-      // Gentle fade in
-      this.gainNode.gain.cancelScheduledValues(this.ctx.currentTime);
-      this.gainNode.gain.setValueAtTime(0, this.ctx.currentTime);
-      this.gainNode.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 1);
-    }
-
-    stopTone() {
-      if (this.oscillator && this.isPlaying) {
-        const now = this.ctx.currentTime;
-        this.gainNode.gain.cancelScheduledValues(now);
-        this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
-        this.gainNode.gain.linearRampToValueAtTime(0, now + 1);
-
-        setTimeout(() => {
-          if (this.oscillator) {
-            this.oscillator.stop();
-            this.oscillator = null;
-          }
-        }, 1000);
-        this.isPlaying = false;
-      }
-    }
-
-    setPhase(phase, duration) {
-      if (this.isMuted || !this.isPlaying || !this.ctx) return;
-
-      const now = this.ctx.currentTime;
-      const rampTime = duration / 1000;
-
-      this.oscillator.frequency.cancelScheduledValues(now);
-      this.gainNode.gain.cancelScheduledValues(now);
-
-      if (phase === 'inhale') {
-        // Pitch goes up slightly, volume up
-        this.oscillator.frequency.cancelScheduledValues(now);
-        this.oscillator.frequency.setValueAtTime(150, now);
-        this.oscillator.frequency.linearRampToValueAtTime(200, now + rampTime);
-
-        this.gainNode.gain.setValueAtTime(0.1, now);
-        this.gainNode.gain.linearRampToValueAtTime(0.2, now + rampTime);
-      } else if (phase === 'hold') {
-        // Steady pitch/volume
-        this.oscillator.frequency.setValueAtTime(this.oscillator.frequency.value, now);
-        this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
-      } else if (phase === 'exhale') {
-        // Pitch down, volume down
-        this.oscillator.frequency.cancelScheduledValues(now);
-        this.oscillator.frequency.setValueAtTime(200, now);
-        this.oscillator.frequency.linearRampToValueAtTime(150, now + rampTime);
-
-        this.gainNode.gain.setValueAtTime(0.2, now);
-        this.gainNode.gain.linearRampToValueAtTime(0.1, now + rampTime);
-      } else if (phase === 'holdAfterExhale') {
-        this.oscillator.frequency.setValueAtTime(150, now);
-        this.gainNode.gain.setValueAtTime(0.1, now);
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.connect(this.ctx.destination);
+        this.masterGain.gain.value = 0;
       }
     }
 
     toggleMute() {
       this.isMuted = !this.isMuted;
       if (this.isMuted) {
-        if (this.gainNode) this.gainNode.gain.value = 0;
+        if (this.masterGain) this.masterGain.gain.value = 0;
       } else {
-        // Resume volume if playing
-        if (this.isPlaying && this.gainNode) this.gainNode.gain.value = 0.1;
+        if (this.isPlaying && this.masterGain) this.masterGain.gain.value = 0.1;
       }
       return this.isMuted;
+    }
+
+    cleanupNodes() {
+      this.nodes.forEach(n => {
+        if (n.node.stop) { try { n.node.stop(); } catch { /* ignore */ } }
+        n.node.disconnect();
+      });
+      this.nodes = [];
+    }
+
+    startTone() {
+      if (this.isMuted) return;
+      this.init();
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+      this.cleanupNodes();
+      const now = this.ctx.currentTime;
+      
+      if (this.soundscape === 'sine') {
+        const osc = this.ctx.createOscillator();
+        osc.type = 'sine'; osc.frequency.value = 150;
+        osc.connect(this.masterGain); osc.start();
+        this.nodes.push({ type: 'osc', node: osc });
+        this.masterGain.gain.setValueAtTime(0, now);
+        this.masterGain.gain.linearRampToValueAtTime(0.1, now + 1);
+      } else if (this.soundscape === 'binaural') {
+        const oscL = this.ctx.createOscillator(); const oscR = this.ctx.createOscillator();
+        const merger = this.ctx.createChannelMerger(2);
+        oscL.type = 'sine'; oscR.type = 'sine';
+        oscL.frequency.value = 150; oscR.frequency.value = 154;
+        oscL.connect(merger, 0, 0); oscR.connect(merger, 0, 1);
+        merger.connect(this.masterGain);
+        oscL.start(); oscR.start();
+        this.nodes.push({ type: 'oscL', node: oscL }); this.nodes.push({ type: 'oscR', node: oscR });
+        this.masterGain.gain.setValueAtTime(0, now);
+        this.masterGain.gain.linearRampToValueAtTime(0.15, now + 1);
+      } else if (this.soundscape === 'harmonic') {
+        const oscBase = this.ctx.createOscillator(); const oscHarmonic = this.ctx.createOscillator();
+        const gainHarmonic = this.ctx.createGain();
+        oscBase.type = 'sine'; oscHarmonic.type = 'triangle';
+        oscBase.frequency.value = 150; oscHarmonic.frequency.value = 150 * 1.5;
+        oscBase.connect(this.masterGain); oscHarmonic.connect(gainHarmonic); gainHarmonic.connect(this.masterGain);
+        gainHarmonic.gain.value = 0;
+        oscBase.start(); oscHarmonic.start();
+        this.nodes.push({ type: 'oscBase', node: oscBase });
+        this.nodes.push({ type: 'oscHarmonic', node: oscHarmonic });
+        this.nodes.push({ type: 'gainHarmonic', node: gainHarmonic });
+        this.masterGain.gain.setValueAtTime(0, now);
+        this.masterGain.gain.linearRampToValueAtTime(0.1, now + 1);
+      } else if (this.soundscape === 'ocean') {
+        const bufferSize = this.ctx.sampleRate * 2;
+        const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        let lastOut = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          output[i] = (lastOut + (0.02 * white)) / 1.02;
+          lastOut = output[i];
+          output[i] *= 3.5;
+        }
+        const noiseNode = this.ctx.createBufferSource();
+        noiseNode.buffer = noiseBuffer; noiseNode.loop = true;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass'; filter.frequency.value = 400;
+        noiseNode.connect(filter); filter.connect(this.masterGain); noiseNode.start();
+        this.nodes.push({ type: 'noise', node: noiseNode }); this.nodes.push({ type: 'filter', node: filter });
+        this.masterGain.gain.setValueAtTime(0, now);
+        this.masterGain.gain.linearRampToValueAtTime(0.2, now + 1);
+      }
+      this.isPlaying = true;
+    }
+
+    stopTone() {
+      if (this.isPlaying && this.masterGain) {
+        const now = this.ctx.currentTime;
+        this.masterGain.gain.cancelScheduledValues(now);
+        this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+        this.masterGain.gain.linearRampToValueAtTime(0, now + 1);
+        setTimeout(() => { this.cleanupNodes(); }, 1000);
+        this.isPlaying = false;
+      }
+    }
+    
+    doHaptic(phaseName, duration) {
+      if (
+        typeof navigator !== 'undefined' &&
+        navigator.vibrate &&
+        (!navigator.userActivation || navigator.userActivation.hasBeenActive)
+      ) {
+        const p = phaseName.toLowerCase();
+        if (p.includes('inhale') || p.includes('exhale')) {
+          const pattern = [];
+          const loops = Math.floor(duration / 150);
+          for(let i=0; i<loops; i++) { pattern.push(50, 100); }
+          navigator.vibrate(pattern);
+        } else {
+          const pattern = [];
+          const loops = Math.floor(duration / 1000);
+          for(let i=0; i<loops; i++) { pattern.push(50, 100, 50, 800); }
+          navigator.vibrate(pattern);
+        }
+      }
+    }
+
+    setPhaseTone(phaseName, duration) { this.setPhase(phaseName, duration); }
+
+    setPhase(phaseName, duration) {
+      this.doHaptic(phaseName, duration);
+      if (this.isMuted || !this.isPlaying || !this.ctx) return;
+      const now = this.ctx.currentTime;
+      const rampTime = duration / 1000;
+      const p = phaseName.toLowerCase();
+      const isInhale = p.includes('inhale');
+      const isExhale = p.includes('exhale');
+      if (this.masterGain) this.masterGain.gain.cancelScheduledValues(now);
+
+      if (this.soundscape === 'sine') {
+        const osc = this.nodes.find(n => n.type === 'osc')?.node;
+        if (!osc) return;
+        osc.frequency.cancelScheduledValues(now);
+        if (isInhale) {
+          osc.frequency.setValueAtTime(150, now); osc.frequency.linearRampToValueAtTime(200, now + rampTime);
+          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.2, now + rampTime);
+        } else if (isExhale) {
+          osc.frequency.setValueAtTime(osc.frequency.value, now); osc.frequency.linearRampToValueAtTime(150, now + rampTime);
+          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.1, now + rampTime);
+        } else {
+          osc.frequency.setValueAtTime(osc.frequency.value, now); this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+        }
+      } else if (this.soundscape === 'binaural') {
+        const oscL = this.nodes.find(n => n.type === 'oscL')?.node; const oscR = this.nodes.find(n => n.type === 'oscR')?.node;
+        if (!oscL || !oscR) return;
+        oscL.frequency.cancelScheduledValues(now); oscR.frequency.cancelScheduledValues(now);
+        if (isInhale) {
+          oscL.frequency.setValueAtTime(150, now); oscL.frequency.linearRampToValueAtTime(180, now + rampTime);
+          oscR.frequency.setValueAtTime(154, now); oscR.frequency.linearRampToValueAtTime(188, now + rampTime); 
+          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.25, now + rampTime);
+        } else if (isExhale) {
+          oscL.frequency.setValueAtTime(oscL.frequency.value, now); oscL.frequency.linearRampToValueAtTime(150, now + rampTime);
+          oscR.frequency.setValueAtTime(oscR.frequency.value, now); oscR.frequency.linearRampToValueAtTime(152, now + rampTime); 
+          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.15, now + rampTime);
+        } else {
+          oscL.frequency.setValueAtTime(oscL.frequency.value, now); oscR.frequency.setValueAtTime(oscR.frequency.value, now);
+          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+        }
+      } else if (this.soundscape === 'harmonic') {
+        const oscBase = this.nodes.find(n => n.type === 'oscBase')?.node; const oscH = this.nodes.find(n => n.type === 'oscHarmonic')?.node; const gainH = this.nodes.find(n => n.type === 'gainHarmonic')?.node;
+        if (!oscBase || !oscH || !gainH) return;
+        oscBase.frequency.cancelScheduledValues(now); oscH.frequency.cancelScheduledValues(now); gainH.gain.cancelScheduledValues(now);
+        if (isInhale) {
+          oscBase.frequency.setValueAtTime(150, now); oscBase.frequency.linearRampToValueAtTime(200, now + rampTime);
+          oscH.frequency.setValueAtTime(150 * 1.5, now); oscH.frequency.linearRampToValueAtTime(200 * 1.5, now + rampTime);
+          gainH.gain.setValueAtTime(0, now); gainH.gain.linearRampToValueAtTime(0.08, now + rampTime); 
+        } else if (isExhale) {
+          oscBase.frequency.setValueAtTime(oscBase.frequency.value, now); oscBase.frequency.linearRampToValueAtTime(150, now + rampTime);
+          oscH.frequency.setValueAtTime(oscH.frequency.value, now); oscH.frequency.linearRampToValueAtTime(150 * 1.5, now + rampTime);
+          gainH.gain.setValueAtTime(gainH.gain.value, now); gainH.gain.linearRampToValueAtTime(0, now + rampTime);
+        } else {
+          oscBase.frequency.setValueAtTime(oscBase.frequency.value, now); oscH.frequency.setValueAtTime(oscH.frequency.value, now); gainH.gain.setValueAtTime(gainH.gain.value, now);
+        }
+      } else if (this.soundscape === 'ocean') {
+        const filter = this.nodes.find(n => n.type === 'filter')?.node;
+        if (!filter) return;
+        filter.frequency.cancelScheduledValues(now);
+        if (isInhale) {
+          filter.frequency.setValueAtTime(400, now); filter.frequency.exponentialRampToValueAtTime(1200, now + rampTime); 
+          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.25, now + rampTime);
+        } else if (isExhale) {
+          filter.frequency.setValueAtTime(filter.frequency.value, now); filter.frequency.exponentialRampToValueAtTime(400, now + rampTime); 
+          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.15, now + rampTime);
+        } else {
+          filter.frequency.setValueAtTime(filter.frequency.value, now); this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+        }
+      }
     }
   }
 
@@ -125,10 +227,26 @@
       this.timerId = null;
       this.phaseDurations = null;
       this.currentPhase = null;
+      this.phaseDeadline = null;
+      this.isRunning = false;
       this.promptContainer = null;
       this.promptElement = null;
       this.rafId = null;
       this.announcerElement = null;
+    }
+
+    scheduleNextPhase(durationMs, nextPhaseFn) {
+      const now = performance.now();
+      if (this.phaseDeadline === null) {
+        this.phaseDeadline = now + durationMs;
+      } else {
+        this.phaseDeadline += durationMs;
+      }
+      const delay = Math.max(0, this.phaseDeadline - now);
+      this.timerId = setTimeout(() => {
+        if (!this.isRunning) return;
+        nextPhaseFn();
+      }, delay);
     }
 
     setupAnimation() {
@@ -139,7 +257,7 @@
 
       this.animationElement = document.createElement('div');
       // Safe class usage: using predefined prefix + validated/controlled input
-      const safeStyle = ['circle', 'square', 'lotus', 'sun', 'alternate-nostril'].includes(
+      const safeStyle = ['circle', 'square', 'lotus', 'sun', 'star', 'flower', 'hexagon', 'turtle', 'alternate-nostril'].includes(
         this.options.animationStyle
       )
         ? this.options.animationStyle
@@ -177,7 +295,18 @@
     }
 
     stop() {
+      const wasRunning = this.isRunning;
+      this.isRunning = false;
+      this.phaseDeadline = null;
       clearTimeout(this.timerId);
+      if (
+        wasRunning &&
+        typeof navigator !== 'undefined' &&
+        navigator.vibrate &&
+        (!navigator.userActivation || navigator.userActivation.hasBeenActive)
+      ) {
+        navigator.vibrate(0);
+      }
       if (this.animationElement) {
         this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
         // Remove custom properties
@@ -195,10 +324,13 @@
     }
 
     getPhaseDurations(inhaleTime, holdTime, exhaleTime) {
-      // Ensure inputs are valid numbers
-      const i = Math.max(1, Math.min(60, Number(inhaleTime) || 4));
-      const h = Math.max(0, Math.min(60, Number(holdTime) || 4));
-      const e = Math.max(1, Math.min(60, Number(exhaleTime) || 4));
+      // Ensure inputs are valid numbers (preserve explicit holdTime = 0)
+      const parsedInhale = Number(inhaleTime);
+      const parsedHold = Number(holdTime);
+      const parsedExhale = Number(exhaleTime);
+      const i = Math.max(1, Math.min(60, Number.isFinite(parsedInhale) && inhaleTime !== '' ? parsedInhale : 4));
+      const h = Math.max(0, Math.min(60, Number.isFinite(parsedHold) && holdTime !== '' ? parsedHold : 4));
+      const e = Math.max(1, Math.min(60, Number.isFinite(parsedExhale) && exhaleTime !== '' ? parsedExhale : 4));
       return {
         inhaleDuration: i * 1000,
         holdDuration: h * 1000,
@@ -227,6 +359,8 @@
     start(inhaleTime, holdTime, exhaleTime) {
       this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
       this.currentPhase = 'inhale';
+      this.phaseDeadline = null;
+      this.isRunning = true;
       audioController.startTone();
       this.animate();
     }
@@ -237,6 +371,7 @@
     }
 
     animate() {
+      if (!this.isRunning) return;
       // Reset classes
       this.animationElement.classList.remove('inhale', 'exhale', 'hold', 'holdAfterExhale');
       this.progressBar.className = 'progress-bar';
@@ -252,65 +387,61 @@
         this.animationElement.classList.add('inhale');
         this.progressBar.classList.add('inhale');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '🌿' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
         this.announce(text.label);
         audioController.setPhase('inhale', inhaleDuration);
 
-        // Note: Transforms are now handled effectively via CSS using the state classes,
-        // but if specific scale values are needed, they can be set via CSS vars too.
-        // Assuming CSS handles the scale(1.5) on .inhale class.
-
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'hold';
+        this.scheduleNextPhase(inhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'hold' : 'exhale';
           this.animate();
-        }, inhaleDuration);
+        });
       } else if (this.currentPhase === 'hold') {
         this.setTransitionDuration(holdDuration);
         this.animationElement.classList.add('hold');
         this.progressBar.classList.add('hold');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
         this.announce(text.label);
         audioController.setPhase('hold', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'exhale';
           this.animate();
-        }, holdDuration);
+        });
       } else if (this.currentPhase === 'exhale') {
         this.setTransitionDuration(exhaleDuration);
         this.animationElement.classList.add('exhale');
         this.progressBar.classList.add('exhale');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '🌬️' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
         this.announce(text.label);
         audioController.setPhase('exhale', exhaleDuration);
 
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'holdAfterExhale';
+        this.scheduleNextPhase(exhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'holdAfterExhale' : 'inhale';
           this.animate();
-        }, exhaleDuration);
+        });
       } else if (this.currentPhase === 'holdAfterExhale') {
         this.setTransitionDuration(holdDuration);
         this.animationElement.classList.add('holdAfterExhale');
         this.progressBar.classList.add('holdAfterExhale');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
         this.announce(text.label);
         audioController.setPhase('holdAfterExhale', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'inhale';
           this.animate();
-        }, holdDuration);
+        });
       }
     }
   }
@@ -327,6 +458,8 @@
     start(inhaleTime, holdTime, exhaleTime) {
       this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
       this.currentPhase = 'inhale';
+      this.phaseDeadline = null;
+      this.isRunning = true;
       audioController.startTone();
       this.animate();
     }
@@ -337,42 +470,60 @@
     }
 
     animate() {
-      this.animationElement.classList.remove('inhale', 'exhale');
+      if (!this.isRunning) return;
+      this.animationElement.classList.remove('inhale', 'exhale', 'hold');
       this.progressBar.className = 'progress-bar';
 
       // UX: Force reflow
       void this.progressFill.offsetWidth;
 
-      const { inhaleDuration, exhaleDuration } = this.phaseDurations;
+      const { inhaleDuration, holdDuration, exhaleDuration } = this.phaseDurations;
 
       if (this.currentPhase === 'inhale') {
         this.setTransitionDuration(inhaleDuration);
         this.animationElement.classList.add('inhale');
         this.progressBar.classList.add('inhale');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '🌿' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
+        this.announce(text.label);
         audioController.setPhase('inhale', inhaleDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(inhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'hold' : 'exhale';
+          this.animate();
+        });
+      } else if (this.currentPhase === 'hold') {
+        this.setTransitionDuration(holdDuration);
+        this.animationElement.classList.add('hold');
+        this.progressBar.classList.add('hold');
+        const text =
+          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
+        this.promptElement.textContent = text.label;
+        document.title = `${text.label}`;
+        this.announce(text.label);
+        audioController.setPhase('hold', holdDuration);
+
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'exhale';
           this.animate();
-        }, inhaleDuration);
+        });
       } else if (this.currentPhase === 'exhale') {
         this.setTransitionDuration(exhaleDuration);
         this.animationElement.classList.add('exhale');
         this.progressBar.classList.add('exhale');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '🌬️' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
+        this.announce(text.label);
         audioController.setPhase('exhale', exhaleDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(exhaleDuration, () => {
           this.currentPhase = 'inhale';
           this.animate();
-        }, exhaleDuration);
+        });
       }
     }
   }
@@ -384,12 +535,16 @@
     constructor(animationContainer, options) {
       super(animationContainer, options);
       this.side = 'left'; // Start with inhaling left
+      // Force the correct visual form for this exercise ("Form follows function")
+      this.options.animationStyle = 'alternate-nostril';
       this.setupAnimation();
     }
 
     start(inhaleTime, holdTime, exhaleTime) {
       this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
       this.currentPhase = 'inhale';
+      this.phaseDeadline = null;
+      this.isRunning = true;
       audioController.startTone();
       this.animate();
     }
@@ -400,6 +555,7 @@
     }
 
     animate() {
+      if (!this.isRunning) return;
       this.animationElement.classList.remove(
         'inhale',
         'exhale',
@@ -425,7 +581,7 @@
         this.progressBar.classList.add('inhale');
 
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '🌿' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '' };
         const sideText =
           typeof I18n !== 'undefined'
             ? I18n.t(`ui.${startSide}`)
@@ -433,14 +589,16 @@
               ? 'Left'
               : 'Right';
 
-        this.promptElement.textContent = `${text.label} (${sideText})`;
-        document.title = `${text.label} (${sideText}) ${text.emoji}`;
+        const promptLabel = `${text.label} (${sideText})`;
+        this.promptElement.textContent = promptLabel;
+        document.title = promptLabel;
+        this.announce(promptLabel);
         audioController.setPhase('inhale', inhaleDuration);
 
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'hold';
+        this.scheduleNextPhase(inhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'hold' : 'exhale';
           this.animate();
-        }, inhaleDuration);
+        });
       } else if (this.currentPhase === 'hold') {
         this.setTransitionDuration(holdDuration);
         // Move Inside: Animate from startSide to endSide
@@ -448,23 +606,23 @@
         this.progressBar.classList.add('hold');
 
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
         this.announce(text.label);
         audioController.setPhase('hold', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'exhale';
           this.animate();
-        }, holdDuration);
+        });
       } else if (this.currentPhase === 'exhale') {
         this.setTransitionDuration(exhaleDuration);
         this.animationElement.classList.add('exhale', endSide);
         this.progressBar.classList.add('exhale');
 
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '🌬️' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '' };
         const sideText =
           typeof I18n !== 'undefined'
             ? I18n.t(`ui.${endSide}`)
@@ -472,32 +630,39 @@
               ? 'Left'
               : 'Right';
 
-        this.promptElement.textContent = `${text.label} (${sideText})`;
-        document.title = `${text.label} (${sideText}) ${text.emoji}`;
+        const promptLabel = `${text.label} (${sideText})`;
+        this.promptElement.textContent = promptLabel;
+        document.title = promptLabel;
+        this.announce(promptLabel);
         audioController.setPhase('exhale', exhaleDuration);
 
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'holdAfterExhale';
+        this.scheduleNextPhase(exhaleDuration, () => {
+          if (holdDuration > 0) {
+            this.currentPhase = 'holdAfterExhale';
+          } else {
+            this.currentPhase = 'inhale';
+            this.side = endSide;
+          }
           this.animate();
-        }, exhaleDuration);
+        });
       } else if (this.currentPhase === 'holdAfterExhale') {
         this.setTransitionDuration(holdDuration);
         // Stay on endSide
         this.animationElement.classList.add('holdAfterExhale', endSide);
         this.progressBar.classList.add('holdAfterExhale');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
         this.announce(text.label);
         audioController.setPhase('holdAfterExhale', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'inhale';
           // Swap side for next inhale logic to pick up
           this.side = endSide;
           this.animate();
-        }, holdDuration);
+        });
       }
     }
   }
@@ -514,6 +679,8 @@
     start(inhaleTime, holdTime, exhaleTime) {
       this.phaseDurations = this.getPhaseDurations(inhaleTime, holdTime, exhaleTime);
       this.currentPhase = 'inhale';
+      this.phaseDeadline = null;
+      this.isRunning = true;
       audioController.startTone();
       this.animate();
     }
@@ -524,6 +691,7 @@
     }
 
     animate() {
+      if (!this.isRunning) return;
       this.animationElement.classList.remove('inhale', 'exhale', 'hold');
       this.progressBar.className = 'progress-bar';
 
@@ -537,47 +705,47 @@
         this.animationElement.classList.add('inhale');
         this.progressBar.classList.add('inhale');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '🌿' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.inhale') : { label: 'Inhale', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
         this.announce(text.label);
         audioController.setPhase('inhale', inhaleDuration);
 
-        this.timerId = setTimeout(() => {
-          this.currentPhase = 'hold';
+        this.scheduleNextPhase(inhaleDuration, () => {
+          this.currentPhase = holdDuration > 0 ? 'hold' : 'exhale';
           this.animate();
-        }, inhaleDuration);
+        });
       } else if (this.currentPhase === 'hold') {
         this.setTransitionDuration(holdDuration);
         this.animationElement.classList.add('hold');
         this.progressBar.classList.add('hold');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '✋' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.hold') : { label: 'Hold', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
         this.announce(text.label);
         audioController.setPhase('hold', holdDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(holdDuration, () => {
           this.currentPhase = 'exhale';
           this.animate();
-        }, holdDuration);
+        });
       } else if (this.currentPhase === 'exhale') {
         this.setTransitionDuration(exhaleDuration);
         this.animationElement.classList.add('exhale');
         this.progressBar.classList.add('exhale');
         const text =
-          typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '🌬️' };
+          typeof I18n !== 'undefined' ? I18n.t('phases.exhale') : { label: 'Exhale', emoji: '' };
         this.promptElement.textContent = text.label;
-        document.title = `${text.label} ${text.emoji}`;
+        document.title = `${text.label}`;
         this.announce(text.label);
         audioController.setPhase('exhale', exhaleDuration);
 
-        this.timerId = setTimeout(() => {
+        this.scheduleNextPhase(exhaleDuration, () => {
           // 4-7-8 loops directly back to Inhale (no hold empty)
           this.currentPhase = 'inhale';
           this.animate();
-        }, exhaleDuration);
+        });
       }
     }
   }
@@ -586,12 +754,36 @@
   // DOM Manipulation and Logic
   // ===================================
 
-  function populateSelectOptions(selectElement, maxValue) {
+  function registerOfflineServiceWorker() {
+    if (
+      typeof navigator !== 'undefined' &&
+      'serviceWorker' in navigator &&
+      (window.location.protocol === 'https:' || window.location.protocol === 'http:')
+    ) {
+      const register = () => {
+        const swMeta = document.querySelector('meta[name="sw-path"]');
+        const swPath = swMeta && swMeta.content ? swMeta.content : 'sw.js';
+        navigator.serviceWorker.register(swPath).catch((err) => {
+          console.warn('ServiceWorker registration failed:', err);
+        });
+      };
+      if (document.readyState === 'complete') {
+        register();
+      } else {
+        window.addEventListener('load', register, { once: true });
+      }
+    }
+  }
+
+  registerOfflineServiceWorker();
+
+  function populateSelectOptions(selectElement, maxValue, minValue = 1) {
+    if (!selectElement) return;
     selectElement.textContent = '';
-    for (let i = 1; i <= maxValue; i++) {
+    for (let i = minValue; i <= maxValue; i++) {
       const option = document.createElement('option');
-      option.value = i;
-      option.text = i;
+      option.value = String(i);
+      option.text = String(i);
       selectElement.appendChild(option);
     }
   }
@@ -630,6 +822,7 @@
     const exhaleTimeSelect = document.getElementById('exhaleTime');
     const sessionDurationSelect = document.getElementById('sessionDuration');
     const animationStyleSelect = document.getElementById('animationStyle');
+    const instructionsToggle = document.getElementById('instructionsToggle');
     const instructionsContainer = document.getElementById('instructions-container');
     const timerDisplay = document.getElementById('timerDisplay');
     const muteBtn = document.getElementById('muteButton');
@@ -637,11 +830,11 @@
     let currentExercise = null;
     let sessionTimer = null;
 
-    // Populate selects
-    populateSelectOptions(inhaleTimeSelect, 10);
-    populateSelectOptions(holdTimeSelect, 10);
-    populateSelectOptions(exhaleTimeSelect, 10);
-    populateSelectOptions(sessionDurationSelect, 60);
+    // Populate selects (Hold supports 0s for Diaphragmatic Breathing)
+    populateSelectOptions(inhaleTimeSelect, 10, 1);
+    populateSelectOptions(holdTimeSelect, 10, 0);
+    populateSelectOptions(exhaleTimeSelect, 10, 1);
+    populateSelectOptions(sessionDurationSelect, 60, 1);
 
     // Exercise Definitions
     const exerciseClasses = Object.freeze({
@@ -744,14 +937,31 @@
       }
 
       instructionsContainer.innerHTML = instructions[safeKey] || '';
-      instructionsContainer.classList.remove('hidden');
+      if (instructionsToggle) {
+        const isExpanded = !instructionsContainer.classList.contains('hidden');
+        instructionsToggle.setAttribute('aria-expanded', String(isExpanded));
+      }
     }
 
     // Initial setup
     initExercise(); // No event, keeps initial defaults
 
+    if (instructionsToggle && instructionsContainer) {
+      instructionsToggle.addEventListener('click', () => {
+        instructionsContainer.classList.toggle('hidden');
+        const isExpanded = !instructionsContainer.classList.contains('hidden');
+        instructionsToggle.setAttribute('aria-expanded', String(isExpanded));
+      });
+    }
+
     // Listeners
     exerciseSelect.addEventListener('change', initExercise);
+    const soundscapeSelect = document.getElementById('soundscape');
+    if (soundscapeSelect) {
+      soundscapeSelect.addEventListener('change', () => {
+        audioController.setSoundscape(soundscapeSelect.value);
+      });
+    }
     animationStyleSelect.addEventListener('change', () => {
       if (currentExercise) {
         currentExercise.options.animationStyle = animationStyleSelect.value;
@@ -803,13 +1013,6 @@
         darkModeBtn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
       });
     }
-    // Haptic Feedback Helper
-    function pulseHaptics(pattern) {
-      if (navigator.vibrate) {
-        navigator.vibrate(pattern);
-      }
-    }
-
     // Dynamic Favicon Helper
     function updateFavicon(phase) {
       const faviconLink = document.getElementById('dynamic-favicon');
@@ -823,20 +1026,11 @@
       faviconLink.href = `assets/favicons/${iconName}`;
     }
 
-    // Override animate methods to include haptics and visuals
+    // Sync Dynamic Favicon on phase transitions (haptics handled inside AudioController.doHaptic)
     const originalSetPhase = audioController.setPhase.bind(audioController);
     audioController.setPhase = function (phase, duration) {
       originalSetPhase(phase, duration);
-
-      // Visuals: Dynamic Favicon
       updateFavicon(phase);
-
-      // Haptics Logic
-      if (phase === 'inhale') {
-        pulseHaptics(200); // 200ms vibe on Inhale
-      } else if (phase === 'exhale') {
-        pulseHaptics(100); // 100ms vibe on Exhale
-      }
     };
 
     function stopSession() {
@@ -845,6 +1039,7 @@
       }
       updateFavicon('default');
       clearInterval(sessionTimer);
+      sessionTimer = null;
 
       // UX: Disable Focus Mode
       document.body.classList.remove('focus-mode');
@@ -860,21 +1055,23 @@
     }
 
     function startSessionTimer(durationMinutes) {
-      let secondsLeft = durationMinutes * 60;
+      clearInterval(sessionTimer);
+      const endTime = performance.now() + durationMinutes * 60 * 1000;
 
       const updateTimer = () => {
+        const remainingMs = Math.max(0, endTime - performance.now());
+        const secondsLeft = Math.ceil(remainingMs / 1000);
         const m = Math.floor(secondsLeft / 60);
         const s = secondsLeft % 60;
         timerDisplay.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 
-        if (secondsLeft <= 0) {
+        if (remainingMs <= 0) {
           stopSession();
         }
-        secondsLeft--;
       };
 
       updateTimer();
-      sessionTimer = setInterval(updateTimer, 1000);
+      sessionTimer = setInterval(updateTimer, 250);
     }
   });
 })();

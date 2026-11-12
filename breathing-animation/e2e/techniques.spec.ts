@@ -14,10 +14,37 @@ test.describe('Breathing Techniques', () => {
     await expect(select).toHaveValue('boxBreathing');
   });
 
-  test('can select Diaphragmatic Breathing', async ({ page }) => {
+  test('can select Diaphragmatic Breathing with Hold = 0s', async ({ page }) => {
     const select = page.locator('#exerciseSelect');
     await select.selectOption('diaphragmaticBreathing');
     await expect(select).toHaveValue('diaphragmaticBreathing');
+    await expect(page.locator('#holdTime')).toHaveValue('0');
+  });
+
+  test('instructions toggle synchronizes visibility and aria-expanded', async ({ page }) => {
+    const toggle = page.locator('#instructionsToggle');
+    const container = page.locator('#instructions-container');
+
+    await expect(container).toHaveClass(/hidden/);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    await toggle.click();
+    await expect(container).not.toHaveClass(/hidden/);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+    await toggle.click();
+    await expect(container).toHaveClass(/hidden/);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('turtle visualizer renders visible pseudo-element glyph', async ({ page }) => {
+    await page.locator('#animationStyle').selectOption('turtle');
+    const turtleEl = page.locator('.turtle-animation');
+    await expect(turtleEl).toBeAttached();
+    const afterContent = await turtleEl.evaluate((el) =>
+      window.getComputedStyle(el, '::after').getPropertyValue('content')
+    );
+    expect(afterContent).toContain('🐢');
   });
 
   test('can select Alternate Nostril Breathing', async ({ page }) => {
