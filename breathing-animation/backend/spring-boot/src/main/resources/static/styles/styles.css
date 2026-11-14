@@ -1,16 +1,49 @@
-/* styles.css - Minimalist "Less, but better" Redesign */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+/* styles.css - Minimalist "Less, but better" Redesign (PocketGull Typeface Suite, SIL OFL 1.1) */
+@font-face {
+  font-family: 'PocketGull';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/pocketgull-fineliner.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'PocketGull';
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+  src: url('../assets/fonts/pocketgull-bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'PocketGull';
+  font-style: normal;
+  font-weight: 800 900;
+  font-display: swap;
+  src: url('../assets/fonts/pocketgull-chiseltip.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'PocketGull Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/pocketgull-mono.woff2') format('woff2');
+}
 
 :root {
-  /* Minimalist / Neutral Color Palette */
+  --font-sans: 'PocketGull', system-ui, -apple-system, sans-serif;
+  --font-mono: 'PocketGull Mono', 'PocketGull', ui-monospace, monospace;
+  /* Minimalist / Neutral Color Palette (WCAG AA 4.5:1+ compliant) */
   --bg-color: #f4f4f4;
   --surface-color: #ffffff;
   --text-main: #111111;
-  --text-muted: #888888;
+  --text-muted: #595959;
   --border-color: #dcdcdc;
 
   /* Interaction Points Only */
   --accent-color: #ea5b0c;
+  --accent-button-bg: #c2410c;
   /* International Orange */
 
   /* Animation States (Functional Only) */
@@ -31,8 +64,8 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  /* Geometric Sans-serif */
+  font-family: var(--font-sans);
+  /* PocketGull Felt-Tip & Clinical Typeface Suite */
   background-color: var(--bg-color);
   color: var(--text-main);
   min-height: 100vh;
@@ -64,7 +97,7 @@ body {
 /* Typography: Information Hierarchy */
 h1 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-main);
   margin: 0;
@@ -95,6 +128,7 @@ header {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  transition: opacity 0.3s ease;
 }
 
 .input-group {
@@ -114,15 +148,30 @@ label {
 /* Tactile Inputs */
 select,
 button {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
   min-height: 44px;
   /* Touch Target */
   border-radius: 2px;
   /* Slight rounding for "physical" feel, mostly square */
-  outline: none;
   cursor: pointer;
   width: 100%;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--text-main);
+}
+
+button:focus {
+  outline: none;
+}
+
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 select {
@@ -131,11 +180,30 @@ select {
   border: 1px solid var(--border-color);
   color: var(--text-main);
   padding: 0 1rem;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, opacity 0.2s;
 }
 
-select:focus {
-  border-color: var(--text-main);
+select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Focus Mode: Minimalist Dimming During Active Practice */
+.fade-out,
+body.focus-mode .instructions-toggle,
+body.focus-mode .nav-back-wrapper {
+  opacity: 0.25;
+  transition: opacity 0.3s ease;
+}
+
+.fade-out {
+  pointer-events: none;
 }
 
 button {
@@ -157,13 +225,14 @@ button:active {
 
 /* Primary Action Button ("Switch") */
 #startButton {
-  background-color: var(--accent-color);
-  border-color: var(--accent-color);
+  background-color: var(--accent-button-bg, #c2410c);
+  border-color: var(--accent-button-bg, #c2410c);
   color: white;
 }
 
 #startButton:hover {
-  background-color: #d14f0a;
+  background-color: #9a3412;
+  border-color: #9a3412;
 }
 
 #stopButton {
@@ -188,7 +257,8 @@ button:active {
 }
 
 #timerDisplay {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
   font-size: 3rem;
   font-weight: 400;
@@ -498,30 +568,33 @@ button:active {
   pointer-events: none;
   width: 100%;
   text-align: center;
+  z-index: 2;
 }
 
 .prompt-text {
   font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: var(--surface-color);
-  /* Contrast against the shape color */
-  mix-blend-mode: difference;
-  /* Ensure visibility */
-  opacity: 0;
-  /* Hidden by default to reduce noise? Or keep it? keeping it for clarity */
+  color: #ffffff;
+  mix-blend-mode: normal;
   opacity: 1;
-  /* Note: mix-blend-mode might not work well on gray backgrounds with white text. 
-     Let's use absolute logic based on shape color?
-     Text is clear.
-  */
-  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* Inactive state text uses theme primary color against neutral background */
+#animation-container:not(:has(.inhale)):not(:has(.exhale)):not(:has(.hold)):not(:has(.holdAfterExhale)) .prompt-text {
+  color: var(--text-main);
   text-shadow: none;
 }
 
-/* Inactive state text might need to be dark if background is light gray */
-#animation-container:not(:has(.inhale)):not(:has(.exhale)):not(:has(.hold)) .prompt-text {
+/* Alternate Nostril stereo indicator has open center: dock prompt cleanly below */
+#animation-container:has(.alternate-nostril-animation) .prompt-container {
+  top: calc(100% - 14px);
+}
+
+#animation-container:has(.alternate-nostril-animation) .prompt-text {
   color: var(--text-main);
+  text-shadow: none;
 }
 
 /* Utilities */
@@ -544,15 +617,31 @@ button:active {
 /* Secondary Actions */
 .action-buttons button.outline {
   border: none;
+  background: transparent;
   color: var(--text-muted);
   font-weight: 400;
   font-size: 0.75rem;
-  margin-top: 0.5rem;
+  min-height: 36px;
 }
 
 .action-buttons button.outline:hover {
   color: var(--text-main);
   background: transparent;
+  text-decoration: underline;
+}
+
+.nav-back-wrapper {
+  margin-top: 20px;
+}
+
+.nav-back-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.nav-back-link:hover {
   text-decoration: underline;
 }
 
@@ -587,11 +676,12 @@ button:active {
 /* Instructions */
 #instructions-container {
   border-top: 1px solid var(--border-color);
-  margin-top: 2rem;
+  margin-top: 1rem;
   padding-top: 1rem;
   background: transparent;
   border-radius: 0;
   box-shadow: none;
+  transition: opacity 0.3s ease;
 }
 
 #instructions-container h3 {
@@ -601,44 +691,67 @@ button:active {
   color: var(--text-main);
 }
 
+#instructions-container ul {
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
 #instructions-container li {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  line-height: 1.5;
+  color: var(--text-muted);
   list-style: square;
   /* Geometric list style */
 }
 
-/* Dark Mode */
-/* Minimalist designs were usually white/gray. 
-   Simple inversion for dark mode. */
-/* Minimalist designs were usually white/gray. 
-   Simple inversion for dark mode. */
+#instructions-container li strong {
+  color: var(--text-main);
+}
+
+/* Dark Mode & Explicit Light Mode Override */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-color: #111111;
     --surface-color: #1a1a1a;
     --text-main: #eeeeee;
-    --text-muted: #666666;
+    --text-muted: #a3a3a3;
     --border-color: #333333;
+    --accent-button-bg: #c2410c;
     /* --accent-color stays orange */
     --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #f97316 100%);
     --hold-gradient: linear-gradient(135deg, #334155 0%, #1e293b 100%);
     --inactive-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   }
 
-  .lotus-animation::before,
-  .lotus-animation::after {
+  body:not(.light-mode) .lotus-animation::before,
+  body:not(.light-mode) .lotus-animation::after {
     mix-blend-mode: screen !important;
   }
 
-  #animation-container::before {
+  body:not(.light-mode) #animation-container::before {
     border-color: rgba(255, 255, 255, 0.15);
   }
-  #animation-container:has(.star-animation)::before,
-  #animation-container:has(.flower-animation)::before,
-  #animation-container:has(.hexagon-animation)::before {
+  body:not(.light-mode) #animation-container:has(.star-animation)::before,
+  body:not(.light-mode) #animation-container:has(.flower-animation)::before,
+  body:not(.light-mode) #animation-container:has(.hexagon-animation)::before {
     background-color: rgba(255, 255, 255, 0.03);
   }
+}
+
+body.light-mode {
+  background-color: #f4f4f4;
+  color: #111111;
+  --bg-color: #f4f4f4;
+  --surface-color: #ffffff;
+  --text-main: #111111;
+  --text-muted: #595959;
+  --border-color: #dcdcdc;
+  --accent-button-bg: #c2410c;
+  --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #ff7e47 100%);
+  --hold-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --inactive-gradient: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
 }
 
 body.dark-mode {
@@ -647,8 +760,9 @@ body.dark-mode {
   --bg-color: #111111;
   --surface-color: #1a1a1a;
   --text-main: #eeeeee;
-  --text-muted: #666666;
+  --text-muted: #a3a3a3;
   --border-color: #333333;
+  --accent-button-bg: #c2410c;
   --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #f97316 100%);
   --hold-gradient: linear-gradient(135deg, #334155 0%, #1e293b 100%);
   --inactive-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -807,9 +921,13 @@ body.dark-mode .container {
   .hexagon-animation.hold,
   .turtle-animation.hold,
   .alternate-nostril-animation.inhale.left::before,
+  .alternate-nostril-animation.inhale.right::after,
   .alternate-nostril-animation.exhale.right::after,
+  .alternate-nostril-animation.exhale.left::before,
   .alternate-nostril-animation.inhale.left,
-  .alternate-nostril-animation.exhale.right {
+  .alternate-nostril-animation.inhale.right,
+  .alternate-nostril-animation.exhale.right,
+  .alternate-nostril-animation.exhale.left {
     transform: none !important;
     opacity: 1 !important;
   }
@@ -882,6 +1000,24 @@ body.dark-mode .container {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.turtle-animation::after {
+  content: '🐢';
+  font-size: 80px;
+  line-height: 1;
+  user-select: none;
+}
+
+#animation-container:has(.turtle-animation) .prompt-container {
+  top: calc(100% - 14px);
+}
+
+#animation-container:has(.turtle-animation) .prompt-text {
+  color: var(--text-main);
+  mix-blend-mode: normal;
+  text-shadow: none;
 }
 
 .star-animation.inhale {
