@@ -1,4 +1,4 @@
-const CACHE_NAME = 'breathing-app-v2';
+const CACHE_NAME = 'breathing-app-v3';
 
 const DOCS_ASSETS = [
   './',
@@ -10,8 +10,10 @@ const DOCS_ASSETS = [
   './locales/es.json',
   './locales/fr.json',
   './locales/ja.json',
-  './assets/fonts/inter-latin.woff2',
-  './assets/fonts/inter-latin-ext.woff2',
+  './assets/fonts/pocketgull-fineliner.woff2',
+  './assets/fonts/pocketgull-bold.woff2',
+  './assets/fonts/pocketgull-chiseltip.woff2',
+  './assets/fonts/pocketgull-mono.woff2',
   './assets/favicons/favicon-default.png',
   './assets/favicons/favicon-inhale.png',
   './assets/favicons/favicon-hold.png',
@@ -28,8 +30,10 @@ const DEV_WORKSPACE_ASSETS = [
   './public/locales/es.json',
   './public/locales/fr.json',
   './public/locales/ja.json',
-  './src/assets/fonts/inter-latin.woff2',
-  './src/assets/fonts/inter-latin-ext.woff2',
+  './src/assets/fonts/pocketgull-fineliner.woff2',
+  './src/assets/fonts/pocketgull-bold.woff2',
+  './src/assets/fonts/pocketgull-chiseltip.woff2',
+  './src/assets/fonts/pocketgull-mono.woff2',
   './public/assets/favicons/favicon-default.png',
   './public/assets/favicons/favicon-inhale.png',
   './public/assets/favicons/favicon-hold.png',

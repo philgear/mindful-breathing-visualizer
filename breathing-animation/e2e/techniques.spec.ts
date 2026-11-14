@@ -60,10 +60,39 @@ test.describe('Breathing Techniques', () => {
     // Start
     await page.locator('#startButton').click();
 
-    // Check for specific instruction text or phase name if available
-    // Note: The vanilla JS implementation updates text inside #animation-container or #animation-wrapper
-    // For now, we just ensure no JS errors occurred and button is hidden
     await expect(page.locator('#startButton')).toBeHidden();
     await expect(page.locator('#stopButton')).toBeVisible();
+    await expect(page.locator('body')).toHaveClass(/focus-mode/);
+    await expect(page.locator('.settings-group').first()).toHaveClass(/fade-out/);
+
+    // Focus mode dims settings group (wait past 300ms CSS transition)
+    await expect
+      .poll(async () => {
+        const val = await page
+          .locator('.settings-group')
+          .first()
+          .evaluate((el) => parseFloat(window.getComputedStyle(el).opacity));
+        return val;
+      })
+      .toBeLessThan(0.5);
+  });
+
+  test('dark and light mode toggle updates computed background styles and uses PocketGull font', async ({ page }) => {
+    const bodyFont = await page.locator('body').evaluate((el) => window.getComputedStyle(el).fontFamily);
+    expect(bodyFont).toContain('PocketGull');
+
+    const timerFont = await page.locator('#timerDisplay').evaluate((el) => window.getComputedStyle(el).fontFamily);
+    expect(timerFont).toContain('PocketGull Mono');
+
+    const darkBtn = page.locator('#darkModeButton');
+    const initialBg = await page.locator('body').evaluate((el) => window.getComputedStyle(el).backgroundColor);
+
+    await darkBtn.click();
+    const toggledBg = await page.locator('body').evaluate((el) => window.getComputedStyle(el).backgroundColor);
+    expect(toggledBg).not.toBe(initialBg);
+
+    await darkBtn.click();
+    const restoredBg = await page.locator('body').evaluate((el) => window.getComputedStyle(el).backgroundColor);
+    expect(restoredBg).toBe(initialBg);
   });
 });

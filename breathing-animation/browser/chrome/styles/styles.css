@@ -1,23 +1,39 @@
-/* styles.css - Minimalist "Less, but better" Redesign */
+/* styles.css - Minimalist "Less, but better" Redesign (PocketGull Typeface Suite, SIL OFL 1.1) */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'PocketGull';
   font-style: normal;
-  font-weight: 400 600;
+  font-weight: 400;
   font-display: swap;
-  src: url('../assets/fonts/inter-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url('../assets/fonts/pocketgull-fineliner.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: 'PocketGull';
   font-style: normal;
-  font-weight: 400 600;
+  font-weight: 600 700;
   font-display: swap;
-  src: url('../assets/fonts/inter-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url('../assets/fonts/pocketgull-bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'PocketGull';
+  font-style: normal;
+  font-weight: 800 900;
+  font-display: swap;
+  src: url('../assets/fonts/pocketgull-chiseltip.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'PocketGull Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/pocketgull-mono.woff2') format('woff2');
 }
 
 :root {
+  --font-sans: 'PocketGull', system-ui, -apple-system, sans-serif;
+  --font-mono: 'PocketGull Mono', 'PocketGull', ui-monospace, monospace;
   /* Minimalist / Neutral Color Palette (WCAG AA 4.5:1+ compliant) */
   --bg-color: #f4f4f4;
   --surface-color: #ffffff;
@@ -48,8 +64,8 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  /* Geometric Sans-serif */
+  font-family: var(--font-sans);
+  /* PocketGull Felt-Tip & Clinical Typeface Suite */
   background-color: var(--bg-color);
   color: var(--text-main);
   min-height: 100vh;
@@ -81,7 +97,7 @@ body {
 /* Typography: Information Hierarchy */
 h1 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-main);
   margin: 0;
@@ -112,6 +128,7 @@ header {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  transition: opacity 0.3s ease;
 }
 
 .input-group {
@@ -131,15 +148,30 @@ label {
 /* Tactile Inputs */
 select,
 button {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
   min-height: 44px;
   /* Touch Target */
   border-radius: 2px;
   /* Slight rounding for "physical" feel, mostly square */
-  outline: none;
   cursor: pointer;
   width: 100%;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--text-main);
+}
+
+button:focus {
+  outline: none;
+}
+
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 select {
@@ -148,11 +180,30 @@ select {
   border: 1px solid var(--border-color);
   color: var(--text-main);
   padding: 0 1rem;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, opacity 0.2s;
 }
 
-select:focus {
-  border-color: var(--text-main);
+select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Focus Mode: Minimalist Dimming During Active Practice */
+.fade-out,
+body.focus-mode .instructions-toggle,
+body.focus-mode .nav-back-wrapper {
+  opacity: 0.25;
+  transition: opacity 0.3s ease;
+}
+
+.fade-out {
+  pointer-events: none;
 }
 
 button {
@@ -206,7 +257,8 @@ button:active {
 }
 
 #timerDisplay {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
   font-size: 3rem;
   font-weight: 400;
@@ -516,30 +568,33 @@ button:active {
   pointer-events: none;
   width: 100%;
   text-align: center;
+  z-index: 2;
 }
 
 .prompt-text {
   font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: var(--surface-color);
-  /* Contrast against the shape color */
-  mix-blend-mode: difference;
-  /* Ensure visibility */
-  opacity: 0;
-  /* Hidden by default to reduce noise? Or keep it? keeping it for clarity */
+  color: #ffffff;
+  mix-blend-mode: normal;
   opacity: 1;
-  /* Note: mix-blend-mode might not work well on gray backgrounds with white text. 
-     Let's use absolute logic based on shape color?
-     Text is clear.
-  */
-  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* Inactive state text uses theme primary color against neutral background */
+#animation-container:not(:has(.inhale)):not(:has(.exhale)):not(:has(.hold)):not(:has(.holdAfterExhale)) .prompt-text {
+  color: var(--text-main);
   text-shadow: none;
 }
 
-/* Inactive state text might need to be dark if background is light gray */
-#animation-container:not(:has(.inhale)):not(:has(.exhale)):not(:has(.hold)) .prompt-text {
+/* Alternate Nostril stereo indicator has open center: dock prompt cleanly below */
+#animation-container:has(.alternate-nostril-animation) .prompt-container {
+  top: calc(100% - 14px);
+}
+
+#animation-container:has(.alternate-nostril-animation) .prompt-text {
   color: var(--text-main);
+  text-shadow: none;
 }
 
 /* Utilities */
@@ -562,10 +617,11 @@ button:active {
 /* Secondary Actions */
 .action-buttons button.outline {
   border: none;
+  background: transparent;
   color: var(--text-muted);
   font-weight: 400;
   font-size: 0.75rem;
-  margin-top: 0.5rem;
+  min-height: 36px;
 }
 
 .action-buttons button.outline:hover {
@@ -620,11 +676,12 @@ button:active {
 /* Instructions */
 #instructions-container {
   border-top: 1px solid var(--border-color);
-  margin-top: 2rem;
+  margin-top: 1rem;
   padding-top: 1rem;
   background: transparent;
   border-radius: 0;
   box-shadow: none;
+  transition: opacity 0.3s ease;
 }
 
 #instructions-container h3 {
@@ -634,18 +691,26 @@ button:active {
   color: var(--text-main);
 }
 
+#instructions-container ul {
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
 #instructions-container li {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  line-height: 1.5;
+  color: var(--text-muted);
   list-style: square;
   /* Geometric list style */
 }
 
-/* Dark Mode */
-/* Minimalist designs were usually white/gray. 
-   Simple inversion for dark mode. */
-/* Minimalist designs were usually white/gray. 
-   Simple inversion for dark mode. */
+#instructions-container li strong {
+  color: var(--text-main);
+}
+
+/* Dark Mode & Explicit Light Mode Override */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-color: #111111;
@@ -660,19 +725,33 @@ button:active {
     --inactive-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   }
 
-  .lotus-animation::before,
-  .lotus-animation::after {
+  body:not(.light-mode) .lotus-animation::before,
+  body:not(.light-mode) .lotus-animation::after {
     mix-blend-mode: screen !important;
   }
 
-  #animation-container::before {
+  body:not(.light-mode) #animation-container::before {
     border-color: rgba(255, 255, 255, 0.15);
   }
-  #animation-container:has(.star-animation)::before,
-  #animation-container:has(.flower-animation)::before,
-  #animation-container:has(.hexagon-animation)::before {
+  body:not(.light-mode) #animation-container:has(.star-animation)::before,
+  body:not(.light-mode) #animation-container:has(.flower-animation)::before,
+  body:not(.light-mode) #animation-container:has(.hexagon-animation)::before {
     background-color: rgba(255, 255, 255, 0.03);
   }
+}
+
+body.light-mode {
+  background-color: #f4f4f4;
+  color: #111111;
+  --bg-color: #f4f4f4;
+  --surface-color: #ffffff;
+  --text-main: #111111;
+  --text-muted: #595959;
+  --border-color: #dcdcdc;
+  --accent-button-bg: #c2410c;
+  --active-gradient: linear-gradient(135deg, #ea5b0c 0%, #ff7e47 100%);
+  --hold-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --inactive-gradient: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
 }
 
 body.dark-mode {
@@ -842,9 +921,13 @@ body.dark-mode .container {
   .hexagon-animation.hold,
   .turtle-animation.hold,
   .alternate-nostril-animation.inhale.left::before,
+  .alternate-nostril-animation.inhale.right::after,
   .alternate-nostril-animation.exhale.right::after,
+  .alternate-nostril-animation.exhale.left::before,
   .alternate-nostril-animation.inhale.left,
-  .alternate-nostril-animation.exhale.right {
+  .alternate-nostril-animation.inhale.right,
+  .alternate-nostril-animation.exhale.right,
+  .alternate-nostril-animation.exhale.left {
     transform: none !important;
     opacity: 1 !important;
   }
@@ -934,6 +1017,7 @@ body.dark-mode .container {
 #animation-container:has(.turtle-animation) .prompt-text {
   color: var(--text-main);
   mix-blend-mode: normal;
+  text-shadow: none;
 }
 
 .star-animation.inhale {

@@ -1004,13 +1004,31 @@
       });
     }
 
-    // Dark Mode Logic
+    // Dark Mode Logic (syncs with OS prefers-color-scheme and supports explicit Light/Dark override)
     const darkModeBtn = document.getElementById('darkModeButton');
     if (darkModeBtn) {
+      const prefersDarkQuery =
+        typeof window.matchMedia === 'function'
+          ? window.matchMedia('(prefers-color-scheme: dark)')
+          : null;
+
+      const isCurrentlyDark = () => {
+        if (document.body.classList.contains('dark-mode')) return true;
+        if (document.body.classList.contains('light-mode')) return false;
+        return Boolean(prefersDarkQuery && prefersDarkQuery.matches);
+      };
+
+      const syncDarkModeLabel = () => {
+        darkModeBtn.textContent = isCurrentlyDark() ? '☀️ Light Mode' : '🌙 Dark Mode';
+      };
+
+      syncDarkModeLabel();
+
       darkModeBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        darkModeBtn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        const nextDark = !isCurrentlyDark();
+        document.body.classList.toggle('dark-mode', nextDark);
+        document.body.classList.toggle('light-mode', !nextDark);
+        syncDarkModeLabel();
       });
     }
     // Dynamic Favicon Helper
