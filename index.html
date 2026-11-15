@@ -2,24 +2,56 @@
 <html lang="en">
 
 <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mindful Breathing Ecosystem — Minimalist Dieter Rams-inspired breathing visualizer across web, mobile, desktop, and CLI.">
     <title>Mindful Breathing Ecosystem</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'PocketGull';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('breathing-animation/docs/assets/fonts/pocketgull-fineliner.woff2') format('woff2');
+        }
+
+        @font-face {
+            font-family: 'PocketGull';
+            font-style: normal;
+            font-weight: 600 700;
+            font-display: swap;
+            src: url('breathing-animation/docs/assets/fonts/pocketgull-bold.woff2') format('woff2');
+        }
+
+        @font-face {
+            font-family: 'PocketGull';
+            font-style: normal;
+            font-weight: 800 900;
+            font-display: swap;
+            src: url('breathing-animation/docs/assets/fonts/pocketgull-chiseltip.woff2') format('woff2');
+        }
+
+        @font-face {
+            font-family: 'PocketGull Mono';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('breathing-animation/docs/assets/fonts/pocketgull-mono.woff2') format('woff2');
+        }
         :root {
             /* Minimalist Palette */
             --bg-color: #f4f4f4;
             --surface-color: #ffffff;
             --text-main: #111111;
-            --text-muted: #888888;
+            --text-muted: #595959;
             --border-color: #dcdcdc;
             --accent-color: #ea5b0c;
             /* International Orange */
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'PocketGull', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
@@ -47,7 +79,7 @@
 
         h1 {
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: 800;
             letter-spacing: -0.02em;
             margin: 0 0 0.5rem 0;
             color: var(--text-main);
@@ -221,15 +253,15 @@
                     <div>
                         <span class="group-title">Native</span>
                         <ul class="link-list">
-                            <li><a href="#" onclick="alert('Android Build')">Android (Kotlin)</a></li>
-                            <li><a href="#" onclick="alert('iOS Build')">iOS (Swift)</a></li>
+                            <li><a href="https://github.com/philgear/mindful-breathing-visualizer/tree/main/breathing-animation/mobile/android">Android (Kotlin)</a></li>
+                            <li><a href="https://github.com/philgear/mindful-breathing-visualizer/tree/main/breathing-animation/mobile/ios">iOS (Swift)</a></li>
                         </ul>
                     </div>
 
                     <div>
                         <span class="group-title">Core</span>
                         <ul class="link-list">
-                            <li><a href="#" onclick="alert('CLI Tool')">CLI (Rust)</a></li>
+                            <li><a href="https://github.com/philgear/mindful-breathing-visualizer/tree/main/breathing-animation/cli/rust">CLI (Rust)</a></li>
                             <li><a href="breathing-animation/backend/php/index.php">Backend API</a></li>
                         </ul>
                     </div>

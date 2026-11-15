@@ -45,7 +45,7 @@
     "test:e2e": "playwright test",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
-    "prepare": "husky install",
+    "prepare": "cd .. && npx husky install breathing-animation/.husky || true",
     "generate-sbom": "cyclonedx-npm --output-file bom.json",
     "lhci": "lhci autorun"
   },

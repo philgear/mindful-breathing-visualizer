@@ -16,10 +16,24 @@ When loading the script from a CDN, always use SRI to prevent "Man-in-the-Middle
 
 ### Content Security Policy (CSP)
 
-Whitelist the domain where the script is hosted.
+Enforce a strict deny-by-default CSP with zero `'unsafe-inline'` or `'unsafe-eval'` in `script-src` to preserve Mozilla HTTP Observatory Grade A+ (125/100) bonus gates:
 
 ```
-Content-Security-Policy: script-src 'self' 'unsafe-inline' https://philgear.github.io;
+Content-Security-Policy: default-src 'none'; script-src 'self' https://philgear.github.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';
+```
+
+### Mandatory Edge Security Headers (Mozilla Observatory 125/100)
+
+When self-hosting on Firebase Hosting, Vercel, Netlify, Cloudflare, or Express/Spring Boot, configure the following HTTP response headers:
+
+```
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Resource-Policy: same-origin
+Cross-Origin-Embedder-Policy: credentialless
+Referrer-Policy: strict-origin-when-cross-origin
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
 ```
 
 ## 2. LMS Platforms (Canvas, Moodle)

@@ -13,11 +13,13 @@ const I18n = {
       title: 'Mindful Breathing',
       start: 'Start Practice',
       stop: 'Stop Session',
+      left: 'Left',
+      right: 'Right',
     },
     phases: {
-      inhale: { label: 'Inhale...', emoji: '🌿' },
-      hold: { label: 'Hold...', emoji: '☁️' },
-      exhale: { label: 'Exhale...', emoji: '🌸' },
+      inhale: { label: 'Inhale' },
+      hold: { label: 'Hold' },
+      exhale: { label: 'Exhale' },
     },
   },
 
