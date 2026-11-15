@@ -95,4 +95,34 @@ test.describe('Breathing Techniques', () => {
     const restoredBg = await page.locator('body').evaluate((el) => window.getComputedStyle(el).backgroundColor);
     expect(restoredBg).toBe(initialBg);
   });
+
+  test('loads canonical PocketGull web fonts with zero Fineliner/Chiseltip marker faces', async ({ page }) => {
+    const fontStatus = await page.evaluate(async () => {
+      await document.fonts.ready;
+      const faces = Array.from(document.fonts).map((f) => ({
+        family: f.family.replace(/['"]/g, ''),
+        weight: f.weight,
+        status: f.status
+      }));
+      const styleSheets = Array.from(document.styleSheets)
+        .flatMap((s) => {
+          try {
+            return Array.from(s.cssRules).map((r) => r.cssText);
+          } catch {
+            return [];
+          }
+        })
+        .join('\n');
+      return {
+        faces,
+        hasFinelinerOrChiseltip: /fineliner|chiseltip/i.test(styleSheets),
+        hasCanonicalRegular: styleSheets.includes('pocketgull-regular.woff2')
+      };
+    });
+
+    expect(fontStatus.hasFinelinerOrChiseltip).toBe(false);
+    expect(fontStatus.hasCanonicalRegular).toBe(true);
+    expect(fontStatus.faces.some((f) => f.family === 'PocketGull' && f.weight === '400')).toBe(true);
+    expect(fontStatus.faces.some((f) => f.family === 'PocketGull Mono')).toBe(true);
+  });
 });

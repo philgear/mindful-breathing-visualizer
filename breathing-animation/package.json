@@ -43,7 +43,8 @@
   "scripts": {
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "verify:fonts": "node scripts/verify-fonts.mjs",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx && node scripts/verify-fonts.mjs",
     "format": "prettier --write .",
     "prepare": "cd .. && npx husky install breathing-animation/.husky || true",
     "generate-sbom": "cyclonedx-npm --output-file bom.json",
