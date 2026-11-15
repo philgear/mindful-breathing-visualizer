@@ -760,12 +760,22 @@
       'serviceWorker' in navigator &&
       (window.location.protocol === 'https:' || window.location.protocol === 'http:')
     ) {
+      let refreshingSw = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshingSw) return;
+        refreshingSw = true;
+        window.location.reload();
+      });
+
       const register = () => {
         const swMeta = document.querySelector('meta[name="sw-path"]');
         const swPath = swMeta && swMeta.content ? swMeta.content : 'sw.js';
-        navigator.serviceWorker.register(swPath).catch((err) => {
-          console.warn('ServiceWorker registration failed:', err);
-        });
+        navigator.serviceWorker
+          .register(swPath, { updateViaCache: 'none' })
+          .then((reg) => reg.update())
+          .catch((err) => {
+            console.warn('ServiceWorker registration failed:', err);
+          });
       };
       if (document.readyState === 'complete') {
         register();

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'breathing-app-v3';
+const CACHE_NAME = 'breathing-app-v4';
 
 const DOCS_ASSETS = [
   './',
@@ -10,9 +10,9 @@ const DOCS_ASSETS = [
   './locales/es.json',
   './locales/fr.json',
   './locales/ja.json',
-  './assets/fonts/pocketgull-fineliner.woff2',
+  './assets/fonts/pocketgull-regular.woff2',
   './assets/fonts/pocketgull-bold.woff2',
-  './assets/fonts/pocketgull-chiseltip.woff2',
+  './assets/fonts/pocketgull-slab-bold.woff2',
   './assets/fonts/pocketgull-mono.woff2',
   './assets/favicons/favicon-default.png',
   './assets/favicons/favicon-inhale.png',
@@ -30,9 +30,9 @@ const DEV_WORKSPACE_ASSETS = [
   './public/locales/es.json',
   './public/locales/fr.json',
   './public/locales/ja.json',
-  './src/assets/fonts/pocketgull-fineliner.woff2',
+  './src/assets/fonts/pocketgull-regular.woff2',
   './src/assets/fonts/pocketgull-bold.woff2',
-  './src/assets/fonts/pocketgull-chiseltip.woff2',
+  './src/assets/fonts/pocketgull-slab-bold.woff2',
   './src/assets/fonts/pocketgull-mono.woff2',
   './public/assets/favicons/favicon-default.png',
   './public/assets/favicons/favicon-inhale.png',
@@ -50,13 +50,39 @@ function getAssetsForScope() {
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(getAssetsForScope()))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.all(
+        getAssetsForScope().map((url) =>
+          fetch(url, { cache: 'reload' }).then((response) => {
+            if (!response.ok) {
+              throw new Error(`Failed to precache ${url}: ${response.status}`);
+            }
+            return cache.put(url, response);
+          })
+        )
+      )
+    )
   );
   self.skipWaiting();
 });
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.ok) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request).then((res) => res || caches.match('./index.html')))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {

@@ -11,9 +11,9 @@
         @font-face {
             font-family: 'PocketGull';
             font-style: normal;
-            font-weight: 400;
+            font-weight: 400 500;
             font-display: swap;
-            src: url('breathing-animation/docs/assets/fonts/pocketgull-fineliner.woff2') format('woff2');
+            src: url('breathing-animation/docs/assets/fonts/pocketgull-regular.woff2') format('woff2');
         }
 
         @font-face {
@@ -25,11 +25,11 @@
         }
 
         @font-face {
-            font-family: 'PocketGull';
+            font-family: 'PocketGull Slab';
             font-style: normal;
-            font-weight: 800 900;
+            font-weight: 700;
             font-display: swap;
-            src: url('breathing-animation/docs/assets/fonts/pocketgull-chiseltip.woff2') format('woff2');
+            src: url('breathing-animation/docs/assets/fonts/pocketgull-slab-bold.woff2') format('woff2');
         }
 
         @font-face {
@@ -52,6 +52,8 @@
 
         body {
             font-family: 'PocketGull', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
@@ -78,8 +80,9 @@
         }
 
         h1 {
+            font-family: 'PocketGull Slab', 'PocketGull', Georgia, serif;
             font-size: 1.5rem;
-            font-weight: 800;
+            font-weight: 700;
             letter-spacing: -0.02em;
             margin: 0 0 0.5rem 0;
             color: var(--text-main);
