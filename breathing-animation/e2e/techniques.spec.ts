@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import fs from 'fs';
 import path from 'path';
 
 test.describe('Breathing Techniques', () => {
@@ -97,32 +98,29 @@ test.describe('Breathing Techniques', () => {
   });
 
   test('loads canonical PocketGull web fonts with zero Fineliner/Chiseltip marker faces', async ({ page }) => {
+    const cssText = fs.readFileSync(path.join(__dirname, '../frontend/vanilla-js/src/styles/styles.css'), 'utf8');
+    expect(/fineliner|chiseltip/i.test(cssText)).toBe(false);
+    expect(cssText).toContain('pocketgull-regular.woff2');
+    expect(cssText).toContain('pocketgull-mono.woff2');
+
+    const regularFontBuf = fs.readFileSync(
+      path.join(__dirname, '../frontend/vanilla-js/public/assets/fonts/pocketgull-regular.woff2')
+    );
+    expect(regularFontBuf.subarray(0, 4).toString('ascii')).toBe('wOF2');
+    expect(regularFontBuf.length).toBeGreaterThan(30_000);
+
     const fontStatus = await page.evaluate(async () => {
       await document.fonts.ready;
-      const faces = Array.from(document.fonts).map((f) => ({
+      return Array.from(document.fonts).map((f) => ({
         family: f.family.replace(/['"]/g, ''),
         weight: f.weight,
         status: f.status
       }));
-      const styleSheets = Array.from(document.styleSheets)
-        .flatMap((s) => {
-          try {
-            return Array.from(s.cssRules).map((r) => r.cssText);
-          } catch {
-            return [];
-          }
-        })
-        .join('\n');
-      return {
-        faces,
-        hasFinelinerOrChiseltip: /fineliner|chiseltip/i.test(styleSheets),
-        hasCanonicalRegular: styleSheets.includes('pocketgull-regular.woff2')
-      };
     });
 
-    expect(fontStatus.hasFinelinerOrChiseltip).toBe(false);
-    expect(fontStatus.hasCanonicalRegular).toBe(true);
-    expect(fontStatus.faces.some((f) => f.family === 'PocketGull' && f.weight === '400')).toBe(true);
-    expect(fontStatus.faces.some((f) => f.family === 'PocketGull Mono')).toBe(true);
+    expect(fontStatus.some((f) => f.family === 'PocketGull' && f.weight === '400')).toBe(true);
+    expect(fontStatus.some((f) => f.family === 'PocketGull' && f.weight === '700')).toBe(true);
+    expect(fontStatus.some((f) => f.family === 'PocketGull Slab' && f.weight === '700')).toBe(true);
+    expect(fontStatus.some((f) => f.family === 'PocketGull Mono')).toBe(true);
   });
 });
