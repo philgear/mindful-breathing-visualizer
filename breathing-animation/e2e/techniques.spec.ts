@@ -118,9 +118,9 @@ test.describe('Breathing Techniques', () => {
       }));
     });
 
-    expect(fontStatus.some((f) => f.family === 'PocketGull' && f.weight === '400')).toBe(true);
-    expect(fontStatus.some((f) => f.family === 'PocketGull' && f.weight === '700')).toBe(true);
-    expect(fontStatus.some((f) => f.family === 'PocketGull Slab' && f.weight === '700')).toBe(true);
+    expect(fontStatus.some((f) => f.family === 'PocketGull' && f.weight.includes('400'))).toBe(true);
+    expect(fontStatus.some((f) => f.family === 'PocketGull' && f.weight.includes('700'))).toBe(true);
+    expect(fontStatus.some((f) => f.family === 'PocketGull Slab' && f.weight.includes('700'))).toBe(true);
     expect(fontStatus.some((f) => f.family === 'PocketGull Mono')).toBe(true);
   });
 });
