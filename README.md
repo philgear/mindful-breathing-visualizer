@@ -1,11 +1,14 @@
 # Mindful Breathing Visualizer (v3.2.0)
 
 <p align="center">
-  <a href="https://github.com/philgear/mindful-breathing-visualizer/releases/tag/v3.1.0">
+  <a href="https://github.com/philgear/mindful-breathing-visualizer/releases">
      <img src="https://img.shields.io/badge/Design-Less_But_Better-ea5b0c?style=for-the-badge" alt="Minimalist Design Approved">
   </a>
   <a href="LICENSE">
-     <img src="https://img.shields.io/badge/License-CC_BY_4.0-60a5fa?style=for-the-badge" alt="License">
+     <img src="https://img.shields.io/badge/Code-MIT_%2F_Apache_2.0-10b981?style=for-the-badge" alt="Code License: MIT OR Apache-2.0">
+  </a>
+  <a href="LICENSE">
+     <img src="https://img.shields.io/badge/Docs-CC_BY_4.0-60a5fa?style=for-the-badge" alt="Docs License: CC BY 4.0">
   </a>
   <a href="breathing-animation/docs/DATA_CARD.md">
      <img src="https://img.shields.io/badge/Data_Card-View_Dataset-60a5fa?style=for-the-badge&logo=google-cloud" alt="Data Card">
@@ -19,7 +22,7 @@ A scientifically-modeled, universally ported breathing tool designed to help you
 
 ---
 
-## 🌿 The Ecosystem (v3.1.0 "Sensory Expansion")
+## 🌿 The Ecosystem (v3.2.0 "Sovereign Polish & Sensory Precision")
 The **Mindful Breathing Visualizer** strictly follows a **"Less, but better"** design philosophy, yet scales across an incredible 39+ technological dimensions.
 
 ### Core Features

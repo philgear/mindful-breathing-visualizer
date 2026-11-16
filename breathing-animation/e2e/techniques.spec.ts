@@ -123,4 +123,23 @@ test.describe('Breathing Techniques', () => {
     expect(fontStatus.some((f) => f.family === 'PocketGull Slab' && f.weight.includes('700'))).toBe(true);
     expect(fontStatus.some((f) => f.family === 'PocketGull Mono')).toBe(true);
   });
+
+  test('persists preferences to localStorage, toggles Serene Palette, and updates live aria-label', async ({ page }) => {
+    await page.locator('#exerciseSelect').selectOption('fourSevenEight');
+    await expect(page.locator('#holdTime')).toHaveValue('7');
+    await expect(page.locator('#exhaleTime')).toHaveValue('8');
+
+    const paletteBtn = page.locator('#paletteButton');
+    await paletteBtn.click();
+    await expect(page.locator('body')).toHaveClass(/serene-palette/);
+
+    await page.reload();
+    await expect(page.locator('#exerciseSelect')).toHaveValue('fourSevenEight');
+    await expect(page.locator('#holdTime')).toHaveValue('7');
+    await expect(page.locator('body')).toHaveClass(/serene-palette/);
+
+    await page.locator('#startButton').click();
+    await expect(page.locator('#a11y-announcer')).not.toHaveText('');
+    await expect(page.locator('#animation-container > div').first()).toHaveAttribute('aria-label', /Current phase:/);
+  });
 });

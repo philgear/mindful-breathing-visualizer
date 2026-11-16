@@ -21,6 +21,14 @@ export const TECHNIQUES: Record<string, Technique> = Object.freeze({
             { name: 'Hold', duration: 4000, scale: 1.0, color: '#60a5fa', x: 0 }
         ])
     }),
+    fourSevenEight: Object.freeze({
+        name: '4-7-8 Relaxing Breath',
+        phases: Object.freeze([
+            { name: 'Inhale', duration: 4000, scale: 1.5, color: '#34d399', x: 0 },
+            { name: 'Hold', duration: 7000, scale: 1.5, color: '#60a5fa', x: 0 },
+            { name: 'Exhale', duration: 8000, scale: 1.0, color: '#fb7185', x: 0 }
+        ])
+    }),
     diaphragmatic: Object.freeze({
         name: 'Diaphragmatic',
         phases: Object.freeze([

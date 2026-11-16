@@ -1,41 +1,23 @@
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { describe, it, expect } from 'vitest';
 
-// Simulated Logic Test (Unit)
-const TECHNIQUES = {
-  'box-breathing': {
-    name: 'Box Breathing',
-    phases: [
-      { name: 'Inhale', duration: 4 },
-      { name: 'Hold', duration: 4 },
-      { name: 'Exhale', duration: 4 },
-      { name: 'Hold', duration: 4 },
-    ],
-  },
-  '4-7-8': {
-    name: '4-7-8 Relaxing Breath',
-    phases: [
-      { name: 'Inhale', duration: 4 },
-      { name: 'Hold', duration: 7 },
-      { name: 'Exhale', duration: 8 },
-    ],
-  },
-};
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const serverSource = fs.readFileSync(path.join(__dirname, 'index.ts'), 'utf8');
 
-describe('Breathing Techniques Logic', () => {
-  it('should have correct Box Breathing durations', () => {
-    const technique = TECHNIQUES['box-breathing'];
-    assert.strictEqual(technique.name, 'Box Breathing');
-    assert.strictEqual(technique.phases.length, 4);
-    technique.phases.forEach((phase) => {
-      assert.strictEqual(phase.duration, 4);
-    });
+describe('MCP Server Breathing Techniques Parity', () => {
+  it('registers all four core breathing techniques including 4-7-8', () => {
+    expect(serverSource).toContain("'box-breathing':");
+    expect(serverSource).toContain("'4-7-8':");
+    expect(serverSource).toContain('diaphragmatic:');
+    expect(serverSource).toContain("'alternate-nostril':");
   });
 
-  it('should have correct 4-7-8 durations', () => {
-    const technique = TECHNIQUES['4-7-8'];
-    assert.strictEqual(technique.phases[0].duration, 4);
-    assert.strictEqual(technique.phases[1].duration, 7);
-    assert.strictEqual(technique.phases[2].duration, 8);
+  it('defines accurate 4s / 7s / 8s phase durations for 4-7-8 Relaxing Breath', () => {
+    expect(serverSource).toContain("name: '4-7-8 Relaxing Breath'");
+    expect(serverSource).toContain("{ name: 'Inhale', duration: 4, color: DO_NOT_MODIFY_COLORS.EMERALD }");
+    expect(serverSource).toContain("{ name: 'Hold', duration: 7, color: DO_NOT_MODIFY_COLORS.BLUE }");
+    expect(serverSource).toContain("{ name: 'Exhale', duration: 8, color: DO_NOT_MODIFY_COLORS.ROSE }");
   });
 });

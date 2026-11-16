@@ -1,8 +1,9 @@
-const CACHE_NAME = 'breathing-app-v4';
+﻿const CACHE_NAME = 'breathing-app-v5';
 
 const DOCS_ASSETS = [
   './',
   './index.html',
+  './manifest.json',
   './styles/styles.css',
   './js/i18n.js',
   './js/breathing.js',
@@ -69,6 +70,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
+  // Network-first for HTML navigations so fresh deploys arrive immediately; cache-first for static assets
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)

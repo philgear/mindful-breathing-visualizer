@@ -94,6 +94,8 @@ xcuserdata/
 # Misc
 .gemini/
 tmp/
+bom.json
+breathing-animation/bom.json
 
 # Ruby
 *.gem

@@ -25,4 +25,14 @@ describe('Breathing Techniques Core', () => {
     expect(diaphragmatic.name).toBe('Diaphragmatic');
     expect(diaphragmatic.phases).toHaveLength(2);
   });
+
+  it('should have correct 4-7-8 Relaxing Breath setup', () => {
+    const fse = TECHNIQUES.fourSevenEight;
+    expect(fse).toBeDefined();
+    expect(fse.name).toBe('4-7-8 Relaxing Breath');
+    expect(fse.phases).toHaveLength(3);
+    expect(fse.phases[0].duration).toBe(4000);
+    expect(fse.phases[1].duration).toBe(7000);
+    expect(fse.phases[2].duration).toBe(8000);
+  });
 });
