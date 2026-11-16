@@ -1132,3 +1132,29 @@ body.dark-mode .container {
 .turtle-animation.holdAfterExhale {
   transform: scale(0.8);
 }
+
+/* ==========================================================================
+   SWEBOK v4 "Serene Clinical" Palette Theme (body.serene-palette)
+   Inhale: #34d399 (Emerald) | Hold: #60a5fa (Blue) | Exhale: #fb7185 (Rose)
+   ========================================================================== */
+body.serene-palette {
+  --accent-color: #10b981;
+  --accent-button-bg: #047857;
+  --active-color: #34d399;
+  --active-gradient: linear-gradient(135deg, #059669 0%, #34d399 100%);
+  --hold-gradient: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+}
+
+body.serene-palette .circle-animation.exhale,
+body.serene-palette .square-animation.exhale,
+body.serene-palette .lotus-animation.exhale,
+body.serene-palette .star-animation.exhale,
+body.serene-palette .flower-animation.exhale,
+body.serene-palette .hexagon-animation.exhale {
+  background: linear-gradient(135deg, #e11d48 0%, #fb7185 100%);
+}
+
+body.serene-palette .progress-bar.exhale .progress-fill {
+  background-color: #fb7185;
+}
+

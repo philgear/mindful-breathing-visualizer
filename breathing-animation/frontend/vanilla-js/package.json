@@ -1,6 +1,7 @@
 {
   "name": "breathing-visualizer-vanilla",
-  "version": "1.0.0",
+  "version": "3.2.0",
+  "license": "MIT OR Apache-2.0",
   "main": "js/src/breathing.js",
   "scripts": {
     "lint": "eslint .",

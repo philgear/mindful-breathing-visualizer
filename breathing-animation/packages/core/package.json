@@ -1,6 +1,7 @@
 {
   "name": "@mindful-breathing/core",
-  "version": "1.0.0",
+  "version": "3.2.0",
+  "license": "MIT OR Apache-2.0",
   "description": "Core state machine and audio logic for Mindful Breathing Visualizer",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

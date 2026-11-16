@@ -140,13 +140,36 @@
       }
     }
 
+    playPhaseChime(phaseName) {
+      if (this.isMuted || !this.ctx) return;
+      try {
+        const now = this.ctx.currentTime;
+        const p = phaseName.toLowerCase();
+        const chimeFreq = p.includes('inhale') ? 528 : p.includes('exhale') ? 396 : 432;
+        const chimeOsc = this.ctx.createOscillator();
+        const chimeGain = this.ctx.createGain();
+        chimeOsc.type = 'sine';
+        chimeOsc.frequency.setValueAtTime(chimeFreq, now);
+        chimeGain.gain.setValueAtTime(0.0001, now);
+        chimeGain.gain.exponentialRampToValueAtTime(0.035, now + 0.04);
+        chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+        chimeOsc.connect(chimeGain);
+        chimeGain.connect(this.ctx.destination);
+        chimeOsc.start(now);
+        chimeOsc.stop(now + 0.48);
+      } catch {
+        // Ignore audio scheduling errors on restricted browsers
+      }
+    }
+
     setPhaseTone(phaseName, duration) { this.setPhase(phaseName, duration); }
 
     setPhase(phaseName, duration) {
       this.doHaptic(phaseName, duration);
       if (this.isMuted || !this.isPlaying || !this.ctx) return;
+      this.playPhaseChime(phaseName);
       const now = this.ctx.currentTime;
-      const rampTime = duration / 1000;
+      const rampTime = Math.max(0.05, duration / 1000);
       const p = phaseName.toLowerCase();
       const isInhale = p.includes('inhale');
       const isExhale = p.includes('exhale');
@@ -157,26 +180,33 @@
         if (!osc) return;
         osc.frequency.cancelScheduledValues(now);
         if (isInhale) {
-          osc.frequency.setValueAtTime(150, now); osc.frequency.linearRampToValueAtTime(200, now + rampTime);
-          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.2, now + rampTime);
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.exponentialRampToValueAtTime(200, now + rampTime);
+          this.masterGain.gain.setValueAtTime(Math.max(0.001, this.masterGain.gain.value), now);
+          this.masterGain.gain.exponentialRampToValueAtTime(0.2, now + rampTime);
         } else if (isExhale) {
-          osc.frequency.setValueAtTime(osc.frequency.value, now); osc.frequency.linearRampToValueAtTime(150, now + rampTime);
-          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.1, now + rampTime);
+          osc.frequency.setValueAtTime(Math.max(50, osc.frequency.value), now);
+          osc.frequency.exponentialRampToValueAtTime(150, now + rampTime);
+          this.masterGain.gain.setValueAtTime(Math.max(0.001, this.masterGain.gain.value), now);
+          this.masterGain.gain.exponentialRampToValueAtTime(0.1, now + rampTime);
         } else {
-          osc.frequency.setValueAtTime(osc.frequency.value, now); this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+          osc.frequency.setValueAtTime(osc.frequency.value, now);
+          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
         }
       } else if (this.soundscape === 'binaural') {
         const oscL = this.nodes.find(n => n.type === 'oscL')?.node; const oscR = this.nodes.find(n => n.type === 'oscR')?.node;
         if (!oscL || !oscR) return;
         oscL.frequency.cancelScheduledValues(now); oscR.frequency.cancelScheduledValues(now);
         if (isInhale) {
-          oscL.frequency.setValueAtTime(150, now); oscL.frequency.linearRampToValueAtTime(180, now + rampTime);
-          oscR.frequency.setValueAtTime(154, now); oscR.frequency.linearRampToValueAtTime(188, now + rampTime); 
-          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.25, now + rampTime);
+          oscL.frequency.setValueAtTime(150, now); oscL.frequency.exponentialRampToValueAtTime(180, now + rampTime);
+          oscR.frequency.setValueAtTime(154, now); oscR.frequency.exponentialRampToValueAtTime(188, now + rampTime);
+          this.masterGain.gain.setValueAtTime(Math.max(0.001, this.masterGain.gain.value), now);
+          this.masterGain.gain.exponentialRampToValueAtTime(0.25, now + rampTime);
         } else if (isExhale) {
-          oscL.frequency.setValueAtTime(oscL.frequency.value, now); oscL.frequency.linearRampToValueAtTime(150, now + rampTime);
-          oscR.frequency.setValueAtTime(oscR.frequency.value, now); oscR.frequency.linearRampToValueAtTime(152, now + rampTime); 
-          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.15, now + rampTime);
+          oscL.frequency.setValueAtTime(Math.max(50, oscL.frequency.value), now); oscL.frequency.exponentialRampToValueAtTime(150, now + rampTime);
+          oscR.frequency.setValueAtTime(Math.max(50, oscR.frequency.value), now); oscR.frequency.exponentialRampToValueAtTime(152, now + rampTime);
+          this.masterGain.gain.setValueAtTime(Math.max(0.001, this.masterGain.gain.value), now);
+          this.masterGain.gain.exponentialRampToValueAtTime(0.15, now + rampTime);
         } else {
           oscL.frequency.setValueAtTime(oscL.frequency.value, now); oscR.frequency.setValueAtTime(oscR.frequency.value, now);
           this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
@@ -186,13 +216,13 @@
         if (!oscBase || !oscH || !gainH) return;
         oscBase.frequency.cancelScheduledValues(now); oscH.frequency.cancelScheduledValues(now); gainH.gain.cancelScheduledValues(now);
         if (isInhale) {
-          oscBase.frequency.setValueAtTime(150, now); oscBase.frequency.linearRampToValueAtTime(200, now + rampTime);
-          oscH.frequency.setValueAtTime(150 * 1.5, now); oscH.frequency.linearRampToValueAtTime(200 * 1.5, now + rampTime);
-          gainH.gain.setValueAtTime(0, now); gainH.gain.linearRampToValueAtTime(0.08, now + rampTime); 
+          oscBase.frequency.setValueAtTime(150, now); oscBase.frequency.exponentialRampToValueAtTime(200, now + rampTime);
+          oscH.frequency.setValueAtTime(150 * 1.5, now); oscH.frequency.exponentialRampToValueAtTime(200 * 1.5, now + rampTime);
+          gainH.gain.setValueAtTime(0.0001, now); gainH.gain.exponentialRampToValueAtTime(0.08, now + rampTime);
         } else if (isExhale) {
-          oscBase.frequency.setValueAtTime(oscBase.frequency.value, now); oscBase.frequency.linearRampToValueAtTime(150, now + rampTime);
-          oscH.frequency.setValueAtTime(oscH.frequency.value, now); oscH.frequency.linearRampToValueAtTime(150 * 1.5, now + rampTime);
-          gainH.gain.setValueAtTime(gainH.gain.value, now); gainH.gain.linearRampToValueAtTime(0, now + rampTime);
+          oscBase.frequency.setValueAtTime(Math.max(50, oscBase.frequency.value), now); oscBase.frequency.exponentialRampToValueAtTime(150, now + rampTime);
+          oscH.frequency.setValueAtTime(Math.max(50, oscH.frequency.value), now); oscH.frequency.exponentialRampToValueAtTime(150 * 1.5, now + rampTime);
+          gainH.gain.setValueAtTime(Math.max(0.0001, gainH.gain.value), now); gainH.gain.exponentialRampToValueAtTime(0.0001, now + rampTime);
         } else {
           oscBase.frequency.setValueAtTime(oscBase.frequency.value, now); oscH.frequency.setValueAtTime(oscH.frequency.value, now); gainH.gain.setValueAtTime(gainH.gain.value, now);
         }
@@ -201,11 +231,13 @@
         if (!filter) return;
         filter.frequency.cancelScheduledValues(now);
         if (isInhale) {
-          filter.frequency.setValueAtTime(400, now); filter.frequency.exponentialRampToValueAtTime(1200, now + rampTime); 
-          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.25, now + rampTime);
+          filter.frequency.setValueAtTime(400, now); filter.frequency.exponentialRampToValueAtTime(1200, now + rampTime);
+          this.masterGain.gain.setValueAtTime(Math.max(0.001, this.masterGain.gain.value), now);
+          this.masterGain.gain.exponentialRampToValueAtTime(0.25, now + rampTime);
         } else if (isExhale) {
-          filter.frequency.setValueAtTime(filter.frequency.value, now); filter.frequency.exponentialRampToValueAtTime(400, now + rampTime); 
-          this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now); this.masterGain.gain.linearRampToValueAtTime(0.15, now + rampTime);
+          filter.frequency.setValueAtTime(Math.max(80, filter.frequency.value), now); filter.frequency.exponentialRampToValueAtTime(400, now + rampTime);
+          this.masterGain.gain.setValueAtTime(Math.max(0.001, this.masterGain.gain.value), now);
+          this.masterGain.gain.exponentialRampToValueAtTime(0.15, now + rampTime);
         } else {
           filter.frequency.setValueAtTime(filter.frequency.value, now); this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
         }
@@ -285,8 +317,17 @@
     }
 
     announce(text) {
+      if (this.animationElement) {
+        this.animationElement.setAttribute('aria-label', `Current phase: ${text}`);
+      }
       if (this.announcerElement) {
-        this.announcerElement.textContent = text;
+        // Clear then set on next microtask so identical consecutive phase labels (e.g. Hold) still announce
+        this.announcerElement.textContent = '';
+        Promise.resolve().then(() => {
+          if (this.announcerElement) {
+            this.announcerElement.textContent = text;
+          }
+        });
       }
     }
 
@@ -839,6 +880,69 @@
 
     let currentExercise = null;
     let sessionTimer = null;
+    let wakeLockSentinel = null;
+    const PREFS_STORAGE_SLOT = 'mbv-preferences';
+
+    async function acquireWakeLock() {
+      if (typeof navigator !== 'undefined' && 'wakeLock' in navigator && document.visibilityState === 'visible') {
+        try {
+          wakeLockSentinel = await navigator.wakeLock.request('screen');
+          wakeLockSentinel.addEventListener('release', () => {
+            wakeLockSentinel = null;
+          });
+        } catch {
+          // Ignore Wake Lock refusal on battery-saver or unsupported contexts
+        }
+      }
+    }
+
+    async function releaseWakeLock() {
+      if (wakeLockSentinel) {
+        try {
+          await wakeLockSentinel.release();
+        } catch {
+          // Ignore release errors
+        }
+        wakeLockSentinel = null;
+      }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && currentExercise && currentExercise.isRunning) {
+        acquireWakeLock();
+      }
+    });
+
+    function loadSavedPreferences() {
+      try {
+        const raw = window.localStorage.getItem(PREFS_STORAGE_SLOT);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function savePreferences(extra = {}) {
+      try {
+        const existing = loadSavedPreferences() || {};
+        const soundscapeEl = document.getElementById('soundscape');
+        const next = {
+          ...existing,
+          exercise: exerciseSelect ? exerciseSelect.value : 'boxBreathing',
+          animationStyle: animationStyleSelect ? animationStyleSelect.value : 'circle',
+          soundscape: soundscapeEl ? soundscapeEl.value : 'sine',
+          inhale: inhaleTimeSelect ? inhaleTimeSelect.value : '4',
+          hold: holdTimeSelect ? holdTimeSelect.value : '4',
+          exhale: exhaleTimeSelect ? exhaleTimeSelect.value : '4',
+          sessionDuration: sessionDurationSelect ? sessionDurationSelect.value : '5',
+          muted: audioController.isMuted,
+          ...extra,
+        };
+        window.localStorage.setItem(PREFS_STORAGE_SLOT, JSON.stringify(next));
+      } catch {
+        // Ignore storage quota or privacy-mode errors
+      }
+    }
 
     // Populate selects (Hold supports 0s for Diaphragmatic Breathing)
     populateSelectOptions(inhaleTimeSelect, 10, 1);
@@ -862,17 +966,44 @@
       alternateNostrilBreathing: { inhale: '4', hold: '4', exhale: '4' },
     };
 
-    // Defaults (Initial Load)
+    // Defaults (Initial Load + Hydrate Saved Preferences)
+    const savedPrefs = loadSavedPreferences();
+    if (savedPrefs && exerciseSelect && Object.keys(exerciseClasses).includes(savedPrefs.exercise)) {
+      exerciseSelect.value = savedPrefs.exercise;
+    }
+    if (
+      savedPrefs &&
+      animationStyleSelect &&
+      Array.from(animationStyleSelect.options).some((o) => o.value === savedPrefs.animationStyle)
+    ) {
+      animationStyleSelect.value = savedPrefs.animationStyle;
+    }
+    const initialSoundscapeEl = document.getElementById('soundscape');
+    if (
+      savedPrefs &&
+      initialSoundscapeEl &&
+      Array.from(initialSoundscapeEl.options).some((o) => o.value === savedPrefs.soundscape)
+    ) {
+      initialSoundscapeEl.value = savedPrefs.soundscape;
+      audioController.setSoundscape(savedPrefs.soundscape);
+    }
     setDefaultSelectValues(
       'inhaleTime',
       'holdTime',
       'exhaleTime',
       'sessionDuration',
-      '4',
-      '4',
-      '4',
-      '5'
+      savedPrefs && savedPrefs.inhale !== undefined ? String(savedPrefs.inhale) : '4',
+      savedPrefs && savedPrefs.hold !== undefined ? String(savedPrefs.hold) : '4',
+      savedPrefs && savedPrefs.exhale !== undefined ? String(savedPrefs.exhale) : '4',
+      savedPrefs && savedPrefs.sessionDuration !== undefined ? String(savedPrefs.sessionDuration) : '5'
     );
+    if (savedPrefs && savedPrefs.muted) {
+      audioController.isMuted = true;
+      if (muteBtn) muteBtn.textContent = '🔇 Muted';
+    }
+    if (savedPrefs && savedPrefs.palette === 'serene') {
+      document.body.classList.add('serene-palette');
+    }
 
     // Initial setup check
     const safeKey = Object.keys(exerciseClasses).includes(exerciseSelect.value)
@@ -944,6 +1075,7 @@
         inhaleTimeSelect.value = defaults.inhale;
         holdTimeSelect.value = defaults.hold;
         exhaleTimeSelect.value = defaults.exhale;
+        savePreferences();
       }
 
       instructionsContainer.innerHTML = instructions[safeKey] || '';
@@ -970,12 +1102,19 @@
     if (soundscapeSelect) {
       soundscapeSelect.addEventListener('change', () => {
         audioController.setSoundscape(soundscapeSelect.value);
+        savePreferences();
       });
     }
     animationStyleSelect.addEventListener('change', () => {
       if (currentExercise) {
         currentExercise.options.animationStyle = animationStyleSelect.value;
         currentExercise.setupAnimation();
+      }
+      savePreferences();
+    });
+    [inhaleTimeSelect, holdTimeSelect, exhaleTimeSelect, sessionDurationSelect].forEach((sel) => {
+      if (sel) {
+        sel.addEventListener('change', () => savePreferences());
       }
     });
 
@@ -989,7 +1128,9 @@
         currentExercise.start(inhaleTime, holdTime, exhaleTime);
       }
 
+      acquireWakeLock();
       startSessionTimer(sessionDuration);
+      savePreferences();
 
       // UI State
       startButton.classList.add('hidden');
@@ -1011,6 +1152,7 @@
       muteBtn.addEventListener('click', () => {
         const isMuted = audioController.toggleMute();
         muteBtn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound On';
+        savePreferences();
       });
     }
 
@@ -1021,6 +1163,12 @@
         typeof window.matchMedia === 'function'
           ? window.matchMedia('(prefers-color-scheme: dark)')
           : null;
+
+      if (savedPrefs && savedPrefs.theme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else if (savedPrefs && savedPrefs.theme === 'light') {
+        document.body.classList.add('light-mode');
+      }
 
       const isCurrentlyDark = () => {
         if (document.body.classList.contains('dark-mode')) return true;
@@ -1039,6 +1187,22 @@
         document.body.classList.toggle('dark-mode', nextDark);
         document.body.classList.toggle('light-mode', !nextDark);
         syncDarkModeLabel();
+        savePreferences({ theme: nextDark ? 'dark' : 'light' });
+      });
+    }
+
+    // Palette Toggle (Dieter Rams Minimalist vs. SWEBOK v4 Serene Clinical)
+    const paletteBtn = document.getElementById('paletteButton');
+    if (paletteBtn) {
+      const syncPaletteLabel = () => {
+        const isSerene = document.body.classList.contains('serene-palette');
+        paletteBtn.textContent = isSerene ? '🧡 Rams Palette' : '🌿 Serene Palette';
+      };
+      syncPaletteLabel();
+      paletteBtn.addEventListener('click', () => {
+        const isSerene = document.body.classList.toggle('serene-palette');
+        syncPaletteLabel();
+        savePreferences({ palette: isSerene ? 'serene' : 'rams' });
       });
     }
     // Dynamic Favicon Helper
@@ -1065,6 +1229,7 @@
       if (currentExercise) {
         currentExercise.stop();
       }
+      releaseWakeLock();
       updateFavicon('default');
       clearInterval(sessionTimer);
       sessionTimer = null;

@@ -5,19 +5,21 @@ This document serves as the central engineering constitution for the project, al
 ## KA 1: Software Requirements
 **Core Domain**: Digital therapeutics for mindfulness and anxiety reduction.
 - **Functional Requirements**:
-    - **Breathing Techniques**: System must support standard patterns (Box 4-4-4-4, Diaphragmatic 5-5, Alternate Nostril 4-4-4-4-4-4-4-4).
-    - **Visual Feedback**: visual indicators (expanding/contracting shapes) must synchronize perfectly with timer phases (Inhale/Hold/Exhale).
-    - **Audio Feedback**: Binaural or monaural tone generation synchronized with breathing phases.
+    - **Breathing Techniques**: System must support all 4 standard patterns (`Box` 4-4-4-4, `4-7-8 Relaxing Breath` 4-7-8, `Diaphragmatic` 5-5 / 4-0-6, `Alternate Nostril` 4-4-4-4-4-4-4-4).
+    - **Visual Feedback**: visual indicators (expanding/contracting shapes) must synchronize perfectly with timer phases (Inhale/Hold/Exhale) via monotonic `performance.now()` delta-corrected scheduling and `navigator.wakeLock`.
+    - **Audio Feedback**: Binaural or monaural tone generation synchronized with breathing phases using smooth exponential Web Audio envelopes and subtle eyes-closed phase chimes.
 
 ## KA 2: Software Design
 **Architectural Style**: Polyglot Monorepo with Pillar Isolation.
 
-### 2.1 Design System ("The Serene Palette")
-Visuals must induce calm. High-contrast or "alert" colors are strictly prohibited.
-- **Primary (Inhale)**: `#34d399` (Emerald) - Growth/Air.
-- **Secondary (Hold)**: `#60a5fa` (Blue) - Stasis/Calm.
-- **Accent (Exhale)**: `#fb7185` (Rose) - Release/Warmth.
-- **Typography**: `Inter`, system-ui, sans-serif (Clean, readable).
+### 2.1 Design System (Dual Theme: "Dieter Rams Minimalist" & "Serene Clinical Palette")
+Visuals must induce calm with zero visual clutter, supporting instantaneous runtime switching (`#paletteButton` / `body.serene-palette`):
+- **Rams Minimalist Default**: Neutral architectural surface (`#f4f4f4` / `#121212`) with single functional International Orange (`#ea5b0c`) focus accent.
+- **Serene Clinical Palette (`body.serene-palette` & `@mindful-breathing/core`)**:
+    - **Primary (Inhale)**: `#34d399` (Emerald) - Growth/Air.
+    - **Secondary (Hold)**: `#60a5fa` (Blue) - Stasis/Calm.
+    - **Accent (Exhale)**: `#fb7185` (Rose) - Release/Warmth.
+- **Typography**: Self-hosted `PocketGull` (`v3.100+` / `v4.000`, `PocketGull-Regular`, `PocketGull-Bold`, `PocketGull-Slab-Bold`, `PocketGullMono-Regular`), system-ui, sans-serif.
 - **Shape Logic**:
     - **Circle**: `border-radius: 50%` (Softness).
     - **Square**: `border-radius: 12px` (Structure).

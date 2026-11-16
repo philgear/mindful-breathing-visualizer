@@ -1,4 +1,4 @@
-const CACHE_NAME = 'breathing-app-v4';
+﻿const CACHE_NAME = 'breathing-app-v5';
 
 const DOCS_ASSETS = [
   './',

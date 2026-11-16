@@ -34,6 +34,16 @@ const TECHNIQUES: Record<string, BreathingTechnique> = {
     description:
       'Equal duration phases (4-4-4-4) for focus and stress relief. Visualized as a square.',
   },
+  '4-7-8': {
+    name: '4-7-8 Relaxing Breath',
+    phases: [
+      { name: 'Inhale', duration: 4, color: DO_NOT_MODIFY_COLORS.EMERALD },
+      { name: 'Hold', duration: 7, color: DO_NOT_MODIFY_COLORS.BLUE },
+      { name: 'Exhale', duration: 8, color: DO_NOT_MODIFY_COLORS.ROSE },
+    ],
+    description:
+      'Parasympathetic downshift pattern (4s inhale, 7s hold, 8s exhale) for rapid stress relief and sleep preparation.',
+  },
   diaphragmatic: {
     name: 'Diaphragmatic Breathing',
     phases: [
@@ -61,7 +71,7 @@ const TECHNIQUES: Record<string, BreathingTechnique> = {
 const server = new Server(
   {
     name: 'breathing-visualizer-mcp',
-    version: '1.0.0',
+    version: '3.2.0',
   },
   {
     capabilities: {
@@ -95,9 +105,9 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
           uri: 'breathing://techniques',
           mimeType: 'application/json',
           text: JSON.stringify(
-            Object.values(TECHNIQUES).map((t) => ({
+            Object.entries(TECHNIQUES).map(([key, t]) => ({
               name: t.name,
-              key: t.name.toLowerCase().replace(/ /g, '-'),
+              key,
             })),
             null,
             2
@@ -152,11 +162,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       };
     }
 
-    const name = rawName.toLowerCase();
+    const name = rawName.toLowerCase().trim();
+    const aliasMap: Record<string, string> = {
+      fourseveneight: '4-7-8',
+      'four-seven-eight': '4-7-8',
+      box: 'box-breathing',
+      alternate: 'alternate-nostril',
+    };
+    const normalized = aliasMap[name] || name;
 
     // SECURITY: Allowlist Validation (Implicit via find)
     // We only match against known keys in our TECHNIQUES const.
-    const key = Object.keys(TECHNIQUES).find((k) => name.includes(k));
+    const key = Object.keys(TECHNIQUES).find((k) => normalized.includes(k));
 
     if (key && TECHNIQUES[key]) {
       return {
